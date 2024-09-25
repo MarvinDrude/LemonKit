@@ -1,0 +1,18 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using System.Buffers;
+
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Configuration;
+
+global using LemonKit.Settings;
+global using LemonKit.Settings.Attributes;
+global using LemonKit.Settings.Builders;
+global using LemonKit.Settings.Extensions;
+global using LemonKit.Settings.Providers;
