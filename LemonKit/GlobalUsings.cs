@@ -16,3 +16,6 @@ global using LemonKit.Settings.Attributes;
 global using LemonKit.Settings.Builders;
 global using LemonKit.Settings.Extensions;
 global using LemonKit.Settings.Providers;
+
+global using LemonKit.Processors.Attributes;
+global using LemonKit.Processors;
