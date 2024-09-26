@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LemonKit", "LemonKit\LemonKit.csproj", "{A65F49D9-F7DC-42C3-8EFA-6AFCDB7B7B42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LemonKit", "LemonKit\LemonKit.csproj", "{A65F49D9-F7DC-42C3-8EFA-6AFCDB7B7B42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LemonKit.Generators", "LemonKit.Generators\LemonKit.Generators.csproj", "{4D3F3CD1-76EA-47BF-8222-241C1F4B187D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LemonKit.Generators", "LemonKit.Generators\LemonKit.Generators.csproj", "{4D3F3CD1-76EA-47BF-8222-241C1F4B187D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments", "{CFBF232D-99C1-4CC6-ADD0-D20DBB16B6E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LemonKit.Experiment", "LemonKit.Experiment\LemonKit.Experiment.csproj", "{183F5AD8-3D96-464A-853E-4395D154F35E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +25,16 @@ Global
 		{4D3F3CD1-76EA-47BF-8222-241C1F4B187D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D3F3CD1-76EA-47BF-8222-241C1F4B187D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D3F3CD1-76EA-47BF-8222-241C1F4B187D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{183F5AD8-3D96-464A-853E-4395D154F35E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{183F5AD8-3D96-464A-853E-4395D154F35E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{183F5AD8-3D96-464A-853E-4395D154F35E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{183F5AD8-3D96-464A-853E-4395D154F35E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{183F5AD8-3D96-464A-853E-4395D154F35E} = {CFBF232D-99C1-4CC6-ADD0-D20DBB16B6E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54F6E2BF-8141-44BA-9D87-36A4255CF49B}

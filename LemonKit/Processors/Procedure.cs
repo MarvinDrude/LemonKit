@@ -12,12 +12,20 @@ public abstract class Procedure<TInput, TOutput> {
     private Procedure<TInput, TOutput>? _Next;
 
     /// <summary>
+    /// Service Provider for the current request
+    /// </summary>
+    private IServiceProvider? _ServiceProvider;
+
+    /// <summary>
     /// Will process 
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public abstract Task<TOutput> Process(TInput request, CancellationToken cancellationToken);
+    public abstract Task<TOutput> Process(
+        TInput request, 
+        IServiceProvider serviceProvider, 
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// Set the next procedure after this procedure
@@ -29,6 +37,12 @@ public abstract class Procedure<TInput, TOutput> {
 
     }
 
+    public void SetServiceProvider(IServiceProvider serviceProvider) {
+
+        _ServiceProvider = serviceProvider;
+
+    }
+
     /// <summary>
     /// Call the next procedure in line
     /// </summary>
@@ -37,11 +51,11 @@ public abstract class Procedure<TInput, TOutput> {
     /// <returns></returns>
     protected Task<TOutput> Next(TInput request, CancellationToken cancellationToken) {
 
-        if(_Next is null) {
+        if(_Next is null || _ServiceProvider is null) {
             throw new InvalidOperationException("Next procedure must be set before next call.");
         }
 
-        return _Next.Process(request, cancellationToken);
+        return _Next.Process(request, _ServiceProvider, cancellationToken);
 
     }
 

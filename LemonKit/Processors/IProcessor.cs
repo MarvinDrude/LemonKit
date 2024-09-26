@@ -13,6 +13,6 @@ public interface IProcessor<TInput, TOutput> {
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public Task<TOutput> Process(TInput request, CancellationToken cancellationToken = default);
+    public Task<TOutput> Process(TInput request, IServiceProvider serviceProvider, CancellationToken cancellationToken = default);
 
 }

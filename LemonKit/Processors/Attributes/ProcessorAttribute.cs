@@ -7,6 +7,13 @@ namespace LemonKit.Processors.Attributes;
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class ProcessorAttribute : Attribute {
 
+    public bool UseAssemblyProcedures { get; }
 
+    public ProcessorAttribute(
+        bool useAssemblyProcedures = true) {
+
+        UseAssemblyProcedures = useAssemblyProcedures;
+
+    }
 
 }

@@ -9,7 +9,9 @@ global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 global using LemonKit.Generators.Models;
-global using LemonKit.Generators.Settings;
 global using LemonKit.Generators.Extensions;
 global using LemonKit.Generators.Writers;
 global using LemonKit.Generators.Collections;
+
+global using LemonKit.Generators.Processors;
+global using LemonKit.Generators.Settings;
