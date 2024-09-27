@@ -8,18 +8,23 @@ public partial class ProcessorGenerator {
         public readonly ClassInfo ClassInfo;
 
         public readonly string Type;
+        public readonly string TypeNoGenerics;
+
         public readonly string InputType;
         public readonly string OutputType;
 
         public ProcedureInfo(
             ClassInfo classInfo,
             string type,
+            string typeNoGenerics,
             string inputType,
             string outputType) {
 
             ClassInfo = classInfo;
 
             Type = type;
+            TypeNoGenerics = typeNoGenerics;
+
             InputType = inputType;
             OutputType = outputType;
 

@@ -86,7 +86,7 @@ namespace Test {
         }
 
         public async Task<Response> Execute(
-            HttpContext request,
+            [Input] HttpContext request,
             CurrentLanguage currentLanuage,
             CancellationToken cancellationToken) {
 
