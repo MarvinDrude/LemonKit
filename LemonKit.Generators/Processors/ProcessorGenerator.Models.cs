@@ -41,7 +41,7 @@ public partial class ProcessorGenerator {
 
         public readonly bool UseAssemblyProcedures;
 
-        public readonly EquatableArray<ProcedureInfo> Procedures;
+        public readonly EquatableArray<ProcedureInfo>? Procedures;
         public readonly EquatableArray<ParameterInfo> Parameters;
 
         public ProcessorInfo(
@@ -49,7 +49,7 @@ public partial class ProcessorGenerator {
             RTypeInfo inputType,
             RTypeInfo outputType,
             bool useAssemblyProcedures,
-            ProcedureInfo[] procedures,
+            ProcedureInfo[]? procedures,
             ParameterInfo[] parameters) {
 
             ClassInfo = classInfo;
@@ -59,7 +59,7 @@ public partial class ProcessorGenerator {
 
             UseAssemblyProcedures = useAssemblyProcedures;
 
-            Procedures = new EquatableArray<ProcedureInfo>(procedures);
+            Procedures = procedures != null ? new EquatableArray<ProcedureInfo>(procedures) : null;
             Parameters = new EquatableArray<ParameterInfo>(parameters);
 
         }

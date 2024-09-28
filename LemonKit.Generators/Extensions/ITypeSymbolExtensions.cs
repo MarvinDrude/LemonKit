@@ -3,6 +3,24 @@ namespace LemonKit.Generators.Extensions;
 
 internal static class ITypeSymbolExtensions {
 
+    public static bool IsTaskOneGeneric(this ITypeSymbol symbol) {
+
+        return symbol is INamedTypeSymbol {
+            MetadataName: "Task`1",
+            ContainingNamespace: { 
+                Name: "Tasks",
+                ContainingNamespace: {
+                    Name: "Threading",
+                    ContainingNamespace: {
+                        Name: "System",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
+                }
+            }
+        };
+
+    }
+
     public static bool IsProcedureWithTwoGenerics(this ITypeSymbol symbol) {
 
         return symbol is {

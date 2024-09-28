@@ -13,6 +13,12 @@ public partial class ProcessorGenerator {
             return [];
         }
 
+        return new EquatableArray<ProcedureInfo>(GetProcedures(attribute, token));
+
+    }
+
+    private static ProcedureInfo[] GetProcedures(AttributeData attribute, CancellationToken token) {
+
         if(attribute.ConstructorArguments is not [var arg] ||
             arg.Type is not IArrayTypeSymbol {
                 ElementType: {
@@ -51,21 +57,21 @@ public partial class ProcessorGenerator {
             token.ThrowIfCancellationRequested();
 
             var classInfo = ClassInfoBuilder.GetInfo(definition);
-            
+
             if(GetContraints(symbol) is not (true, string inputType, string outputType)) {
                 continue;
             }
 
             infos.Add(new ProcedureInfo(
-                classInfo, 
-                fullTypeName, 
+                classInfo,
+                fullTypeName,
                 fullTypeNameNoGenerics,
                 inputType,
                 outputType));
 
         }
 
-        return new EquatableArray<ProcedureInfo>([..infos]);
+        return [..infos];
 
     }
 
