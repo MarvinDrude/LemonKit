@@ -53,6 +53,10 @@ public sealed partial class ProcessorGenerator : IIncrementalGenerator {
         var procedureInfos = procedures
             .Combine(assemblyName);
 
+        var extensionInfos = processors.Collect()
+            .Combine(assemblyProcedures)
+            .Combine(assemblyName);
+
         context.RegisterSourceOutput(
             processorInfos,
             static (spc, node) => RenderProcessor(
@@ -65,6 +69,13 @@ public sealed partial class ProcessorGenerator : IIncrementalGenerator {
             static (spc, node) => RenderProcedure(
                 context: spc,
                 procedureInfo: node.Left));
+
+        context.RegisterSourceOutput(
+            extensionInfos,
+            static (spc, node) => RenderExtensions(
+                context: spc,
+                processors: node.Left.Left,
+                procedures: node.Left.Right));
 
     }
 

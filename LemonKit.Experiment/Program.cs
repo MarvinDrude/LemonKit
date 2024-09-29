@@ -6,16 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Test;
+using LemonKit.Extensions;
 
 [assembly: Procedures(
     typeof(LanguageProcedure<,>)
 )]
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddTransient<LanguageProcedure<HttpContext, SignInProcessor.Response>>();
-builder.Services.AddTransient<LanguageTwoProcedure<HttpContext, SignInProcessor.Response>>();
 
-builder.Services.AddSingleton<SignInProcessor>();
+builder.Services.AddKitProcessors();
 builder.Services.AddScoped<CurrentLanguage>();
 
 builder.Services.AddSingleton<IA, A>();

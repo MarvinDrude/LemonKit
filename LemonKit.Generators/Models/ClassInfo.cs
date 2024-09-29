@@ -7,6 +7,8 @@ internal readonly record struct ClassInfo {
     public readonly string? NameSpace;
     public readonly string Type;
 
+    public readonly string FullTypeName;
+
     public readonly bool IsStatic;
     public readonly bool IsSealed;
     public readonly bool IsInternal;
@@ -15,6 +17,7 @@ internal readonly record struct ClassInfo {
         string name,
         string? nameSpace,
         string type,
+        string fullTypeName,
         bool isStatic,
         bool isSealed,
         bool isInternal) {
@@ -22,6 +25,7 @@ internal readonly record struct ClassInfo {
         Name = name;
         NameSpace = nameSpace;
         Type = type;
+        FullTypeName = fullTypeName;
 
         IsStatic = isStatic;
         IsSealed = isSealed;
@@ -52,6 +56,7 @@ internal static class ClassInfoBuilder {
             name,
             nameSpace,
             type,
+            symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             isStatic,
             isSealed,
             isInternal);
