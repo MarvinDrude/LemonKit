@@ -10,15 +10,18 @@ public partial class ProcessorGenerator {
         public readonly string Type;
         public readonly string TypeNoGenerics;
 
-        public readonly string InputType;
-        public readonly string OutputType;
+        public readonly string? InputType;
+        public readonly string? OutputType;
+
+        public readonly EquatableArray<ParameterInfo> ConstructorParameters;
 
         public ProcedureInfo(
             ClassInfo classInfo,
             string type,
             string typeNoGenerics,
-            string inputType,
-            string outputType) {
+            string? inputType,
+            string? outputType,
+            ParameterInfo[] constructorParams) {
 
             ClassInfo = classInfo;
 
@@ -27,6 +30,8 @@ public partial class ProcessorGenerator {
 
             InputType = inputType;
             OutputType = outputType;
+
+            ConstructorParameters = new EquatableArray<ParameterInfo>(constructorParams);
 
         }
 

@@ -37,7 +37,7 @@ public partial class ProcessorGenerator {
 
         foreach(var constant in arg.Values) {
 
-            if(constant.Value is not INamedTypeSymbol { IsUnboundGenericType: false } symbol) {
+            if(constant.Value is not INamedTypeSymbol { IsUnboundGenericType: true } symbol) {
                 continue;
             }
 
@@ -45,20 +45,24 @@ public partial class ProcessorGenerator {
                 continue;
             }
 
-            if(!symbol.IsProcedure()) {
+            if(!definition.IsProcedure()) {
                 continue;
             }
 
             token.ThrowIfCancellationRequested();
 
-            var fullTypeName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            var fullTypeNameNoGenerics = symbol.OriginalDefinition.ToDisplayString(DisplayFormats.NonGenericFullFormat);
+            var fullTypeName = definition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var fullTypeNameNoGenerics = definition.OriginalDefinition.ToDisplayString(DisplayFormats.NonGenericFullFormat);
 
             token.ThrowIfCancellationRequested();
 
             var classInfo = ClassInfoBuilder.GetInfo(definition);
 
-            if(GetContraints(symbol) is not (true, string inputType, string outputType)) {
+            if(GetContraints(definition) is not (true, var inputType, var outputType)) {
+                continue;
+            }
+
+            if(definition.Constructors is not [var constructor]) {
                 continue;
             }
 
@@ -67,7 +71,8 @@ public partial class ProcessorGenerator {
                 fullTypeName,
                 fullTypeNameNoGenerics,
                 inputType,
-                outputType));
+                outputType,
+                constructor.Parameters.GetParameterInfos()));
 
         }
 
@@ -110,7 +115,98 @@ public partial class ProcessorGenerator {
         GeneratorAttributeSyntaxContext context,
         CancellationToken token) {
 
+        token.ThrowIfCancellationRequested();
 
+        var symbol = (INamedTypeSymbol)context.TargetSymbol;
+        var classInfo = ClassInfoBuilder.GetInfo(symbol);
+
+        token.ThrowIfCancellationRequested();
+
+        if(symbol.ContainingType is not null) {
+            return null;
+        }
+
+        if(symbol.GetMembers()
+            .OfType<IMethodSymbol>()
+            .Where(static method => !method.IsStatic)
+            .Where(static method => method.Name is "Execute")
+            .ToList() is not [var execute]) {
+            return null;
+        }
+
+        if(execute.Parameters is { Length: 0 }) {
+            return null;
+        }
+
+        if(execute.ReturnsVoid) {
+            return null;
+        }
+
+        token.ThrowIfCancellationRequested();
+
+        var parameters = execute.Parameters.GetParameterInfos();
+        token.ThrowIfCancellationRequested();
+
+        ParameterInfo? inputParameter = null;
+
+        foreach(var parameter in parameters) {
+            foreach(var attr in parameter.Attributes) {
+                if(attr.FullName is "global::LemonKit.Processors.Attributes.InputAttribute") {
+                    inputParameter = parameter;
+                    break;
+                }
+            }
+            if(inputParameter is { }) {
+                break;
+            }
+        }
+
+        if(inputParameter is not { } input) {
+            return null;
+        }
+
+        token.ThrowIfCancellationRequested();
+        var originInput = execute.Parameters[input.Index];
+        var inputType = originInput.Type.GetRTypeInfo();
+
+        token.ThrowIfCancellationRequested();
+
+        if(execute.GetTaskInnerReturnType() is not { } outputSymbol) {
+            return null;
+        }
+
+        var outputType = outputSymbol.GetRTypeInfo();
+        token.ThrowIfCancellationRequested();
+
+        AttributeData? attrProcedure = null;
+
+        foreach(var attribute in symbol.GetAttributes()) {
+
+            if(attribute.AttributeClass is not { } attrClass) {
+                continue;
+            }
+
+            switch(attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)) {
+
+                case "global::LemonKit.Processors.Attributes.ProcedureAttribute":
+                    attrProcedure = attribute;
+                    break;
+
+            }
+
+        }
+
+        if(attrProcedure is not { } processor) {
+            return null;
+        }
+
+        token.ThrowIfCancellationRequested();
+
+        return new ProcedureClassInfo(
+            classInfo,
+            inputType,
+            outputType,
+            parameters);
 
     }
 

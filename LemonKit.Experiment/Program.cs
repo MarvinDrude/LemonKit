@@ -12,24 +12,36 @@ using Test;
 )]
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<A>();
+builder.Services.AddTransient<LanguageProcedure<HttpContext, SignInProcessor.Response>>();
+builder.Services.AddTransient<LanguageTwoProcedure<HttpContext, SignInProcessor.Response>>();
+
+builder.Services.AddSingleton<SignInProcessor>();
+builder.Services.AddScoped<CurrentLanguage>();
+
+builder.Services.AddSingleton<IA, A>();
 
 var app = builder.Build();
 
-app.MapGet("/test", (IServiceProvider provider) => {
-    return provider.GetRequiredService<A>().Guid;
-});
+var procTest = app.Services.GetRequiredService<SignInProcessor>();
+
+app.MapGet("/test", procTest.BuildProcess(app.Services));
 
 app.Run();
 
 
 namespace Test {
 
-    public class A {
+    public class A : IA {
 
         public Guid Guid = Guid.NewGuid();
 
     }
+
+    public interface IA {
+
+    }
+
+    public class B { }
 
     [Procedure()]
     public sealed partial class LanguageProcedure<TInput, TOutput>
@@ -39,42 +51,67 @@ namespace Test {
         private readonly ILogger<LanguageProcedure<TInput, TOutput>> _Logger;
 
         public LanguageProcedure(
-            ILogger<LanguageProcedure<TInput, TOutput>> logger) {
+            ILogger<LanguageProcedure<TInput, TOutput>> logger,
+            IA a) {
 
             _Logger = logger;
 
         }
 
         public async Task<TOutput> Execute(
-            TInput request, 
+            [Input] TInput request, 
             CurrentLanguage currentLanuage,
+            IServiceProvider serviceProvider,
             CancellationToken cancellationToken) {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            
+            Console.WriteLine("A");
 
-            var response = await Next(request, cancellationToken);
+            var response = await Next(request, serviceProvider, cancellationToken);
             return response;
 
         }
 
-        public override async Task<TOutput> Process(
-            TInput request, 
-            IServiceProvider serviceProvider, 
+    }
+
+    [Procedure()]
+    public sealed partial class LanguageTwoProcedure<TInput, TOutput>
+        : Procedure<TInput, TOutput>
+        where TInput : HttpContext {
+
+        private readonly ILogger<LanguageTwoProcedure<TInput, TOutput>> _Logger;
+
+        public LanguageTwoProcedure(
+            ILogger<LanguageTwoProcedure<TInput, TOutput>> logger) {
+
+            _Logger = logger;
+
+        }
+
+        public async Task<TOutput> Execute(
+            [Input] TInput request,
+            CurrentLanguage currentLanuage,
+            IServiceProvider serviceProvider,
             CancellationToken cancellationToken) {
 
-            var currentLanguage = serviceProvider.GetRequiredService<CurrentLanguage>();
+            cancellationToken.ThrowIfCancellationRequested();
 
-            return await Execute(request, currentLanguage, cancellationToken);
+            Console.WriteLine("B");
+            currentLanuage.Code = "ba";
+
+            var response = await Next(request, serviceProvider, cancellationToken);
+            return response;
 
         }
 
     }
 
     [Processor()]
-    public sealed partial class SignInProcessor 
-        : IProcessor<HttpContext, SignInProcessor.Response> {
+    [Procedures(
+        typeof(LanguageTwoProcedure<,>)    
+    )]
+    public sealed partial class SignInProcessor {
 
         private readonly ILogger<SignInProcessor> _Logger;
 
@@ -92,19 +129,9 @@ namespace Test {
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            Console.WriteLine("C: " + currentLanuage.Code);
 
             return new Response();
-
-        }
-
-        public async Task<Response> Process(
-            HttpContext request, 
-            IServiceProvider serviceProvider, 
-            CancellationToken cancellationToken) {
-
-            var currentLanguage = serviceProvider.GetRequiredService<CurrentLanguage>();
-
-            return await Execute(request, currentLanguage, cancellationToken);
 
         }
 

@@ -5,10 +5,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+		<NoWarn>CS1998</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\LemonKit.Generators\LemonKit.Generators.csproj" />
+        <ProjectReference Include="..\LemonKit.Generators\LemonKit.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\LemonKit\LemonKit.csproj" />
     </ItemGroup>
 

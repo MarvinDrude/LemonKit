@@ -1,6 +1,4 @@
 ﻿
-using System;
-
 namespace LemonKit.Generators.Processors;
 
 public partial class ProcessorGenerator {
@@ -103,9 +101,7 @@ public partial class ProcessorGenerator {
         ProcedureInfo[]? procedures = null;
 
         if(attrProcedures is not null) {
-
-            
-
+            procedures = GetProcedures(attrProcedures, token);
         }
 
         return new ProcessorInfo(

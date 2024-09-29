@@ -15,4 +15,6 @@ public interface IProcessor<TInput, TOutput> {
     /// <returns></returns>
     public Task<TOutput> Process(TInput request, IServiceProvider serviceProvider, CancellationToken cancellationToken = default);
 
+    public Func<TInput, IServiceProvider, CancellationToken, Task<TOutput>> BuildProcess(IServiceProvider serviceProvider);
+
 }

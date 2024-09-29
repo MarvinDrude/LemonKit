@@ -6,11 +6,11 @@ public sealed partial class ProcessorGenerator : IIncrementalGenerator {
 
     public void Initialize(IncrementalGeneratorInitializationContext context) {
 
-        //#if DEBUG
-        //        if(!Debugger.IsAttached) {
-        //            Debugger.Launch();
-        //        }
-        //#endif
+//#if DEBUG
+//        if(!Debugger.IsAttached) {
+//            Debugger.Launch();
+//        }
+//#endif
 
         var assemblyName = context.CompilationProvider
             .Select(static (c, _) => c.AssemblyName!
@@ -34,7 +34,8 @@ public sealed partial class ProcessorGenerator : IIncrementalGenerator {
                 transform: TransformProcedures
             )
             .Where(static e => e is not null)
-            .Select(static (x, _) => x!);
+            .Select(static (x, _) => x!)
+            .Collect();
 
         var procedures = context.SyntaxProvider
             .ForAttributeWithMetadataName(
@@ -45,7 +46,25 @@ public sealed partial class ProcessorGenerator : IIncrementalGenerator {
             .Where(static e => e is not null)
             .Select(static (x, _) => x!);
 
+        var processorInfos = processors
+            .Combine(assemblyName)
+            .Combine(assemblyProcedures);
 
+        var procedureInfos = procedures
+            .Combine(assemblyName);
+
+        context.RegisterSourceOutput(
+            processorInfos,
+            static (spc, node) => RenderProcessor(
+                context: spc,
+                processorInfo: node.Left.Left,
+                assemblyProcedureInfos: node.Right));
+
+        context.RegisterSourceOutput(
+            procedureInfos,
+            static (spc, node) => RenderProcedure(
+                context: spc,
+                procedureInfo: node.Left));
 
     }
 
