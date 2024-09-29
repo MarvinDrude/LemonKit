@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Test;
 using LemonKit.Extensions;
+using LemonKit.Processors.Apis;
+using System.Text;
 
 [assembly: Procedures(
     typeof(LanguageProcedure<,>)
@@ -17,13 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddKitProcessors();
 builder.Services.AddScoped<CurrentLanguage>();
 
-builder.Services.AddSingleton<IA, A>();
-
 var app = builder.Build();
+app.UseKitProcessorEndpoints();
 
-var procTest = app.Services.GetRequiredService<SignInProcessor>();
-
-app.MapGet("/test", procTest.BuildProcess(app.Services));
+Console.WriteLine(app.Services.DisplayPipelines());
 
 app.Run();
 
@@ -50,8 +49,7 @@ namespace Test {
         private readonly ILogger<LanguageProcedure<TInput, TOutput>> _Logger;
 
         public LanguageProcedure(
-            ILogger<LanguageProcedure<TInput, TOutput>> logger,
-            IA a) {
+            ILogger<LanguageProcedure<TInput, TOutput>> logger) {
 
             _Logger = logger;
 
@@ -107,6 +105,7 @@ namespace Test {
     }
 
     [Processor()]
+    [GetEndpoint("/testa")]
     [Procedures(
         typeof(LanguageTwoProcedure<,>)    
     )]

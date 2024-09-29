@@ -49,13 +49,16 @@ public partial class ProcessorGenerator {
         public readonly EquatableArray<ProcedureInfo>? Procedures;
         public readonly EquatableArray<ParameterInfo> Parameters;
 
+        public readonly ProcessorApiInfo? ApiInfo;
+
         public ProcessorInfo(
             ClassInfo classInfo,
             RTypeInfo inputType,
             RTypeInfo outputType,
             bool useAssemblyProcedures,
             ProcedureInfo[]? procedures,
-            ParameterInfo[] parameters) {
+            ParameterInfo[] parameters,
+            ProcessorApiInfo? apiInfo) {
 
             ClassInfo = classInfo;
 
@@ -66,6 +69,38 @@ public partial class ProcessorGenerator {
 
             Procedures = procedures != null ? new EquatableArray<ProcedureInfo>(procedures) : null;
             Parameters = new EquatableArray<ParameterInfo>(parameters);
+
+            ApiInfo = apiInfo;
+
+        }
+
+    }
+
+    private readonly record struct ProcessorApiInfo {
+
+        public readonly string HttpMethod;
+        public readonly string Path;
+
+        public readonly bool AllowAnonymous;
+        public readonly bool Authorize;
+        public readonly bool HasConfigure;
+        public readonly string? AuthorizePolicy;
+
+        public ProcessorApiInfo(
+            string httpMethod,
+            string path,
+            bool allowAnonymous,
+            bool authorize,
+            string? authPolicy,
+            bool hasConfigure) {
+
+            HttpMethod = httpMethod;
+            Path = path;
+            HasConfigure = hasConfigure;
+
+            AllowAnonymous = allowAnonymous;
+            Authorize = authorize;
+            AuthorizePolicy = authPolicy;
 
         }
 

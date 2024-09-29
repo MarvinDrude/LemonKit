@@ -1,4 +1,6 @@
 ﻿
+using System.Net;
+
 namespace LemonKit.Generators.Processors;
 
 public partial class ProcessorGenerator {
@@ -40,8 +42,13 @@ public partial class ProcessorGenerator {
 
         cw.WriteLine($"using System;");
         cw.WriteLine($"using System.Threading;");
+        cw.WriteLine($"using System.Text;");
         cw.WriteLine($"using LemonKit.Processors;");
         cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
+
+        if(processor.ApiInfo is not null) {
+            cw.WriteLine($"using Microsoft.AspNetCore.Builder;");
+        }
 
         if(processor.ClassInfo.NameSpace is { } nameSpace) {
 
@@ -125,6 +132,49 @@ public partial class ProcessorGenerator {
         cw.WriteLine();
         cw.DownIndent();
         cw.WriteLine($"}}");
+
+        cw.WriteLine();
+        cw.WriteLine($"public static string DisplayPipeline() {{");
+        cw.UpIndent();
+        cw.WriteLine();
+
+        cw.WriteLine($"var sb = new StringBuilder();");
+        cw.WriteLine($"sb.AppendLine(\"{processor.ClassInfo.Name}\");");
+        cw.WriteLine();
+
+        foreach(var proc in procs) {
+
+            cw.WriteLine($"sb.AppendLine(\"-> {proc.ClassInfo.Name}\");");
+
+        }
+
+        cw.WriteLine();
+        cw.WriteLine($"return sb.ToString();");
+
+        cw.WriteLine();
+        cw.DownIndent();
+        cw.WriteLine($"}}");
+
+        if(processor.ApiInfo is { } api) {
+
+            cw.WriteLine();
+            cw.WriteLine($"public static void UseMinimalEndpoint(WebApplication app) {{");
+            cw.UpIndent();
+            cw.WriteLine();
+
+            cw.WriteLine($"var service = app.Services.GetRequiredService<{processor.ClassInfo.FullTypeName}>();");
+            cw.WriteLine($"var endpoint = app.Map{api.HttpMethod.LowerCapitalize()}(\"{api.Path}\", service.BuildProcess(app.Services));");
+
+            cw.WriteLine();
+            cw.WriteLineIf(api.HasConfigure, $"service.Configure(endpoint);");
+            cw.WriteLineIf(api.AllowAnonymous, $"_ = endpoint.AllowAnonymous();");
+            cw.WriteLineIf(api.Authorize, $"_ = endpoint.RequireAuthorization({(!string.IsNullOrEmpty(api.AuthorizePolicy) ? $"\"{api.AuthorizePolicy}\"" : string.Empty)});");
+
+            cw.WriteLine();
+            cw.DownIndent();
+            cw.WriteLine($"}}");
+
+        }
 
         cw.WriteLine();
         cw.DownIndent();

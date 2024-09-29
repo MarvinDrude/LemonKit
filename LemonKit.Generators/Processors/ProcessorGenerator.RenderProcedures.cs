@@ -95,6 +95,7 @@ public partial class ProcessorGenerator {
 
         cw.WriteLine($"using System;");
         cw.WriteLine($"using System.Threading;");
+        cw.WriteLine($"using System.Text;");
         cw.WriteLine($"using LemonKit.Processors;");
         cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
 
@@ -110,6 +111,7 @@ public partial class ProcessorGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
+        List<ProcessorInfo> apis = [];
         foreach(var processorInfo in processors) {
 
             if(processorInfo is not { } processor) {
@@ -117,6 +119,10 @@ public partial class ProcessorGenerator {
             }
 
             cw.WriteLine($"collection.AddSingleton<{processor.ClassInfo.FullTypeName}>();");
+
+            if(processor.ApiInfo is not null) {
+                apis.Add(processor);
+            }
 
         }
 
@@ -128,11 +134,94 @@ public partial class ProcessorGenerator {
         cw.WriteLine($"}}");
 
         cw.WriteLine();
+        cw.WriteLine($"public static string DisplayPipelines(this IServiceProvider serviceProvider) {{");
+        cw.UpIndent();
+        cw.WriteLine();
+
+        cw.WriteLine($"var sb = new StringBuilder();");
+
+        foreach(var processorInfo in processors) {
+
+            if(processorInfo is not { } processor) {
+                continue;
+            }
+
+            cw.WriteLine($"sb.Append({processor.ClassInfo.FullTypeName}.DisplayPipeline());");
+            cw.WriteLine($"sb.AppendLine();");
+            cw.WriteLine();
+
+        }
+
+        cw.WriteLine();
+        cw.WriteLine($"return sb.ToString();");
+
+        cw.WriteLine();
+        cw.DownIndent();
+        cw.WriteLine($"}}");
+
+        cw.WriteLine();
         cw.DownIndent();
         cw.WriteLine($"}}");
 
         token.ThrowIfCancellationRequested();
         context.AddSource($"{"LemonKit.Extensions"}.{"IServiceCollectionExtensions"}.g.cs", cw.ToString());
+
+        if(apis is { Count: > 0 }) {
+            RenderApiExtensions(context, apis, token);
+        } else {
+            context.AddSource($"{"LemonKit.Extensions"}.{"WebApplicationExtensions"}.g.cs", string.Empty);
+        }
+
+    }
+
+    private static void RenderApiExtensions(
+        SourceProductionContext context,
+        List<ProcessorInfo> processors,
+        CancellationToken token) {
+
+        using var cw = new CodeWriter();
+
+        cw.WriteLine("#nullable enable");
+        cw.WriteLine();
+
+        cw.WriteLine($"using System;");
+        cw.WriteLine($"using System.Threading;");
+        cw.WriteLine($"using LemonKit.Processors;");
+        cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
+        cw.WriteLine($"using Microsoft.AspNetCore.Builder;");
+
+        cw.WriteLine();
+        cw.WriteLine($"namespace LemonKit.Extensions;");
+        cw.WriteLine();
+
+        cw.WriteLine($"public static class WebApplicationExtensions {{");
+        cw.UpIndent();
+        cw.WriteLine();
+
+        cw.WriteLine($"public static void UseKitProcessorEndpoints(this WebApplication app) {{");
+        cw.UpIndent();
+        cw.WriteLine();
+
+        foreach(var processor in processors) {
+
+            if(processor.ApiInfo is not { }) {
+                continue;
+            }
+
+            cw.WriteLine($"{processor.ClassInfo.FullTypeName}.UseMinimalEndpoint(app);");
+
+        }
+
+        cw.WriteLine();
+        cw.DownIndent();
+        cw.WriteLine($"}}");
+
+        cw.WriteLine();
+        cw.DownIndent();
+        cw.WriteLine($"}}");
+
+        token.ThrowIfCancellationRequested();
+        context.AddSource($"{"LemonKit.Extensions"}.{"WebApplicationExtensions"}.g.cs", cw.ToString());
 
     }
 

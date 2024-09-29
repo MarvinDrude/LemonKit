@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.CodeAnalysis;
+
 namespace LemonKit.Generators.Processors;
 
 public partial class ProcessorGenerator {
@@ -70,10 +72,11 @@ public partial class ProcessorGenerator {
         var outputType = outputSymbol.GetRTypeInfo();
         token.ThrowIfCancellationRequested();
 
+        var attributes = symbol.GetAttributes();
         AttributeData? attrProcessor = null;
         AttributeData? attrProcedures = null;
 
-        foreach(var attribute in symbol.GetAttributes()) {
+        foreach(var attribute in attributes) {
 
             if(attribute.AttributeClass is not { } attrClass) {
                 continue;
@@ -110,8 +113,167 @@ public partial class ProcessorGenerator {
             outputType,
             useAssemblyProcedures,
             procedures,
-            parameters);
+            parameters,
+            GetApiInfo(attributes, symbol));
 
     }
+
+    private static ProcessorApiInfo? GetApiInfo(
+        ImmutableArray<AttributeData> attributes,
+        INamedTypeSymbol symbol) {
+
+        if(GetEndpointAttribute(attributes) is not { } attribute) {
+            return null;
+        }
+
+        if(attribute.ConstructorArguments.FirstOrDefault().Value is not string path) {
+            return null;
+        }
+
+        var allowAnonymous = attributes.Any(attr => IsAspNetAllowAnonymous(attr.AttributeClass));
+        var authorize = attributes.FirstOrDefault(attr => IsAspNetAuthorize(attr.AttributeClass));
+
+        bool isAuthorize = authorize != null;
+        string policy = string.Empty;
+
+        if(authorize is not null) {
+
+            if(authorize.ConstructorArguments.Length > 0) {
+
+                policy = (string)authorize.ConstructorArguments[0].Value!;
+
+            } else if(authorize.NamedArguments.Length > 0) {
+
+                foreach(var arg in authorize.NamedArguments) {
+
+                    if(arg.Key != "Policy") {
+                        return null;
+                    }
+
+                    if(arg.Value.Value is not string pol) {
+                        return null;
+                    }
+
+                    policy = pol;
+
+                }
+
+            }
+
+        }
+
+        if(GetHttpMethod(attribute) is not { } httpMethod) {
+            return null;
+        }
+
+        bool hasConfigure = HasConfigureMethod(symbol);
+
+        return new ProcessorApiInfo(
+            httpMethod,
+            path,
+            allowAnonymous,
+            isAuthorize,
+            policy,
+            hasConfigure);
+
+    }
+
+    private static bool HasConfigureMethod(INamedTypeSymbol symbol) {
+
+        return symbol.GetMembers()
+            .OfType<IMethodSymbol>()
+            .Any(method => method is {
+                Name: "Configure",
+                IsStatic: false,
+                Parameters: [{ Type: { } paramType }]
+            }
+            && paramType is {
+                Name: "IEndpointConventionBuilder",
+                ContainingNamespace: {
+                    Name: "Builder",
+                    ContainingNamespace: {
+                        Name: "AspNetCore",
+                        ContainingNamespace: {
+                            Name: "Microsoft",
+                            ContainingNamespace.IsGlobalNamespace: true,
+                        },
+                    },
+                },
+            });
+
+    }
+
+    private static string? GetHttpMethod(AttributeData attribute) {
+
+        if(attribute.ConstructorArguments is not { Length: >= 2 }) {
+            return null;
+        }
+
+        return attribute
+            .ConstructorArguments[1]
+            .Value!.ToString();
+
+    }
+
+    private static AttributeData? GetEndpointAttribute(ImmutableArray<AttributeData> attributes) {
+
+        return attributes.FirstOrDefault(attr => IsEndpointAttribute(attr.AttributeClass));
+
+    }
+
+    private static bool IsEndpointAttribute(ITypeSymbol? symbol) {
+
+        return HttpMethods.Any(method => IsEndpointAttribute(symbol, method));
+
+    }
+
+    private static bool IsEndpointAttribute(ITypeSymbol? symbol, string method) {
+
+        return symbol is { }
+            && symbol.Name == $"{method}EndpointAttribute"
+            && symbol.ContainingNamespace is {
+                Name: "Apis",
+                ContainingNamespace: {
+                    Name: "Processors",
+                    ContainingNamespace: {
+                        Name: "LemonKit",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
+                }
+            };
+
+    }
+
+    private static bool IsAspNetAuthorize(ITypeSymbol? symbol) {
+
+        return symbol is { Name: "AuthorizeAttribute" }
+            && IsAspNetAuthorizationAttribute(symbol);
+
+    }
+
+    private static bool IsAspNetAllowAnonymous(ITypeSymbol? symbol) {
+
+        return symbol is { Name: "AllowAnonymousAttribute" }
+            && IsAspNetAuthorizationAttribute(symbol);
+
+    }
+
+    private static bool IsAspNetAuthorizationAttribute(ITypeSymbol? symbol) {
+
+        return symbol is { }
+            && symbol.ContainingNamespace is {
+                Name: "Authorization",
+                ContainingNamespace: {
+                    Name: "AspNetCore",
+                    ContainingNamespace: {
+                        Name: "Microsoft",
+                        ContainingNamespace.IsGlobalNamespace: true,
+                    },
+                },
+            };
+
+    }
+
+    private static readonly string[] HttpMethods = ["Get", "Post", "Put", "Patch", "Delete"];
 
 }
