@@ -26,6 +26,7 @@ global using LemonKit.Processors.Apis;
 
 global using LemonKit.Validation;
 global using LemonKit.Validation.Attributes;
+global using LemonKit.Extensions;
 
 global using LemonKit.SimpleDemo.Models;
 global using LemonKit.SimpleDemo.Settings;

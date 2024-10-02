@@ -60,7 +60,7 @@ public sealed partial class CreatePetEndpoint {
     public sealed class Request {
 
         [Contains(["#000000"])]
-        public List<string> Colors { get; set; }
+        public required List<string> Colors { get; set; }
 
     }
 

@@ -12,11 +12,11 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
     //options.SerializerOptions.TypeInfoResolver = JsonMainContext.Default;
 });
 
+builder.Services.AddKitProcessors();
+
 var app = builder.Build();
 app.UseHttpsRedirection();
 
-app.MapGet("/weatherforecast", () => {
-
-});
+app.UseKitProcessorEndpoints();
 
 app.Run();
