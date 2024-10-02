@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Test;
 using LemonKit.Extensions;
 using LemonKit.Processors.Apis;
-using System.Text;
 
 [assembly: Procedures(
     typeof(LanguageProcedure<,>)
@@ -17,6 +16,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddKitProcessors();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<CurrentLanguage>();
 
 var app = builder.Build();
@@ -29,17 +30,7 @@ app.Run();
 
 namespace Test {
 
-    public class A : IA {
 
-        public Guid Guid = Guid.NewGuid();
-
-    }
-
-    public interface IA {
-
-    }
-
-    public class B { }
 
     [Procedure()]
     public sealed partial class LanguageProcedure<TInput, TOutput>
@@ -127,11 +118,18 @@ namespace Test {
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            LogTest();
+
             Console.WriteLine("C: " + currentLanuage.Code);
 
             return new Response();
 
         }
+
+        public void Configure(IEndpointConventionBuilder endpoint) =>
+            endpoint
+                .WithDisplayName("CreateCard")
+                .WithDescription("Creates a new card with given properties");
 
         public sealed class Request {
 
@@ -139,17 +137,25 @@ namespace Test {
 
         }
 
-        public sealed class Response {
+        public sealed class Response : ResponseBase {
 
 
 
         }
+
+        [LoggerMessage(0, LogLevel.Information, "Here is a test log")]
+        partial void LogTest();
 
     }
 
     public sealed class CurrentLanguage {
 
         public required string Code { get; set; }
+
+    }
+
+
+    public class Module {
 
     }
 

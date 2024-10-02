@@ -19,3 +19,6 @@ global using LemonKit.Settings.Providers;
 
 global using LemonKit.Processors.Attributes;
 global using LemonKit.Processors;
+
+global using LemonKit.Validation;
+global using LemonKit.Validation.Attributes;
