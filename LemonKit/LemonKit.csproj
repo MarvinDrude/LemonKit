@@ -11,6 +11,10 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Extensions\" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<Title>LemonKit</Title>
 		<Description>Useful common kit for a modern c# backend.</Description>

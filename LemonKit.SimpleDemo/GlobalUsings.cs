@@ -13,7 +13,6 @@ global using System.Reflection;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
-global using Microsoft.AspNetCore.Http;
 
 global using LemonKit.Settings;
 global using LemonKit.Settings.Attributes;
@@ -27,3 +26,6 @@ global using LemonKit.Processors.Apis;
 
 global using LemonKit.Validation;
 global using LemonKit.Validation.Attributes;
+
+global using LemonKit.SimpleDemo.Models;
+global using LemonKit.SimpleDemo.Settings;

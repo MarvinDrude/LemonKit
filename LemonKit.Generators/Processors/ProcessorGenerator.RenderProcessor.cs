@@ -85,6 +85,14 @@ public partial class ProcessorGenerator {
                 parameterNames.Add("request");
                 continue;
             }
+            if(parameter.Type is "global::Microsoft.AspNetCore.Http.HttpContext") {
+
+                cw.WriteLine($"var param_{parameter.Name} = serviceProvider.GetRequiredService<Microsoft.AspNetCore.Http.IHttpContextAccessor>().HttpContext!;");
+                parameterNames.Add($"param_{parameter.Name}");
+
+                continue;
+
+            }
 
             cw.WriteLine($"var param_{parameter.Name} = serviceProvider.GetRequiredService<{parameter.Type}>();");
             parameterNames.Add($"param_{parameter.Name}");

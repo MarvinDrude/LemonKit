@@ -1,0 +1,5 @@
+{
+  "MaxPetsInDatabase": 40,
+  "MinPetNameLength": 2,
+  "MaxPetNameLength": 200
+}

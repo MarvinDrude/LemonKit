@@ -23,10 +23,5 @@ public static class ValidationDefaultCodes {
     public const string ErrorContains = "E_MUST_CONTAIN:{ToString}";
     public const string ErrorNotContains = "E_MUST_NOT_CONTAIN:{ToString}";
 
-    public const string ErrorOneOf = "E_MUST_ONE_OF:{ToString}";
-    public const string ErrorNotOneOf = "E_MUST_NOT_ONE_OF:{ToString}";
-
-    public const string ErrorEmail = "E_MUST_EMAIL";
-
 }
 
