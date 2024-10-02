@@ -7,6 +7,9 @@ global using System.Diagnostics.CodeAnalysis;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Buffers;
+global using System.Runtime.CompilerServices;
+global using System.Numerics;
+global using System.Reflection;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;

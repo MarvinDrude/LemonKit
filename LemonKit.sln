@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LemonKit.Generators", "Lemo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments", "{CFBF232D-99C1-4CC6-ADD0-D20DBB16B6E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LemonKit.Experiment", "LemonKit.Experiment\LemonKit.Experiment.csproj", "{183F5AD8-3D96-464A-853E-4395D154F35E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LemonKit.Experiment", "LemonKit.Experiment\LemonKit.Experiment.csproj", "{183F5AD8-3D96-464A-853E-4395D154F35E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C4B19C75-8F15-4751-8902-37668AD71A61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
