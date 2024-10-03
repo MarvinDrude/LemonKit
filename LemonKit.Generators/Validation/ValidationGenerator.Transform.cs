@@ -21,6 +21,7 @@ internal sealed partial class ValidationGenerator {
         }
 
         bool hasExtraValidateMethod = extraParameters != null;
+        string validatorName = GetValidatorName(symbol);
 
         token.ThrowIfCancellationRequested();
         
@@ -28,8 +29,24 @@ internal sealed partial class ValidationGenerator {
             classInfo,
             hasExtraValidateMethod,
             symbol.IsReferenceType,
+            validatorName,
             extraParameters,
             GetProperties(symbol, token));
+
+    }
+
+    private static string GetValidatorName(INamedTypeSymbol symbol) {
+
+        StringBuilder sb = new();
+        sb.Append(symbol.Name);
+
+        while(symbol.ContainingType is { } containing) {
+
+            sb.Append(containing.OriginalDefinition.Name);
+
+        }
+
+        return sb.ToString();
 
     }
 
@@ -151,6 +168,7 @@ internal sealed partial class ValidationGenerator {
         bool isService = false;
         string? serviceTypeFullName = null;
         string[]? servicePath = null;
+        List<ConstructorArgInfo> args = [];
 
         if(attribute.ConstructorArguments is [{
             Type: INamedTypeSymbol {
@@ -189,6 +207,20 @@ internal sealed partial class ValidationGenerator {
 
             servicePath = [..serviceAccessPath];
 
+        } else {
+
+            var arguments = attribute.ConstructorArguments;
+
+            foreach(var argument in arguments) {
+
+                if(GetArgValue(argument) is not { } constArg) {
+                    return null;
+                }
+
+                args.Add(constArg);
+
+            }
+
         }
 
         List<ValidateParameterInfo> parameterInfos = [];
@@ -207,7 +239,15 @@ internal sealed partial class ValidationGenerator {
             serviceTypeFullName,
             servicePath,
             [..parameterInfos],
+            [..args],
             errorCode);
+
+    }
+
+    private static ConstructorArgInfo? GetArgValue(TypedConstant constant) {
+
+        return new ConstructorArgInfo(
+            constant.GetAsString());
 
     }
 

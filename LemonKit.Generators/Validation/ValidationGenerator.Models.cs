@@ -10,6 +10,8 @@ internal sealed partial class ValidationGenerator {
         public readonly bool HasExtraValidateMethod;
         public readonly bool IsReferenceType;
 
+        public readonly string ValidatorName;
+
         public readonly EquatableArray<ParameterInfo>? ExtraValidateParameters;
         public readonly EquatableArray<ValidationPropertyInfo> Properties;
 
@@ -17,6 +19,7 @@ internal sealed partial class ValidationGenerator {
             ClassInfo classInfo,
             bool hasExtraValidateMethod,
             bool isReferenceType,
+            string validatorName,
             ParameterInfo[]? extraParameters,
             ValidationPropertyInfo[] properties) {
 
@@ -24,6 +27,8 @@ internal sealed partial class ValidationGenerator {
 
             HasExtraValidateMethod = hasExtraValidateMethod;
             IsReferenceType = isReferenceType;
+
+            ValidatorName = validatorName;
 
             ExtraValidateParameters = extraParameters is not null ? new EquatableArray<ParameterInfo>(extraParameters) : null;
             Properties = new EquatableArray<ValidationPropertyInfo>(properties);
@@ -77,6 +82,7 @@ internal sealed partial class ValidationGenerator {
         public readonly EquatableArray<string>? ServicePath;
 
         public readonly EquatableArray<ValidateParameterInfo> Parameters;
+        public readonly EquatableArray<ConstructorArgInfo> ConstructorArgs;
         public readonly string ErrorCode;
 
         public ValidatePropertyInfo(
@@ -86,6 +92,7 @@ internal sealed partial class ValidationGenerator {
             string? serviceTypeFullName,
             string[]? servicePath,
             ValidateParameterInfo[] parameters,
+            ConstructorArgInfo[] constructorArgs,
             string errorCode) {
 
             IsGenericMethod = isGenericMethod;
@@ -96,6 +103,8 @@ internal sealed partial class ValidationGenerator {
             ServicePath = servicePath != null ? new EquatableArray<string>(servicePath) : null;
 
             Parameters = new EquatableArray<ValidateParameterInfo>(parameters);
+            ConstructorArgs = new EquatableArray<ConstructorArgInfo>(constructorArgs);
+
             ErrorCode = errorCode;
 
         }
@@ -113,6 +122,19 @@ internal sealed partial class ValidationGenerator {
 
             Name = name;
             FullTypeName = fullTypeName;
+
+        }
+
+    }
+
+    private readonly record struct ConstructorArgInfo {
+
+        public readonly string Value;
+
+        public ConstructorArgInfo(
+            string value) {
+
+            Value = value;
 
         }
 

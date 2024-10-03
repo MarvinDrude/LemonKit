@@ -36,11 +36,36 @@ internal sealed partial class ValidationGenerator {
         }
         cw.WriteLine();
 
-        cw.WriteLine($"public sealed class Validator : IValidate<{validation.ClassInfo.FullTypeName}> {{");
+        cw.WriteLine($"public sealed class {validation.ValidatorName}Validator : IValidate<{validation.ClassInfo.FullTypeName}> {{");
         cw.UpIndent();
         cw.WriteLine();
 
 
+
+        cw.WriteLine($"public ValidationResult Validate({validation.ClassInfo.FullTypeName}? input) {{");
+        cw.UpIndent();
+        cw.WriteLine();
+
+        cw.WriteLine($"var result = new ValidationResult();");
+        cw.WriteLine();
+
+        foreach(var property in validation.Properties) {
+
+            if(property.Validations.Count is 0) {
+                continue;
+            }
+
+            foreach(var validate in property.Validations) {
+
+                RenderValidation(cw, property, validate);
+
+            }
+
+        }
+
+        cw.WriteLine();
+        cw.DownIndent();
+        cw.WriteLine($"}}");
 
         cw.WriteLine();
         cw.DownIndent();
@@ -48,6 +73,27 @@ internal sealed partial class ValidationGenerator {
 
         token.ThrowIfCancellationRequested();
         context.AddSource($"{validation.ClassInfo.NameSpace ?? "Global"}.{validation.ClassInfo.Name}.g.cs", cw.ToString());
+
+    }
+
+    private static void RenderValidation(
+        CodeWriter cw,
+        ValidationPropertyInfo property,
+        ValidatePropertyInfo validate) {
+
+        string parametersString = property.ValidationTypeFullName switch {
+
+            "global::LemonKit.Validation.Attributes.MinLengthAttribute" => RenderMinLength(property, validate),
+            _ => string.Empty
+
+        };
+
+        cw.WriteLine($"if(!{property.ValidationTypeFullName}.Validate) {{");
+
+
+
+        cw.WriteLine($"}}");
+        cw.WriteLine();
 
     }
 
