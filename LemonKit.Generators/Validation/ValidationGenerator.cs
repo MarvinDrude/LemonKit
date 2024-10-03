@@ -39,7 +39,11 @@ internal sealed partial class ValidationGenerator : IIncrementalGenerator {
                 context: spc,
                 validationInfo: node.Left));
 
-
+        context.RegisterSourceOutput(
+            extensionInfos,
+            static (spc, node) => RenderExtensions(
+                context: spc,
+                validationInfos: node.Left));
 
     }
 

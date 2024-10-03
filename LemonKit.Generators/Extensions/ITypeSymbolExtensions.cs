@@ -89,4 +89,79 @@ internal static class ITypeSymbolExtensions {
 
     }
 
+    public static IEnumerable<ISymbol> GetMembersWithBase(this ITypeSymbol symbol) {
+
+        if(symbol is { TypeKind: TypeKind.Interface }) {
+
+            return symbol.AllInterfaces
+                .SelectMany(x => x.GetMembers())
+                .Concat(symbol.GetMembers());
+
+        }
+
+        return symbol
+            .GetBaseTypesWithSelf()
+            .SelectMany(x => x.GetMembers());
+
+    }
+
+    public static IEnumerable<ITypeSymbol> GetBaseTypesWithSelf(this ITypeSymbol symbol) {
+
+        ITypeSymbol? current = symbol;
+
+        while(current is not null) {
+
+            yield return current;
+            current = current.BaseType;
+
+        }
+
+    }
+
+    public static bool ImplementsValidationAttribute(this INamedTypeSymbol symbol) {
+
+        return symbol.IsValidationAttribute() 
+            || (symbol.BaseType is not null && ImplementsValidationAttribute(symbol.BaseType.OriginalDefinition));
+
+    }
+
+    public static bool IsValidationAttribute(this INamedTypeSymbol symbol) {
+
+        return symbol is INamedTypeSymbol {
+            Name: "ValidationAttribute",
+            ContainingNamespace: {
+                Name: "Attributes",
+                ContainingNamespace: {
+                    Name: "Validation",
+                    ContainingNamespace: {
+                        Name: "LemonKit",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
+                }
+            }
+        };
+
+    }
+
+    public static bool IsValidationResult(this INamedTypeSymbol symbol) {
+
+        return symbol is INamedTypeSymbol {
+            Name: "ValidationResult",
+            ContainingNamespace: {
+            Name: "Validation",
+                ContainingNamespace: {
+                    Name: "LemonKit",
+                    ContainingNamespace.IsGlobalNamespace: true
+                }
+            }
+        };
+
+    }
+
+    public static bool IsNullableType(this ITypeSymbol symbol) {
+
+        return symbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
+
+    }
+
 }
