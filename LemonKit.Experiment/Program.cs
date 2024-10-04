@@ -29,21 +29,23 @@ app.UseKitProcessorEndpoints();
 
 var validate = app.Services.GetRequiredService<IValidate<TestValidation>>();
 var result = validate.Validate(new TestValidation() {
-    Contains = ["a"],
-    NotContains = ["a"],
+    Contains = ["a", "b", "c", "d"],
+    NotContains = ["a", "b", "c", "d"],
     Enum = TestValidationEnum.B,
     Empty = [],
-    Equal = 20,
-    GreaterThan = 30,
-    GreaterThanOrEqual = 30,
+    Equal = 2,
+    GreaterThan = 21,
+    GreaterThanOrEqual = 20,
     LessThan = 10,
-    LessThanOrEqual = 30,
+    LessThanOrEqual = 10,
     MaxLength = "adsa",
     MinLength = new Dictionary<string, string>() {
-        ["adsa"] = "a"
+        ["adsa"] = "a",
+        ["adsa1"] = "a",
+        ["adsa2"] = "a"
     },
-    NotEmpty = [],
-    NotEqual = "bb"
+    NotEmpty = ["dsadsa"],
+    NotEqual = "bba"
 });
 
 Console.WriteLine(app.Services.DisplayPipelines());
@@ -57,18 +59,34 @@ namespace Test {
     public sealed class TestValidation {
 
         [Contains(["a", "b"])]
+        [Contains(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.Contains)]
+        )]
         public required List<string> Contains { get; set; }
 
-        [NotContains(["a", "b"])]
+        [NotContains(["g", "h"])]
+        [NotContains(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.NotContains)]
+        )]
         public required List<string> NotContains { get; set; }
 
         [EnumValue]
         public required TestValidationEnum Enum { get; set; }
 
         [Equal(2)]
+        [Equal(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.Equal)]
+        )]
         public required int Equal { get; set; }
 
         [NotEqual("test")]
+        [NotEqual(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.NotEqual)]
+        )]
         public required string NotEqual { get; set; }
 
         [Empty]
@@ -78,28 +96,79 @@ namespace Test {
         public required string[] NotEmpty { get; set; }
 
         [GreaterThan(20d)]
+        [GreaterThan(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.GreaterThan)]
+        )]
         public required double GreaterThan { get; set; }
 
         [GreaterThanOrEqual(20d)]
+        [GreaterThanOrEqual(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.GreaterThanOrEqual)]
+        )]
         public required double GreaterThanOrEqual { get; set; }
 
         [LessThan(20f)]
+        [LessThan(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.LessThan)]
+        )]
         public required float LessThan { get; set; }
 
         [LessThanOrEqual(20f)]
+        [LessThanOrEqual(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.LessThanOrEqual)]
+        )]
         public required float LessThanOrEqual { get; set; }
 
         [MaxLength(20)]
+        [MaxLength(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.MaxLength)]
+        )]
         public required string MaxLength { get; set; }
 
         [MinLength(2)]
+        [MinLength(
+            typeof(TestValidationHelper),
+            [nameof(TestValidationHelper.MinLength)]
+        )]
         public required Dictionary<string, string> MinLength { get; set; }
+
+        public static void ExtraValidate(
+            ValidationResult result,
+            TestValidation input,
+            IServiceProvider provider) {
+
+            
+
+        }
 
     }
 
     public sealed class TestValidationHelper {
 
+        public object[] Contains { get; set; } = ["c", "d"];
 
+        public object[] NotContains { get; set; } = ["g", "j"];
+
+        public int Equal { get; set; } = 2;
+
+        public string NotEqual { get; set; } = "bb";
+
+        public int GreaterThan { get; set; } = 20;
+
+        public int GreaterThanOrEqual { get; set; } = 20;
+
+        public int LessThan { get; set; } = 20;
+
+        public int LessThanOrEqual { get; set; } = 20;
+
+        public int MaxLength { get; set; } = 200;
+
+        public int MinLength { get; set; } = 3;
 
     }
 

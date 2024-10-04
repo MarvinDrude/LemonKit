@@ -30,3 +30,4 @@ global using LemonKit.Extensions;
 
 global using LemonKit.SimpleDemo.Models;
 global using LemonKit.SimpleDemo.Settings;
+global using LemonKit.SimpleDemo.Validation;
