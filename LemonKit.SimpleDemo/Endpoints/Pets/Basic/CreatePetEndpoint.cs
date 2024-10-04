@@ -59,8 +59,33 @@ public sealed partial class CreatePetEndpoint {
     [Validate]
     public sealed class Request {
 
-        [Contains(["#000000"])]
+        [MinLength(2)]
         public required List<string> Colors { get; set; }
+
+        [MinLength(
+            typeof(SettingsContainer<MainSettings>),
+            [nameof(SettingsContainer<MainSettings>.Current), nameof(MainSettings.PetSettings), nameof(JsonPetsSettings.MinPetNameLength)]
+        )]
+        [MaxLength(
+            typeof(SettingsContainer<MainSettings>),
+            [nameof(SettingsContainer<MainSettings>.Current), nameof(MainSettings.PetSettings), nameof(JsonPetsSettings.MaxPetNameLength)]
+        )]
+        public required string Name { get; set; }
+
+
+
+        /// <summary>
+        /// If you need more than the attributes, additional logic can go in here.
+        /// All parameters beside <see cref="ValidationResult"/> and <see cref="Request"/> are taken from ServiceProviders (only singletons should be injected)
+        /// </summary>
+        public static void ExtraValidate(
+            ValidationResult result,
+            Request input,
+            SettingsContainer<MainSettings> settings) {
+
+
+
+        }
 
     }
 

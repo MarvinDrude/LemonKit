@@ -13,6 +13,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 });
 
 builder.Services.AddKitProcessors();
+builder.Services.AddKitValidators();
 
 var app = builder.Build();
 app.UseHttpsRedirection();

@@ -13,6 +13,12 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// </summary>
     private readonly T[]? _array;
 
+    public T? this[int index] {
+        get {
+            return _array is null ? default : _array[index];
+        }
+    }
+
     /// <summary>
     /// Creates a new <see cref="EquatableArray{T}"/> instance.
     /// </summary>

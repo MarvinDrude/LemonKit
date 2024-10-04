@@ -43,6 +43,7 @@ internal sealed partial class ValidationGenerator {
         while(symbol.ContainingType is { } containing) {
 
             sb.Append(containing.OriginalDefinition.Name);
+            symbol = symbol.ContainingType;
 
         }
 
@@ -74,6 +75,7 @@ internal sealed partial class ValidationGenerator {
 
             if(GetPropertyValidation(
                 property.Name, 
+                property,
                 property.Type, 
                 property.NullableAnnotation,
                 token) is not { } target) {
@@ -94,9 +96,9 @@ internal sealed partial class ValidationGenerator {
     }
 
     private static ValidationPropertyInfo? GetPropertyValidation(
-        string name, ITypeSymbol type, NullableAnnotation nullable, CancellationToken token) {
+        string name, IPropertySymbol property, ITypeSymbol type, NullableAnnotation nullable, CancellationToken token) {
 
-        var attributes = type.GetAttributes();
+        var attributes = property.GetAttributes();
         var isReferenceType = type.IsReferenceType;
         var isNullable = isReferenceType ? nullable is NullableAnnotation.Annotated : type.IsNullableType();
 
@@ -192,7 +194,7 @@ internal sealed partial class ValidationGenerator {
             }
 
             isService = true;
-            serviceTypeFullName = definition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            serviceTypeFullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             List<string> serviceAccessPath = [];
 
             foreach(var pathValue in servicePathArg.Values) {
@@ -240,7 +242,8 @@ internal sealed partial class ValidationGenerator {
             servicePath,
             [..parameterInfos],
             [..args],
-            errorCode);
+            errorCode,
+            ClassInfoBuilder.GetInfo(attrClass));
 
     }
 

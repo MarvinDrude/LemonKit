@@ -85,6 +85,8 @@ internal sealed partial class ValidationGenerator {
         public readonly EquatableArray<ConstructorArgInfo> ConstructorArgs;
         public readonly string ErrorCode;
 
+        public readonly ClassInfo ClassInfo;
+
         public ValidatePropertyInfo(
             bool isGenericMethod,
             bool isNullable,
@@ -93,7 +95,10 @@ internal sealed partial class ValidationGenerator {
             string[]? servicePath,
             ValidateParameterInfo[] parameters,
             ConstructorArgInfo[] constructorArgs,
-            string errorCode) {
+            string errorCode,
+            ClassInfo classInfo) {
+
+            ClassInfo = classInfo;
 
             IsGenericMethod = isGenericMethod;
             IsNullable = isNullable;
@@ -137,6 +142,14 @@ internal sealed partial class ValidationGenerator {
             Value = value;
 
         }
+
+    }
+
+    private sealed class ServiceRegistration {
+
+        public required string InstanceName { get; set; }
+
+        public required string ParameterName { get; set; }
 
     }
 

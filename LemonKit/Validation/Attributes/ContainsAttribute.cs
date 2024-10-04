@@ -4,7 +4,7 @@ using System.Collections;
 namespace LemonKit.Validation.Attributes;
 
 /// <summary>
-/// Marks a property that the collection should contain all the provided values
+/// Marks a property that the collection should atleast contain all the provided values
 /// </summary>
 public sealed class ContainsAttribute : ValidationAttribute {
 

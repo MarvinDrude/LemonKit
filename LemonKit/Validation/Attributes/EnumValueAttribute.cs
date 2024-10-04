@@ -28,7 +28,7 @@ public sealed class EnumValueAttribute : ValidationAttribute {
 
     }
 
-    public static string TemplateError<T>(string errorCodeTemplate) {
+    public static string TemplateError(string errorCodeTemplate) {
 
         return errorCodeTemplate;
 

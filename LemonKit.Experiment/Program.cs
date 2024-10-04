@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Test;
 using LemonKit.Extensions;
 using LemonKit.Processors.Apis;
+using LemonKit.Validation.Attributes;
+using LemonKit.Validation;
 
 [assembly: Procedures(
     typeof(LanguageProcedure<,>)
@@ -16,12 +18,33 @@ using LemonKit.Processors.Apis;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddKitProcessors();
+builder.Services.AddKitValidators();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<CurrentLanguage>();
+builder.Services.AddSingleton<TestValidationHelper>();
 
 var app = builder.Build();
 app.UseKitProcessorEndpoints();
+
+var validate = app.Services.GetRequiredService<IValidate<TestValidation>>();
+var result = validate.Validate(new TestValidation() {
+    Contains = ["a"],
+    NotContains = ["a"],
+    Enum = TestValidationEnum.B,
+    Empty = [],
+    Equal = 20,
+    GreaterThan = 30,
+    GreaterThanOrEqual = 30,
+    LessThan = 10,
+    LessThanOrEqual = 30,
+    MaxLength = "adsa",
+    MinLength = new Dictionary<string, string>() {
+        ["adsa"] = "a"
+    },
+    NotEmpty = [],
+    NotEqual = "bb"
+});
 
 Console.WriteLine(app.Services.DisplayPipelines());
 
@@ -30,7 +53,62 @@ app.Run();
 
 namespace Test {
 
+    [Validate]
+    public sealed class TestValidation {
 
+        [Contains(["a", "b"])]
+        public required List<string> Contains { get; set; }
+
+        [NotContains(["a", "b"])]
+        public required List<string> NotContains { get; set; }
+
+        [EnumValue]
+        public required TestValidationEnum Enum { get; set; }
+
+        [Equal(2)]
+        public required int Equal { get; set; }
+
+        [NotEqual("test")]
+        public required string NotEqual { get; set; }
+
+        [Empty]
+        public required string[] Empty { get; set; }
+
+        [NotEmpty]
+        public required string[] NotEmpty { get; set; }
+
+        [GreaterThan(20d)]
+        public required double GreaterThan { get; set; }
+
+        [GreaterThanOrEqual(20d)]
+        public required double GreaterThanOrEqual { get; set; }
+
+        [LessThan(20f)]
+        public required float LessThan { get; set; }
+
+        [LessThanOrEqual(20f)]
+        public required float LessThanOrEqual { get; set; }
+
+        [MaxLength(20)]
+        public required string MaxLength { get; set; }
+
+        [MinLength(2)]
+        public required Dictionary<string, string> MinLength { get; set; }
+
+    }
+
+    public sealed class TestValidationHelper {
+
+
+
+    }
+
+    public enum TestValidationEnum {
+
+        A = 1,
+        B = 2
+
+    }
 
     [Procedure()]
     public sealed partial class LanguageProcedure<TInput, TOutput>
