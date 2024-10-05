@@ -6,6 +6,9 @@ public sealed partial class MainSettings : ISettings {
     [EnvironmentVariable("ASPNETCORE_ENVIRONMENT")]
     public required string AspNetEnvironment { get; set; }
 
+    [EnvironmentVariable("DB_CONNECTION_STRING")]
+    public required string DatabaseConnectionString { get; set; }
+
     [JsonFile("petSettings.json")]
     public required JsonPetsSettings PetSettings { get; set; }
 

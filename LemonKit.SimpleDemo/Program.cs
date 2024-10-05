@@ -1,3 +1,4 @@
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
@@ -14,6 +15,13 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 
 builder.Services.AddKitProcessors();
 builder.Services.AddKitValidators();
+
+builder.Services.AddDbContext<MainDbContext>((serviceProvider, dbBuilder) => {
+
+    var settings = serviceProvider.GetRequiredService<SettingsContainer<MainSettings>>();
+    dbBuilder.UseNpgsql(settings.Current.DatabaseConnectionString);
+
+});
 
 builder.AddOpenTelemetrySample();
 

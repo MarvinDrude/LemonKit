@@ -1,0 +1,10 @@
+dotnet tool install --global dotnet-ef
+
+Powershell
+$env:DB_CONNECTION_STRING = 'Server=localhost;Port=5432;Database=pet_database;User ID=user;Password=password;'
+
+dotnet ef migrations add Init
+
+dotnet ef database update
+
+AsNoTacking()

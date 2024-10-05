@@ -15,6 +15,7 @@ global using System.Diagnostics.Metrics;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.EntityFrameworkCore;
 
 global using LemonKit.Settings;
 global using LemonKit.Settings.Attributes;
@@ -40,3 +41,6 @@ global using LemonKit.SimpleDemo.Models;
 global using LemonKit.SimpleDemo.Settings;
 global using LemonKit.SimpleDemo.Validation;
 global using LemonKit.SimpleDemo.Extensions;
+
+global using LemonKit.SimpleDemo.Database;
+global using LemonKit.SimpleDemo.Database.Models;

@@ -127,6 +127,24 @@ public sealed partial class CreatePetEndpoint {
     }
 
     /// <summary>
+    /// Map request to a new pet model for the database
+    /// </summary>
+    public static class Mapper {
+
+        public static Pet ToPet(Request request) {
+
+            return new Pet() {
+                Id = Guid.NewGuid(),
+                Colors = request.Colors,
+                Height = request.Height,
+                Name = request.Name
+            };
+
+        }
+
+    }
+
+    /// <summary>
     /// Response that is sent as json to client
     /// </summary>
     public sealed class Response : ResponseBase {
