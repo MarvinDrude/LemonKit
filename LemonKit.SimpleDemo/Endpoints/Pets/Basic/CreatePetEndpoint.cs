@@ -6,7 +6,25 @@ namespace LemonKit.SimpleDemo.Endpoints.Pets.Basic;
 /// </summary>
 [Processor]
 [PostEndpoint("/api/pets/create")]
+[Observe(
+    activitySourceName: "CreatePetEndpoint.Activity",
+    meterName: "CreatePetEndpoint.Meter"
+)]
 public sealed partial class CreatePetEndpoint {
+
+    /// <summary>
+    /// Counter to track pet creations
+    /// </summary>
+    private static readonly Counter<long> _CreationCounter;
+
+    /// <summary>
+    /// Counters need to be defined in static constructor, to make sure that it is ran after the partial static fields in other partials
+    /// </summary>
+    static CreatePetEndpoint() {
+
+        _CreationCounter = _Meter.CreateCounter<long>("Pet.Creation");
+
+    }
 
     /// <summary>
     /// Default logger
@@ -24,7 +42,7 @@ public sealed partial class CreatePetEndpoint {
     private readonly SettingsContainer<MainSettings> _MainSettings;
 
     /// <summary>
-    /// Shortcut to use always newest pet settings of main settings
+    /// Shortcut to always use newest pet settings of main settings
     /// </summary>
     private JsonPetsSettings _PetSettings => _MainSettings.Current.PetSettings;
 
@@ -48,6 +66,8 @@ public sealed partial class CreatePetEndpoint {
         HttpContext context,
         CancellationToken cancellationToken) {
 
+        using var activity = StartActivity(); // providing no name will default to ClassName.MethodName
+
         if(cancellationToken.IsCancellationRequested) { // request already aborted? early exit
             LogCancel();
             return ResponseBase
@@ -64,14 +84,15 @@ public sealed partial class CreatePetEndpoint {
 
 
 
+        _CreationCounter.Add(1);
         return new Response();
 
     }
 
     [Validate] // generates a class that implements IValidate<Request> and is registered with AddKitValidators to services
-    public sealed class Request {
+    public sealed class Request : RequestBase {
 
-        [MinLength(2)] // use validate attributes with constant values
+        [MinLength(1)] // use validate attributes with constant values
         public required List<string> Colors { get; set; }
 
         [MinLength( // use validate attributes with values based on services available in IServiceProvider
@@ -84,7 +105,9 @@ public sealed partial class CreatePetEndpoint {
         )]
         public required string Name { get; set; }
 
-
+        [GreaterThanOrEqual(1)]
+        [LessThan(1800)]
+        public required float Height { get; set; }
 
         /// <summary>
         /// If you need more than the attributes, additional logic can go in here. (usually if there is more sophisticated validation needed)

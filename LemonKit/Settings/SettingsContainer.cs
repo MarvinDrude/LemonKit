@@ -63,7 +63,7 @@ public sealed class SettingsContainer<TOptions> : ISettingsContainer
             tasks.Add(_EnvironmentProvider.Reload());
         }
 
-        foreach(var (key, fileProvider) in _FileProviders) {
+        foreach(var (_, fileProvider) in _FileProviders) {
             tasks.Add(fileProvider.Reload());
         }
 

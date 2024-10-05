@@ -10,6 +10,8 @@ global using System.Buffers;
 global using System.Runtime.CompilerServices;
 global using System.Numerics;
 global using System.Reflection;
+global using System.Diagnostics;
+global using System.Diagnostics.Metrics;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
@@ -27,3 +29,6 @@ global using LemonKit.Processors.Apis;
 
 global using LemonKit.Validation;
 global using LemonKit.Validation.Attributes;
+
+global using LemonKit.Observe.Attributes;
+global using LemonKit.Observe;
