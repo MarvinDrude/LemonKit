@@ -32,6 +32,8 @@ global using LemonKit.Validation.Attributes;
 global using LemonKit.Observe.Attributes;
 global using LemonKit.Observe;
 
+global using LemonKit.Results;
+
 global using LemonKit.Extensions;
 
 global using LemonKit.SimpleDemo.Models;

@@ -10,6 +10,7 @@ using LemonKit.Extensions;
 using LemonKit.Processors.Apis;
 using LemonKit.Validation.Attributes;
 using LemonKit.Validation;
+using LemonKit.Results;
 
 [assembly: Procedures(
     typeof(LanguageProcedure<,>)
@@ -27,26 +28,27 @@ builder.Services.AddSingleton<TestValidationHelper>();
 var app = builder.Build();
 app.UseKitProcessorEndpoints();
 
-var validate = app.Services.GetRequiredService<IValidate<TestValidation>>();
-var result = validate.Validate(new TestValidation() {
-    Contains = ["a", "b", "c", "d"],
-    NotContains = ["a", "b", "c", "d"],
-    Enum = TestValidationEnum.B,
-    Empty = [],
-    Equal = 2,
-    GreaterThan = 21,
-    GreaterThanOrEqual = 20,
-    LessThan = 10,
-    LessThanOrEqual = 10,
-    MaxLength = "adsa",
-    MinLength = new Dictionary<string, string>() {
-        ["adsa"] = "a",
-        ["adsa1"] = "a",
-        ["adsa2"] = "a"
-    },
-    NotEmpty = ["dsadsa"],
-    NotEqual = "bba"
-});
+//var validate = app.Services.GetRequiredService<IValidate<TestValidation>>();
+//var result = validate.Validate(new TestValidation() {
+//    Contains = ["a", "b", "c", "d"],
+//    NotContains = ["a", "b", "c", "d"],
+//    Enum = TestValidationEnum.B,
+//    Empty = [],
+//    Equal = 2,
+//    GreaterThan = 21,
+//    GreaterThanOrEqual = 20,
+//    LessThan = 10,
+//    LessThanOrEqual = 10,
+//    MaxLength = "adsa",
+//    MinLength = new Dictionary<string, string>() {
+//        ["adsa"] = "a",
+//        ["adsa1"] = "a",
+//        ["adsa2"] = "a"
+//    },
+//    NotEmpty = ["dsadsa"],
+//    NotEqual = "bba"
+//});
+
 
 Console.WriteLine(app.Services.DisplayPipelines());
 

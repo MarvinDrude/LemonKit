@@ -18,7 +18,7 @@ public sealed partial class CreatePetEndpoint {
     private static readonly Counter<long> _CreationCounter;
 
     /// <summary>
-    /// Counters need to be defined in static constructor, to make sure that it is ran after the partial static fields in other partials
+    /// Counters need to be defined in static constructor, to make sure that it is ran after the partial static field initializers in other partials
     /// </summary>
     static CreatePetEndpoint() {
 

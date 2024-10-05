@@ -15,7 +15,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 builder.Services.AddKitProcessors();
 builder.Services.AddKitValidators();
 
-
+builder.AddOpenTelemetrySample();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
