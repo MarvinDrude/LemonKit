@@ -34,3 +34,5 @@ global using LemonKit.Results;
 
 global using LemonKit.Observe.Attributes;
 global using LemonKit.Observe;
+
+global using LemonKit.Services.Attributes;

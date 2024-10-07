@@ -35,6 +35,8 @@ global using LemonKit.Observe;
 
 global using LemonKit.Results;
 
+global using LemonKit.Services.Attributes;
+
 global using LemonKit.Extensions;
 
 global using LemonKit.SimpleDemo.Models;
@@ -44,3 +46,5 @@ global using LemonKit.SimpleDemo.Extensions;
 
 global using LemonKit.SimpleDemo.Database;
 global using LemonKit.SimpleDemo.Database.Models;
+global using LemonKit.SimpleDemo.Database.Concrete.Pets;
+global using LemonKit.SimpleDemo.Database.Interfaces.Pets;
