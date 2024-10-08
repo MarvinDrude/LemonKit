@@ -53,42 +53,40 @@ public class ResponseBase {
     /// Should be returned if the request was cancelled
     /// </summary>
     /// <returns></returns>
-    public static T CreateCancelledResponse<T>()
+    public static T CreateCancelledResponse<T>(T instance)
         where T : ResponseBase {
 
-        return (T)new ResponseBase() {
-            Code = 400,
-            ErrorMessage = "[ABORT] Request was cancelled."
-        };
+        instance.Code = 400;
+        instance.ErrorMessage = "[ABORT] Request was cancelled.";
+
+        return instance;
 
     }
 
     /// <summary>
     /// Should be returned if the validator returned false for given request data
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T CreateInvalidRequest<T>(Dictionary<string, string[]>? errorCodes = null)
+    public static T CreateInvalidRequest<T>(T instance, Dictionary<string, string[]>? errorCodes = null)
         where T : ResponseBase {
 
-        return (T)new ResponseBase() {
-            Code = 400,
-            ErrorMessage = "[INVALID] Request data is not valid.",
-            ErrorCodes = errorCodes
-        };
+        instance.Code = 400;
+        instance.ErrorMessage = "[INVALID] Request data is not valid.";
+        instance.ErrorCodes = errorCodes;
+
+        return instance;
 
     }
 
     /// <summary>
     /// Should be returned if the validator returned false for given request data
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="result"></param>
     /// <returns></returns>
-    public static T CreateInvalidRequest<T>(ValidationResult result)
+    public static T CreateInvalidRequest<T>(T instance, ValidationResult result)
         where T : ResponseBase {
 
-        return CreateInvalidRequest<T>(result.MaterializedErrorCodes);
+        return CreateInvalidRequest<T>(instance, result.MaterializedErrorCodes);
 
     }
 

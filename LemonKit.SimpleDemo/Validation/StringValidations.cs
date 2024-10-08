@@ -18,7 +18,7 @@ public static class StringValidations {
             return false;
         }
 
-        return !str.Any(x => !Uri.IsHexDigit(x));
+        return !str[1..].Any(x => !Uri.IsHexDigit(x));
 
     }
 

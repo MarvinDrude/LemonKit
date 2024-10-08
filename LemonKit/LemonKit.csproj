@@ -15,6 +15,7 @@
 	<ItemGroup>
 	  <Folder Include="Common\" />
 	  <Folder Include="Extensions\" />
+	  <Folder Include="Database\" />
 	</ItemGroup>
 
 	<PropertyGroup>

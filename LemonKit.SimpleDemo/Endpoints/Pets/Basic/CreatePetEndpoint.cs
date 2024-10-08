@@ -64,6 +64,7 @@ public sealed partial class CreatePetEndpoint {
     public async Task<Response> Execute(
         [Input] Request request,
         HttpContext context,
+        IPetService petService,
         CancellationToken cancellationToken) {
 
         using var activity = StartActivity(); // providing no name will default to ClassName.MethodName
@@ -71,21 +72,23 @@ public sealed partial class CreatePetEndpoint {
         if(cancellationToken.IsCancellationRequested) { // request already aborted? early exit
             LogCancel();
             return ResponseBase
-                .CreateCancelledResponse<Response>() // creates a 400 code response with default message
+                .CreateCancelledResponse(new Response()) // creates a 400 code response with default message
                 .ApplyToContext<Response>(context); // applies code to http protocol
         }
 
         if(_Validator.Validate(request) is { IsValid: false } validation) { // request has invalid data
             LogInvalid(request);
             return ResponseBase
-                .CreateInvalidRequest<Response>(validation) // creates a 400 code response with validation errors (Response.ErrorCodes) as response and default message
+                .CreateInvalidRequest(new Response(), validation) // creates a 400 code response with validation errors (Response.ErrorCodes) as response and default message
                 .ApplyToContext<Response>(context); // applies code to http protocol
         }
 
-
-
+        await petService.Write.Create(Mapper.ToPet(request), cancellationToken);
         _CreationCounter.Add(1);
-        return new Response();
+
+        return new Response() {
+            Code = 200
+        };
 
     }
 

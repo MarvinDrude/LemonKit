@@ -2,6 +2,6 @@
 
 public partial interface IPetWriteModule {
 
-
+    public Task<Result<Pet, Exception>> Create(Pet pet, CancellationToken cancellationToken = default);
 
 }
