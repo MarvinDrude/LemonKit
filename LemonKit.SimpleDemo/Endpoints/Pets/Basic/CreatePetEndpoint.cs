@@ -85,7 +85,7 @@ public sealed partial class CreatePetEndpoint {
 
         await petService.Write.Create(Mapper.ToPet(request), cancellationToken);
         _CreationCounter.Add(1);
-
+        
         return new Response() {
             Code = 200
         };

@@ -18,6 +18,14 @@
 	  <Folder Include="Database\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="readme.md">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
 	<PropertyGroup>
 		<Title>LemonKit</Title>
 		<Description>Useful common kit for a modern c# backend.</Description>
