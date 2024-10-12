@@ -103,7 +103,7 @@ public partial class ProcessorGenerator {
         cw.WriteLine($"namespace LemonKit.Extensions;");
         cw.WriteLine();
 
-        cw.WriteLine($"public static class IServiceCollectionExtensions {{");
+        cw.WriteLine($"internal static class IServiceCollectionExtensions {{");
         cw.UpIndent();
         cw.WriteLine();
 

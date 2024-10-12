@@ -271,7 +271,7 @@ internal sealed partial class ValidationGenerator {
         cw.WriteLine($"namespace LemonKit.Extensions;");
         cw.WriteLine();
 
-        cw.WriteLine($"public static class IServiceCollectionValidationExtensions {{");
+        cw.WriteLine($"internal static class IServiceCollectionValidationExtensions {{");
         cw.UpIndent();
         cw.WriteLine();
 
