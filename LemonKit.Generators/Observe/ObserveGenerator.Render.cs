@@ -82,7 +82,8 @@ internal sealed partial class ObserveGenerator {
 
     private static void RenderContainer(
         SourceProductionContext context,
-        ImmutableArray<ObserveInfo?> observeInfos) {
+        ImmutableArray<ObserveInfo?> observeInfos,
+        string assemblyName) {
 
         var token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
@@ -96,7 +97,7 @@ internal sealed partial class ObserveGenerator {
         cw.WriteLine($"using System;");
         cw.WriteLine();
 
-        cw.WriteLine($"namespace LemonKit.Observe;");
+        cw.WriteLine($"namespace LemonKit.Observe.{assemblyName};");
         cw.WriteLine();
 
         cw.WriteLine($"public static class ObserveContainerExtensions {{");

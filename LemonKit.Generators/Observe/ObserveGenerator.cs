@@ -42,7 +42,8 @@ internal sealed partial class ObserveGenerator : IIncrementalGenerator {
             extensionInfos,
             static (spc, node) => RenderContainer(
                 context: spc,
-                observeInfos: node.Left));
+                observeInfos: node.Left,
+                assemblyName: node.Right));
 
 
     }
