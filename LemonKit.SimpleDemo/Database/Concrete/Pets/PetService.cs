@@ -2,7 +2,8 @@
 namespace LemonKit.SimpleDemo.Database.Concrete.Pets;
 
 [ModuleService]
-public sealed partial class PetService : IPetService {
+public sealed partial class PetService : IPetService
+{
 
     [ModuleProperty(typeof(PetReadModule))]
     public partial IPetReadModule Read { get; }
@@ -15,7 +16,8 @@ public sealed partial class PetService : IPetService {
 
     public PetService(
         ILogger<PetService> logger,
-        MainDbContext dbContext) {
+        MainDbContext dbContext)
+    {
 
         _Logger = logger;
         _DbContext = dbContext;

@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Generators.Models;
 
-internal readonly record struct ParameterInfo {
+internal readonly record struct ParameterInfo
+{
 
     public readonly string Name;
     public readonly string Type;
@@ -14,7 +15,8 @@ internal readonly record struct ParameterInfo {
         string name,
         string type,
         int index,
-        ParaAttributeInfo[] attributes) {
+        ParaAttributeInfo[] attributes)
+    {
 
         Name = name;
         Type = type;

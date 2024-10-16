@@ -1,16 +1,19 @@
 ﻿
 namespace LemonKit.Generators.Validation;
 
-internal sealed partial class ValidationGenerator {
+internal sealed partial class ValidationGenerator
+{
 
     private static void RenderValidate(
         SourceProductionContext context,
-        ValidationInfo? validationInfo) {
+        ValidationInfo? validationInfo)
+    {
 
         var token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
 
-        if(validationInfo is not { } validation) {
+        if(validationInfo is not { } validation)
+        {
             return;
         }
 
@@ -26,12 +29,15 @@ internal sealed partial class ValidationGenerator {
         cw.WriteLine($"using System.Threading;");
         cw.WriteLine($"using LemonKit.Validation;");
 
-        if(validation.ClassInfo.NameSpace is { } nameSpace) {
+        if(validation.ClassInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace}.{validation.ClassInfo.Name}Validation;");
 
-        } else {
+        }
+        else
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {validation.ClassInfo.Name}Validation;");
@@ -43,7 +49,8 @@ internal sealed partial class ValidationGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        foreach(var keypair in services) {
+        foreach(var keypair in services)
+        {
 
             cw.WriteLine($"private readonly {keypair.Key} {keypair.Value.InstanceName};");
 
@@ -60,7 +67,8 @@ internal sealed partial class ValidationGenerator {
         cw.WriteLine($") {{");
         cw.WriteLine();
 
-        foreach(var keypair in services) {
+        foreach(var keypair in services)
+        {
 
             cw.WriteLine($"{keypair.Value.InstanceName} = {keypair.Value.ParameterName};");
 
@@ -90,13 +98,16 @@ internal sealed partial class ValidationGenerator {
         cw.WriteLine($"}}");
         cw.WriteLine();
 
-        foreach(var property in validation.Properties) {
+        foreach(var property in validation.Properties)
+        {
 
-            if(property.Validations.Count is 0) {
+            if(property.Validations.Count is 0)
+            {
                 continue;
             }
 
-            foreach(var validate in property.Validations) {
+            foreach(var validate in property.Validations)
+            {
 
                 RenderValidation(cw, property, validate, services);
 
@@ -105,26 +116,31 @@ internal sealed partial class ValidationGenerator {
         }
 
         if(validation.HasExtraValidateMethod
-            && validation.ExtraValidateParameters is not null) {
+            && validation.ExtraValidateParameters is not null)
+        {
 
             cw.WriteLine($"{validation.ClassInfo.FullTypeName}.ExtraValidate(");
             cw.UpIndent();
 
-            for(int i = 0; i < validation.ExtraValidateParameters.Value.Count; i++) {
+            for(int i = 0; i < validation.ExtraValidateParameters.Value.Count; i++)
+            {
 
                 var parameter = validation.ExtraValidateParameters.Value[i];
                 var isLast = validation.ExtraValidateParameters.Value.Count - 1 == i;
                 var addition = isLast ? string.Empty : ",";
 
-                if(parameter.Type is "global::LemonKit.Validation.ValidationResult") {
+                if(parameter.Type is "global::LemonKit.Validation.ValidationResult")
+                {
                     cw.WriteLine($"result{addition}");
                     continue;
                 }
-                if(parameter.Type == validation.ClassInfo.FullTypeName) {
+                if(parameter.Type == validation.ClassInfo.FullTypeName)
+                {
                     cw.WriteLine($"input{addition}");
                     continue;
                 }
-                if(!services.TryGetValue(parameter.Type, out var registration)) {
+                if(!services.TryGetValue(parameter.Type, out var registration))
+                {
                     return; // something went wrong
                 }
                 cw.WriteLine($"{registration.InstanceName}{addition}");
@@ -156,9 +172,11 @@ internal sealed partial class ValidationGenerator {
         CodeWriter cw,
         ValidationPropertyInfo property,
         ValidatePropertyInfo validate,
-        Dictionary<string, ServiceRegistration> services) {
+        Dictionary<string, ServiceRegistration> services)
+    {
 
-        var (parametersString, errorParametersString) = validate.ClassInfo.FullTypeName switch {
+        var (parametersString, errorParametersString) = validate.ClassInfo.FullTypeName switch
+        {
 
             "global::LemonKit.Validation.Attributes.MinLengthAttribute" => RenderMinLength(property, validate, services),
             "global::LemonKit.Validation.Attributes.MaxLengthAttribute" => RenderMaxLength(property, validate, services),
@@ -190,27 +208,34 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private static Dictionary<string, ServiceRegistration> GetServices(ValidationInfo validation) {
+    private static Dictionary<string, ServiceRegistration> GetServices(ValidationInfo validation)
+    {
 
         Dictionary<string, ServiceRegistration> result = [];
         int count = 0;
 
-        if(validation.HasExtraValidateMethod 
-            && validation.ExtraValidateParameters is not null) {
+        if(validation.HasExtraValidateMethod
+            && validation.ExtraValidateParameters is not null)
+        {
 
-            foreach(var parameter in validation.ExtraValidateParameters) {
+            foreach(var parameter in validation.ExtraValidateParameters)
+            {
 
-                if(parameter.Type is "global::LemonKit.Validation.ValidationResult") {
+                if(parameter.Type is "global::LemonKit.Validation.ValidationResult")
+                {
                     continue;
                 }
-                if(parameter.Type == validation.ClassInfo.FullTypeName) {
+                if(parameter.Type == validation.ClassInfo.FullTypeName)
+                {
                     continue;
                 }
-                if(result.ContainsKey(parameter.Type)) {
+                if(result.ContainsKey(parameter.Type))
+                {
                     continue;
                 }
 
-                result[parameter.Type] = new ServiceRegistration() { 
+                result[parameter.Type] = new ServiceRegistration()
+                {
                     InstanceName = $"_Service{count}",
                     ParameterName = $"service{count}"
                 };
@@ -220,23 +245,29 @@ internal sealed partial class ValidationGenerator {
 
         }
 
-        foreach(var property in validation.Properties) {
+        foreach(var property in validation.Properties)
+        {
 
-            if(property.Validations.Count is 0) {
+            if(property.Validations.Count is 0)
+            {
                 continue;
             }
 
-            foreach(var validate in property.Validations) {
+            foreach(var validate in property.Validations)
+            {
 
-                if(!validate.IsService || validate.ServiceTypeFullName is null) {
+                if(!validate.IsService || validate.ServiceTypeFullName is null)
+                {
                     continue;
                 }
 
-                if(result.ContainsKey(validate.ServiceTypeFullName)) {
+                if(result.ContainsKey(validate.ServiceTypeFullName))
+                {
                     continue;
                 }
 
-                result[validate.ServiceTypeFullName] = new ServiceRegistration() {
+                result[validate.ServiceTypeFullName] = new ServiceRegistration()
+                {
                     InstanceName = $"_Service{count}",
                     ParameterName = $"service{count}"
                 };
@@ -252,7 +283,8 @@ internal sealed partial class ValidationGenerator {
 
     private static void RenderExtensions(
         SourceProductionContext context,
-        ImmutableArray<ValidationInfo?> validationInfos) {
+        ImmutableArray<ValidationInfo?> validationInfos)
+    {
 
         var token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
@@ -279,17 +311,22 @@ internal sealed partial class ValidationGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        foreach(var validationInfo in validationInfos) {
+        foreach(var validationInfo in validationInfos)
+        {
 
-            if(validationInfo is not { } validation) {
+            if(validationInfo is not { } validation)
+            {
                 continue;
             }
 
             string nameSpaceString;
 
-            if(validation.ClassInfo.NameSpace is { } nameSpace) {
+            if(validation.ClassInfo.NameSpace is { } nameSpace)
+            {
                 nameSpaceString = $"{nameSpace}.{validation.ClassInfo.Name}Validation";
-            } else {
+            }
+            else
+            {
                 nameSpaceString = $"{validation.ClassInfo.Name}Validation";
             }
 

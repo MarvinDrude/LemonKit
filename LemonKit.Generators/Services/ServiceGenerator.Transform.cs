@@ -1,11 +1,13 @@
 ﻿
 namespace LemonKit.Generators.Services;
 
-internal sealed partial class ServiceGenerator {
+internal sealed partial class ServiceGenerator
+{
 
     private static ServiceInfo? Transform(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -14,11 +16,13 @@ internal sealed partial class ServiceGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(symbol.InstanceConstructors is not [var constructor]) {
+        if(symbol.InstanceConstructors is not [var constructor])
+        {
             return null;
         }
 
-        if(symbol.Interfaces is not [var interfaceSymbol]) {
+        if(symbol.Interfaces is not [var interfaceSymbol])
+        {
             return null;
         }
 
@@ -30,7 +34,8 @@ internal sealed partial class ServiceGenerator {
         foreach(var field in symbol
             .GetMembers()
             .OfType<IFieldSymbol>()
-            .Where(x => x is { })) { // allow static ones, why not?
+            .Where(x => x is { }))
+        { // allow static ones, why not?
 
             fields.Add(new FieldInfo(
                 field.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
@@ -43,31 +48,39 @@ internal sealed partial class ServiceGenerator {
         foreach(var property in symbol
             .GetMembers()
             .OfType<IPropertySymbol>()
-            .Where(x => x is { 
+            .Where(x => x is
+            {
                 DeclaredAccessibility: Accessibility.Public,
                 IsStatic: false,
                 Name: not "EqualityContract",
-            })) { // allow static ones, why not?
+            }))
+        { // allow static ones, why not?
 
             if(property.Type.TypeKind is not TypeKind.Interface
-                || property.SetMethod is not null) {
+                || property.SetMethod is not null)
+            {
                 continue;
             }
 
-            if(GetPropertyAttribute(property.GetAttributes()) is not { } attr) {
+            if(GetPropertyAttribute(property.GetAttributes()) is not { } attr)
+            {
                 continue;
             }
 
-            if(attr.ConstructorArguments is not [{
-                Type: INamedTypeSymbol {
-                    Name: "Type",
-                    ContainingNamespace: {
-                        Name: "System",
-                        ContainingNamespace.IsGlobalNamespace: true
-                    }
-                },
-                Value: INamedTypeSymbol { } implArg
-            }]) {
+            if(attr.ConstructorArguments is not [
+                {
+                    Type: INamedTypeSymbol
+                    {
+                        Name: "Type",
+                        ContainingNamespace:
+                        {
+                            Name: "System",
+                            ContainingNamespace.IsGlobalNamespace: true
+                        }
+                    },
+                    Value: INamedTypeSymbol { } implArg
+                }])
+            {
                 continue;
             }
 
@@ -81,20 +94,25 @@ internal sealed partial class ServiceGenerator {
         return new ServiceInfo(
             classInfo,
             interfaceInfo,
-            [..fields],
-            [..modules]);
+            [.. fields],
+            [.. modules]);
 
     }
 
-    private static AttributeData? GetPropertyAttribute(ImmutableArray<AttributeData> attributes) {
+    private static AttributeData? GetPropertyAttribute(ImmutableArray<AttributeData> attributes)
+    {
 
-        return attributes.FirstOrDefault(x => x.AttributeClass is {
+        return attributes.FirstOrDefault(x => x.AttributeClass is
+        {
             Name: "ModulePropertyAttribute",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Attributes",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Services",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "LemonKit",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
@@ -106,7 +124,8 @@ internal sealed partial class ServiceGenerator {
 
     private static ModuleInfo? TransformModule(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -115,11 +134,13 @@ internal sealed partial class ServiceGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(symbol.InstanceConstructors is not [var constructor]) {
+        if(symbol.InstanceConstructors is not [var constructor])
+        {
             return null;
         }
 
-        if(symbol.Interfaces is not [var interfaceSymbol]) {
+        if(symbol.Interfaces is not [var interfaceSymbol])
+        {
             return null;
         }
 

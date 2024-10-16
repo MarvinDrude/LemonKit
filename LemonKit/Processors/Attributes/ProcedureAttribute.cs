@@ -5,9 +5,11 @@ namespace LemonKit.Processors.Attributes;
 /// Used to mark a class that should generator processor code
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class ProcedureAttribute : Attribute {
+public sealed class ProcedureAttribute : Attribute
+{
 
-    public ProcedureAttribute() {
+    public ProcedureAttribute()
+    {
 
     }
 

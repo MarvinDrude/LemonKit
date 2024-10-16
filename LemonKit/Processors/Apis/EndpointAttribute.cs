@@ -4,10 +4,11 @@ namespace LemonKit.Processors.Apis;
 /// <inheritdoc cref="IEndpointAttribute" />
 [AttributeUsage(AttributeTargets.Class)]
 public class EndpointAttribute(
-    string method, 
-    [StringSyntax("Route")] string path) 
+    string method,
+    [StringSyntax("Route")] string path)
 
-    : Attribute, IEndpointAttribute {
+    : Attribute, IEndpointAttribute
+{
 
     /// <inheritdoc />
     public string Method { get; } = method;

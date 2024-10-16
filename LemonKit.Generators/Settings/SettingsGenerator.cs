@@ -2,15 +2,17 @@
 namespace LemonKit.Generators.Settings;
 
 [Generator]
-internal sealed partial class SettingsGenerator : IIncrementalGenerator {
+internal sealed partial class SettingsGenerator : IIncrementalGenerator
+{
 
-    public void Initialize(IncrementalGeneratorInitializationContext context) {
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
 
-//#if DEBUG
-//        if(!Debugger.IsAttached) {
-//            Debugger.Launch();
-//        }
-//#endif
+        //#if DEBUG
+        //        if(!Debugger.IsAttached) {
+        //            Debugger.Launch();
+        //        }
+        //#endif
 
         var settings = context.SyntaxProvider
             .ForAttributeWithMetadataName(

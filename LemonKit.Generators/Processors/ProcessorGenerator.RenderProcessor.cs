@@ -1,29 +1,35 @@
 ﻿
 namespace LemonKit.Generators.Processors;
 
-public partial class ProcessorGenerator {
+public partial class ProcessorGenerator
+{
 
     private static void RenderProcessor(
         SourceProductionContext context,
         ProcessorInfo? processorInfo,
-        ImmutableArray<EquatableArray<ProcedureInfo>?> assemblyProcedureInfos) {
+        ImmutableArray<EquatableArray<ProcedureInfo>?> assemblyProcedureInfos)
+    {
 
         var token = context.CancellationToken;
-        if(processorInfo is not { } processor) {
+        if(processorInfo is not { } processor)
+        {
             return;
         }
 
         List<ProcedureInfo> allProcs = [];
 
-        if(processor.UseAssemblyProcedures) {
+        if(processor.UseAssemblyProcedures)
+        {
 
-            foreach(var procInfos in assemblyProcedureInfos) {
+            foreach(var procInfos in assemblyProcedureInfos)
+            {
 
-                if(procInfos is null) {
+                if(procInfos is null)
+                {
                     continue;
                 }
 
-                allProcs.AddRange([..procInfos]);
+                allProcs.AddRange([.. procInfos]);
 
             }
 
@@ -44,11 +50,13 @@ public partial class ProcessorGenerator {
         cw.WriteLine($"using LemonKit.Processors;");
         cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
 
-        if(processor.ApiInfo is not null) {
+        if(processor.ApiInfo is not null)
+        {
             cw.WriteLine($"using Microsoft.AspNetCore.Builder;");
         }
 
-        if(processor.ClassInfo.NameSpace is { } nameSpace) {
+        if(processor.ClassInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace};");
@@ -71,21 +79,26 @@ public partial class ProcessorGenerator {
         cw.WriteLine();
         List<string> parameterNames = [];
 
-        foreach(var parameter in processor.Parameters) {
+        foreach(var parameter in processor.Parameters)
+        {
 
-            if(parameter.Type is "global::System.IServiceProvider") {
+            if(parameter.Type is "global::System.IServiceProvider")
+            {
                 parameterNames.Add("serviceProvider");
                 continue;
             }
-            if(parameter.Type is "global::System.Threading.CancellationToken") {
+            if(parameter.Type is "global::System.Threading.CancellationToken")
+            {
                 parameterNames.Add("cancellationToken");
                 continue;
             }
-            if(parameter.Type == processor.InputType.Name) {
+            if(parameter.Type == processor.InputType.Name)
+            {
                 parameterNames.Add("request");
                 continue;
             }
-            if(parameter.Type is "global::Microsoft.AspNetCore.Http.HttpContext") {
+            if(parameter.Type is "global::Microsoft.AspNetCore.Http.HttpContext")
+            {
 
                 cw.WriteLine($"var param_{parameter.Name} = serviceProvider.GetRequiredService<Microsoft.AspNetCore.Http.IHttpContextAccessor>().HttpContext!;");
                 parameterNames.Add($"param_{parameter.Name}");
@@ -111,7 +124,8 @@ public partial class ProcessorGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        for(int e = 0; e < procs.Count; e++) {
+        for(int e = 0; e < procs.Count; e++)
+        {
 
             var proc = procs[e];
 
@@ -123,12 +137,14 @@ public partial class ProcessorGenerator {
 
         }
 
-        for(int e = 0; e < procs.Count - 1; e++) {
+        for(int e = 0; e < procs.Count - 1; e++)
+        {
 
             cw.WriteLine($"proc_{e}.SetNextFunc(proc_{(e + 1)}.Process);");
 
         }
-        if(procs.Count > 0) {
+        if(procs.Count > 0)
+        {
             cw.WriteLine($"proc_{(procs.Count - 1)}.SetNextFunc(Process);");
         }
 
@@ -148,7 +164,8 @@ public partial class ProcessorGenerator {
         cw.WriteLine($"sb.AppendLine(\"{processor.ClassInfo.Name}\");");
         cw.WriteLine();
 
-        foreach(var proc in procs) {
+        foreach(var proc in procs)
+        {
 
             cw.WriteLine($"sb.AppendLine(\"-> {proc.ClassInfo.Name}\");");
 
@@ -161,7 +178,8 @@ public partial class ProcessorGenerator {
         cw.DownIndent();
         cw.WriteLine($"}}");
 
-        if(processor.ApiInfo is { } api) {
+        if(processor.ApiInfo is { } api)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"public static void UseMinimalEndpoint(WebApplication app) {{");
@@ -191,7 +209,8 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static List<ProcedureInfo> GetValidProcedures(ProcessorInfo processor, List<ProcedureInfo> all) {
+    private static List<ProcedureInfo> GetValidProcedures(ProcessorInfo processor, List<ProcedureInfo> all)
+    {
 
         return all
             .Where(x => x.InputType is null || processor.InputType.ParentTypes.Contains(x.InputType))

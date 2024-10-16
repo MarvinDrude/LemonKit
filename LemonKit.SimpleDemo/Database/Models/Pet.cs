@@ -1,6 +1,7 @@
 ﻿namespace LemonKit.SimpleDemo.Database.Models;
 
-public sealed class Pet {
+public sealed class Pet
+{
 
     public required Guid Id { get; init; }
 

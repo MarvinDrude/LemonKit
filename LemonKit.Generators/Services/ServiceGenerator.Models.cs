@@ -1,9 +1,11 @@
 ﻿
 namespace LemonKit.Generators.Services;
 
-internal sealed partial class ServiceGenerator {
+internal sealed partial class ServiceGenerator
+{
 
-    private readonly record struct ServiceInfo {
+    private readonly record struct ServiceInfo
+    {
 
         public readonly ClassInfo ClassInfo;
         public readonly ClassInfo InterfaceInfo;
@@ -16,7 +18,8 @@ internal sealed partial class ServiceGenerator {
             ClassInfo classInfo,
             ClassInfo interfaceInfo,
             FieldInfo[] fields,
-            ModulePropertyInfo[] modules) {
+            ModulePropertyInfo[] modules)
+        {
 
             ClassInfo = classInfo;
             InterfaceInfo = interfaceInfo;
@@ -28,7 +31,8 @@ internal sealed partial class ServiceGenerator {
 
     }
 
-    private readonly record struct ModulePropertyInfo {
+    private readonly record struct ModulePropertyInfo
+    {
 
         public readonly string TypeFullName;
         public readonly string ImplementationTypeFullName;
@@ -38,7 +42,8 @@ internal sealed partial class ServiceGenerator {
         public ModulePropertyInfo(
             string typeFullName,
             string implTypeFullName,
-            string name) {
+            string name)
+        {
 
             TypeFullName = typeFullName;
             ImplementationTypeFullName = implTypeFullName;
@@ -49,14 +54,16 @@ internal sealed partial class ServiceGenerator {
 
     }
 
-    private readonly record struct FieldInfo {
+    private readonly record struct FieldInfo
+    {
 
         public readonly string TypeFullName;
         public readonly string Name;
 
         public FieldInfo(
             string typeFullName,
-            string name) {
+            string name)
+        {
 
             TypeFullName = typeFullName;
             Name = name;
@@ -65,7 +72,8 @@ internal sealed partial class ServiceGenerator {
 
     }
 
-    private readonly record struct ModuleInfo {
+    private readonly record struct ModuleInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -76,7 +84,8 @@ internal sealed partial class ServiceGenerator {
         public ModuleInfo(
             ClassInfo classInfo,
             ParameterInfo[] args,
-            string interfaceTypeFullName) {
+            string interfaceTypeFullName)
+        {
 
             ClassInfo = classInfo;
 

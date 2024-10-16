@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Generators.Models;
 
-internal readonly record struct ClassInfo {
+internal readonly record struct ClassInfo
+{
 
     public readonly string Name;
     public readonly string? NameSpace;
@@ -20,7 +21,8 @@ internal readonly record struct ClassInfo {
         string fullTypeName,
         bool isStatic,
         bool isSealed,
-        bool isInternal) {
+        bool isInternal)
+    {
 
         Name = name;
         NameSpace = nameSpace;
@@ -36,12 +38,15 @@ internal readonly record struct ClassInfo {
 }
 
 
-internal static class ClassInfoBuilder {
+internal static class ClassInfoBuilder
+{
 
-    public static ClassInfo GetInfo(INamedTypeSymbol symbol) {
+    public static ClassInfo GetInfo(INamedTypeSymbol symbol)
+    {
 
         string? nameSpace = symbol.ContainingNamespace.ToString();
-        if(nameSpace == "<global namespace>") {
+        if(nameSpace == "<global namespace>")
+        {
             nameSpace = null;
         }
 
@@ -63,19 +68,24 @@ internal static class ClassInfoBuilder {
 
     }
 
-    public static string GetClassString(ClassInfo classInfo, bool isPartial = true) {
+    public static string GetClassString(ClassInfo classInfo, bool isPartial = true)
+    {
 
         List<string> modifiers = [
-            classInfo.IsInternal ? "internal" : "public"    
+            classInfo.IsInternal ? "internal" : "public"
         ];
 
-        if(classInfo.IsSealed) {
+        if(classInfo.IsSealed)
+        {
             modifiers.Add("sealed");
-        } else if(classInfo.IsStatic) {
+        }
+        else if(classInfo.IsStatic)
+        {
             modifiers.Add("static");
         }
 
-        if(isPartial) {
+        if(isPartial)
+        {
             modifiers.Add("partial");
         }
 
@@ -86,9 +96,11 @@ internal static class ClassInfoBuilder {
 
     }
 
-    private static string GetType(INamedTypeSymbol symbol) {
+    private static string GetType(INamedTypeSymbol symbol)
+    {
 
-        return symbol switch {
+        return symbol switch
+        {
 
             { IsRecord: true, TypeKind: TypeKind.Struct } => "record struct",
             { IsRecord: true } => "record",

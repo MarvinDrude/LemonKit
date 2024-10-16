@@ -1,15 +1,18 @@
 ﻿
 namespace LemonKit.Generators.Services;
 
-internal sealed partial class ServiceGenerator {
+internal sealed partial class ServiceGenerator
+{
 
     private static void Render(
         SourceProductionContext context,
         ServiceInfo? serviceInfo,
-        ImmutableArray<ModuleInfo?> moduleInfos) {
+        ImmutableArray<ModuleInfo?> moduleInfos)
+    {
 
         var token = context.CancellationToken;
-        if(serviceInfo is not { } service) {
+        if(serviceInfo is not { } service)
+        {
             return;
         }
 
@@ -26,7 +29,8 @@ internal sealed partial class ServiceGenerator {
         cw.WriteLine($"using System.Text;");
         cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
 
-        if(service.ClassInfo.NameSpace is { } nameSpace) {
+        if(service.ClassInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace};");
@@ -38,7 +42,8 @@ internal sealed partial class ServiceGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        foreach(var property in service.Modules) {
+        foreach(var property in service.Modules)
+        {
 
             cw.WriteLine($"private {property.TypeFullName}? _pf{property.Name};");
             cw.WriteLine();
@@ -52,8 +57,11 @@ internal sealed partial class ServiceGenerator {
             cw.WriteLine($"if(_pf{property.Name} is null) {{");
             cw.UpIndent();
 
-            if(moduleInfos.FirstOrDefault(x => x is { 
-                InterfaceTypeFullName: { } interfaceType } && interfaceType == property.TypeFullName) is not { } module) {
+            if(moduleInfos.FirstOrDefault(x => x is
+                {
+                    InterfaceTypeFullName: { } interfaceType
+                } && interfaceType == property.TypeFullName) is not { } module)
+            {
                 return;
             }
 
@@ -72,7 +80,7 @@ internal sealed partial class ServiceGenerator {
 
             cw.DownIndent();
             cw.WriteLine($"}}");
-        
+
         }
 
         cw.WriteLine();
@@ -90,7 +98,8 @@ internal sealed partial class ServiceGenerator {
 
     private static void RenderInterface(
         SourceProductionContext context,
-        ServiceInfo service) {
+        ServiceInfo service)
+    {
 
         using var cw = new CodeWriter();
 
@@ -102,7 +111,8 @@ internal sealed partial class ServiceGenerator {
         cw.WriteLine($"using System.Text;");
         cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
 
-        if(service.InterfaceInfo.NameSpace is { } nameSpace) {
+        if(service.InterfaceInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace};");
@@ -114,7 +124,8 @@ internal sealed partial class ServiceGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        foreach(var property in service.Modules) {
+        foreach(var property in service.Modules)
+        {
 
             cw.WriteLine($"public {property.TypeFullName} {property.Name} {{ get; }}");
             cw.WriteLine();

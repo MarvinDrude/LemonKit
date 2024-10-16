@@ -1,9 +1,11 @@
 ﻿
 namespace LemonKit.Generators.Settings;
 
-internal sealed partial class SettingsGenerator {
+internal sealed partial class SettingsGenerator
+{
 
-    private readonly record struct SettingsInfo {
+    private readonly record struct SettingsInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -14,7 +16,8 @@ internal sealed partial class SettingsGenerator {
         public SettingsInfo(
             ClassInfo classInfo,
             EnvironmentVariableInfo[] envVars,
-            JsonFileInfo[] jsonVars) {
+            JsonFileInfo[] jsonVars)
+        {
 
             ClassInfo = classInfo;
 
@@ -25,7 +28,8 @@ internal sealed partial class SettingsGenerator {
 
     }
 
-    private readonly record struct EnvironmentVariableInfo {
+    private readonly record struct EnvironmentVariableInfo
+    {
 
         public readonly string PropertyName;
         public readonly string Name;
@@ -34,7 +38,8 @@ internal sealed partial class SettingsGenerator {
         public EnvironmentVariableInfo(
             string propertyName,
             string name,
-            string type) {
+            string type)
+        {
 
             PropertyName = propertyName;
             Name = name;
@@ -44,7 +49,8 @@ internal sealed partial class SettingsGenerator {
 
     }
 
-    private readonly record struct JsonFileInfo {
+    private readonly record struct JsonFileInfo
+    {
 
         public readonly string PropertyName;
         public readonly string FileName;
@@ -53,7 +59,8 @@ internal sealed partial class SettingsGenerator {
         public JsonFileInfo(
             string propertyName,
             string fileName,
-            string type) {
+            string type)
+        {
 
             PropertyName = propertyName;
             FileName = fileName;

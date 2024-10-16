@@ -1,6 +1,7 @@
 ﻿namespace LemonKit.SimpleDemo.Database.Interfaces.Pets;
 
-public partial interface IPetReadModule {
+public partial interface IPetReadModule
+{
 
 
 

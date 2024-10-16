@@ -2,15 +2,17 @@
 namespace LemonKit.Generators.Validation;
 
 [Generator]
-internal sealed partial class ValidationGenerator : IIncrementalGenerator {
+internal sealed partial class ValidationGenerator : IIncrementalGenerator
+{
 
-    public void Initialize(IncrementalGeneratorInitializationContext context) {
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
 
-//#if DEBUG
-//        if(!Debugger.IsAttached) {
-//            Debugger.Launch();
-//        }
-//#endif
+        //#if DEBUG
+        //        if(!Debugger.IsAttached) {
+        //            Debugger.Launch();
+        //        }
+        //#endif
 
         var assemblyName = context.CompilationProvider
             .Select(static (c, _) => c.AssemblyName!

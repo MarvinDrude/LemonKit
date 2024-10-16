@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Generators.Writers;
 
-internal sealed class CodeWriter : IDisposable {
+internal sealed class CodeWriter : IDisposable
+{
 
     private const string DefaultIndent = "\t";
     private const string DefaultNewLine = "\n";
@@ -15,21 +16,25 @@ internal sealed class CodeWriter : IDisposable {
     private int CurrentLevel { get; set; } = 0;
     private string CurrentLevelString { get; set; } = "";
 
-    public CodeWriter() {
+    public CodeWriter()
+    {
 
         _LevelCache = new string[6];
         _LevelCache[0] = "";
 
-        for(int e = 1; e < _LevelCache.Length; e++) {
+        for(int e = 1; e < _LevelCache.Length; e++)
+        {
             _LevelCache[e] = _LevelCache[e - 1] + Indent;
         }
 
     }
 
-    public void UpIndent() {
+    public void UpIndent()
+    {
 
         CurrentLevel++;
-        if(CurrentLevel == _LevelCache.Length) {
+        if(CurrentLevel == _LevelCache.Length)
+        {
             Array.Resize(ref _LevelCache, _LevelCache.Length * 2);
         }
 
@@ -38,14 +43,16 @@ internal sealed class CodeWriter : IDisposable {
 
     }
 
-    public void DownIndent() {
+    public void DownIndent()
+    {
 
         CurrentLevel--;
         CurrentLevelString = _LevelCache[CurrentLevel];
 
     }
 
-    public Span<char> Advance(int size) {
+    public Span<char> Advance(int size)
+    {
 
         AddIndentOnDemand();
         return Builder.Advance(size);
@@ -55,7 +62,8 @@ internal sealed class CodeWriter : IDisposable {
     public void WriteText(string text)
         => WriteText(text.AsSpan());
 
-    public void WriteText(ReadOnlySpan<char> text) {
+    public void WriteText(ReadOnlySpan<char> text)
+    {
 
         AddIndentOnDemand();
         Builder.AddRange(text);
@@ -65,19 +73,25 @@ internal sealed class CodeWriter : IDisposable {
     public void Write(string text, bool multiLine = false)
         => Write(text.AsSpan(), multiLine);
 
-    public void Write(ReadOnlySpan<char> content, bool multiLine = false) {
+    public void Write(ReadOnlySpan<char> content, bool multiLine = false)
+    {
 
-        if(!multiLine) {
+        if(!multiLine)
+        {
 
             WriteText(content);
 
-        } else {
+        }
+        else
+        {
 
-            while(content.Length > 0) {
+            while(content.Length > 0)
+            {
 
                 int newLinePosition = content.IndexOf(NewLine[0]);
 
-                if(newLinePosition >= 0) {
+                if(newLinePosition >= 0)
+                {
 
                     ReadOnlySpan<char> line = content[..newLinePosition];
 
@@ -86,7 +100,9 @@ internal sealed class CodeWriter : IDisposable {
 
                     content = content[(newLinePosition + 1)..];
 
-                } else {
+                }
+                else
+                {
 
                     WriteText(content);
                     break;
@@ -102,9 +118,11 @@ internal sealed class CodeWriter : IDisposable {
     public void WriteIf(bool condition, string content, bool multiLine = false)
         => WriteIf(condition, content.AsSpan(), multiLine);
 
-    public void WriteIf(bool condition, ReadOnlySpan<char> content, bool multiLine = false) {
+    public void WriteIf(bool condition, ReadOnlySpan<char> content, bool multiLine = false)
+    {
 
-        if(condition) {
+        if(condition)
+        {
             Write(content, multiLine);
         }
 
@@ -113,7 +131,8 @@ internal sealed class CodeWriter : IDisposable {
     public void WriteLine(string content, bool multiLine = false)
         => WriteLine(content.AsSpan(), multiLine);
 
-    public void WriteLine(ReadOnlySpan<char> content, bool multiLine = false) {
+    public void WriteLine(ReadOnlySpan<char> content, bool multiLine = false)
+    {
 
         Write(content, multiLine);
         WriteLine();
@@ -123,35 +142,42 @@ internal sealed class CodeWriter : IDisposable {
     public void WriteLineIf(bool condition, string content, bool multiLine = false)
         => WriteLineIf(condition, content.AsSpan(), multiLine);
 
-    public void WriteLineIf(bool condition, ReadOnlySpan<char> content, bool multiLine = false) {
+    public void WriteLineIf(bool condition, ReadOnlySpan<char> content, bool multiLine = false)
+    {
 
-        if(condition) {
+        if(condition)
+        {
             WriteLine(content, multiLine);
         }
 
     }
 
-    public void WriteLine() {
+    public void WriteLine()
+    {
 
         Builder.Add(NewLine[0]);
 
     }
 
-    public override string ToString() {
+    public override string ToString()
+    {
 
         return Builder.Span.Trim().ToString();
 
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
 
         Builder.Dispose();
 
     }
 
-    private void AddIndentOnDemand() {
+    private void AddIndentOnDemand()
+    {
 
-        if(Builder.Count == 0 || Builder.Span[^1] == NewLine[0]) {
+        if(Builder.Count == 0 || Builder.Span[^1] == NewLine[0])
+        {
             Builder.AddRange(CurrentLevelString.AsSpan());
         }
 

@@ -5,9 +5,11 @@ using OpenTelemetry.Trace;
 
 namespace LemonKit.SimpleDemo.Extensions;
 
-public static class WebAppBuilderExtensions {
+public static class WebAppBuilderExtensions
+{
 
-    public static WebApplicationBuilder AddOpenTelemetrySample(this WebApplicationBuilder builder) {
+    public static WebApplicationBuilder AddOpenTelemetrySample(this WebApplicationBuilder builder)
+    {
 
         Observe.LemonKitSimpleDemo.ObserveContainerExtensions.Init();
         // u need to make sure that every referenced project that has observe in use gets called here too
@@ -15,27 +17,30 @@ public static class WebAppBuilderExtensions {
         var services = builder.Services;
         var otel = services.AddOpenTelemetry();
 
-        otel.ConfigureResource(resource => {
+        otel.ConfigureResource(resource =>
+        {
             resource.AddService("DemoApplication");
         });
 
-        otel.WithMetrics(metrics => {
+        otel.WithMetrics(metrics =>
+        {
 
             metrics
                 .AddAspNetCoreInstrumentation()
                 .AddMeter("Microsoft.AspNetCore.Hosting")
                 .AddMeter("Microsoft.AspNetCore.Server.Kestrel");
 
-            metrics.AddMeter([..ObserveContainer.MeterNames]);
+            metrics.AddMeter([.. ObserveContainer.MeterNames]);
 
         });
 
-        otel.WithTracing(tracing => {
+        otel.WithTracing(tracing =>
+        {
 
             tracing.SetSampler<AlwaysOnSampler>();
             tracing.AddHttpClientInstrumentation();
 
-            tracing.AddSource([..ObserveContainer.ActivitySourceNames]);
+            tracing.AddSource([.. ObserveContainer.ActivitySourceNames]);
 
         });
 

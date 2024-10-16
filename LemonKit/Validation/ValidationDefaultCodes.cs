@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Validation;
 
-public static class ValidationDefaultCodes {
+public static class ValidationDefaultCodes
+{
 
     public const string ErrorMinLength = "E_MUST_MIN_LENGTH:{MinLength}";
     public const string ErrorMaxLength = "E_MUST_MAX_LENGTH:{MaxLength}";

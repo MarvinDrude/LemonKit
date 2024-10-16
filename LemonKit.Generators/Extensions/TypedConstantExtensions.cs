@@ -1,16 +1,21 @@
 
 namespace LemonKit.Generators.Extensions;
 
-public static class TypedConstantExtensions {
+public static class TypedConstantExtensions
+{
 
-    public static string GetAsString(this TypedConstant constant) {
+    public static string GetAsString(this TypedConstant constant)
+    {
 
-        if(constant.Kind is TypedConstantKind.Array) {
+        if(constant.Kind is TypedConstantKind.Array)
+        {
 
             var elementStrings = constant.Values.Select(x => x.GetValueAsString());
             return $"[{string.Join(", ", elementStrings)}]";
 
-        } else {
+        }
+        else
+        {
 
             return constant.GetValueAsString();
 
@@ -18,13 +23,16 @@ public static class TypedConstantExtensions {
 
     }
 
-    private static string GetValueAsString(this TypedConstant constant) {
+    private static string GetValueAsString(this TypedConstant constant)
+    {
 
-        if(constant is { IsNull: true } or { Value: null }) {
+        if(constant is { IsNull: true } or { Value: null })
+        {
             return "null";
         }
 
-        return constant.Value switch {
+        return constant.Value switch
+        {
 
             string str => $"\"{str}\"",
             char cha => $"'{cha}'",

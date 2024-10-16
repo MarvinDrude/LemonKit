@@ -1,11 +1,14 @@
 
 namespace LemonKit.Generators.Extensions;
 
-public static class IMethodSymbolExtensions {
+public static class IMethodSymbolExtensions
+{
 
-    public static ITypeSymbol? GetTaskInnerReturnType(this IMethodSymbol method) {
+    public static ITypeSymbol? GetTaskInnerReturnType(this IMethodSymbol method)
+    {
 
-        if(!method.ReturnType.IsTaskOneGeneric()) {
+        if(!method.ReturnType.IsTaskOneGeneric())
+        {
             return null;
         }
 

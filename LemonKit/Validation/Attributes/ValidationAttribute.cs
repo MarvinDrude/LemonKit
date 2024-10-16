@@ -5,7 +5,8 @@ namespace LemonKit.Validation.Attributes;
 /// Marks a property to be validated
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public class ValidationAttribute : Attribute {
+public class ValidationAttribute : Attribute
+{
 
     protected string? _ErrorCode;
 

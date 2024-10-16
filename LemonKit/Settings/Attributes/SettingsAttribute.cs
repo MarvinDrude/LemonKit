@@ -5,7 +5,8 @@ namespace LemonKit.Settings.Attributes;
 /// Mark settings classes to automatically generate the read logic
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class SettingsAttribute : Attribute {
+public sealed class SettingsAttribute : Attribute
+{
 
 
 

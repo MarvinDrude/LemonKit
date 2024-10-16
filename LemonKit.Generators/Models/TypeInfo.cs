@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Generators.Models;
 
-internal readonly record struct RTypeInfo {
+internal readonly record struct RTypeInfo
+{
 
     public readonly string Name;
 
@@ -12,7 +13,8 @@ internal readonly record struct RTypeInfo {
 
     public RTypeInfo(
         string name,
-        string[] parentTypes) {
+        string[] parentTypes)
+    {
 
         Name = name;
         ParentTypes = new EquatableArray<string>(parentTypes);

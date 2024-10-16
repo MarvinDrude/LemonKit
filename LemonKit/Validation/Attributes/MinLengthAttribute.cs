@@ -7,7 +7,8 @@ namespace LemonKit.Validation.Attributes;
 /// Marks a <see cref="string"/> or <see cref="ICollection"/> property to have a min length.
 /// If nullable, it will return false for <see cref="null"/> 
 /// </summary>
-public sealed class MinLengthAttribute : ValidationAttribute {
+public sealed class MinLengthAttribute : ValidationAttribute
+{
 
     [SuppressMessage("IDE", "IDE0052", Justification = "Used by code generators")]
     private readonly int _MinLength;
@@ -19,7 +20,8 @@ public sealed class MinLengthAttribute : ValidationAttribute {
     /// <param name="errorCode">Custom error code</param>
     public MinLengthAttribute(
         int minLength,
-        string errorCode = ValidationDefaultCodes.ErrorMinLength) {
+        string errorCode = ValidationDefaultCodes.ErrorMinLength)
+    {
 
         _MinLength = minLength;
         _ErrorCode = errorCode;
@@ -35,7 +37,8 @@ public sealed class MinLengthAttribute : ValidationAttribute {
     public MinLengthAttribute(
         Type serviceType,
         string[] accessPath,
-        string errorCode = ValidationDefaultCodes.ErrorMinLength) {
+        string errorCode = ValidationDefaultCodes.ErrorMinLength)
+    {
 
         _Type = serviceType;
         _AccessPath = accessPath;
@@ -44,9 +47,11 @@ public sealed class MinLengthAttribute : ValidationAttribute {
 
     }
 
-    public static bool Validate<T>(T? target, int minLength) {
+    public static bool Validate<T>(T? target, int minLength)
+    {
 
-        return target is { } && target switch {
+        return target is { } && target switch
+        {
 
             string str => str.Length >= minLength,
             ICollection coll => coll.Count >= minLength,
@@ -56,7 +61,8 @@ public sealed class MinLengthAttribute : ValidationAttribute {
 
     }
 
-    public static string TemplateError(string errorCodeTemplate, int minLength) {
+    public static string TemplateError(string errorCodeTemplate, int minLength)
+    {
 
         return errorCodeTemplate
             .Replace("{MinLength}", minLength.ToString());

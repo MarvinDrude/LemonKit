@@ -1,14 +1,17 @@
 ﻿
 namespace LemonKit.Generators.Settings;
 
-internal sealed partial class SettingsGenerator {
+internal sealed partial class SettingsGenerator
+{
 
     private static void RenderSetting(
         in SourceProductionContext context,
         in SettingsInfo? settingCheck,
-        in string assemblyName) {
+        in string assemblyName)
+    {
 
-        if(settingCheck is not { } setting) {
+        if(settingCheck is not { } setting)
+        {
             return;
         }
 
@@ -22,7 +25,8 @@ internal sealed partial class SettingsGenerator {
 
         cw.WriteLine($"using System;");
 
-        if(setting.ClassInfo.NameSpace is { } nameSpace) {
+        if(setting.ClassInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace};");
@@ -41,11 +45,13 @@ internal sealed partial class SettingsGenerator {
         token.ThrowIfCancellationRequested();
         Dictionary<string, string> instantiateMapping = [];
 
-        if(setting.EnvironmentVariables is { Count: > 0 }) {
+        if(setting.EnvironmentVariables is { Count: > 0 })
+        {
 
             cw.WriteLine($"ArgumentNullException.ThrowIfNull(container.EnvironmentProvider, \"Environment provider not found for '{setting.ClassInfo.Name}'.\");");
 
-            foreach(var envProperty in setting.EnvironmentVariables) {
+            foreach(var envProperty in setting.EnvironmentVariables)
+            {
 
                 cw.WriteLine();
                 cw.WriteLine($"if(!container.EnvironmentProvider.TryGetValue(\"{envProperty.Name}\", out var env{envProperty.PropertyName})) {{");
@@ -63,7 +69,8 @@ internal sealed partial class SettingsGenerator {
 
         }
 
-        foreach(var jsonProperty in setting.JsonFiles) {
+        foreach(var jsonProperty in setting.JsonFiles)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"if(!container.FileProviders.TryGetValue(\"{jsonProperty.FileName}\", out var json{jsonProperty.PropertyName}Check)) {{");
@@ -97,7 +104,8 @@ internal sealed partial class SettingsGenerator {
         cw.WriteLine($"return new {setting.ClassInfo.Name}() {{");
         cw.UpIndent();
 
-        foreach(var keypair in instantiateMapping) {
+        foreach(var keypair in instantiateMapping)
+        {
 
             cw.WriteLine($"{keypair.Key} = {keypair.Value},");
 

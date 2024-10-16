@@ -1,11 +1,13 @@
 ﻿
 namespace LemonKit.Generators.Settings;
 
-internal sealed partial class SettingsGenerator {
+internal sealed partial class SettingsGenerator
+{
 
     private static SettingsInfo? TransformSetting(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -29,26 +31,32 @@ internal sealed partial class SettingsGenerator {
 
     }
 
-    private static JsonFileInfo[] GetJsonProperties(INamedTypeSymbol symbol) {
+    private static JsonFileInfo[] GetJsonProperties(INamedTypeSymbol symbol)
+    {
 
         List<JsonFileInfo> result = [];
 
-        foreach(var member in symbol.GetMembers()) {
+        foreach(var member in symbol.GetMembers())
+        {
 
-            if(member is not IPropertySymbol {
-                DeclaredAccessibility: Accessibility.Public,
-                IsStatic: false,
-                Name: not "EqualityContract" // records
-            } property) {
+            if(member is not IPropertySymbol
+                {
+                    DeclaredAccessibility: Accessibility.Public,
+                    IsStatic: false,
+                    Name: not "EqualityContract" // records
+                } property)
+            {
                 continue;
             }
 
             if(symbol.TypeKind is not TypeKind.Interface
-                && property.SetMethod is null) {
+                && property.SetMethod is null)
+            {
                 continue;
             }
 
-            if(GetJsonProperty(property) is not { } prop) {
+            if(GetJsonProperty(property) is not { } prop)
+            {
                 continue;
             }
 
@@ -56,21 +64,25 @@ internal sealed partial class SettingsGenerator {
 
         }
 
-        return [..result];
+        return [.. result];
 
     }
 
-    private static JsonFileInfo? GetJsonProperty(IPropertySymbol property) {
+    private static JsonFileInfo? GetJsonProperty(IPropertySymbol property)
+    {
 
-        if(GetJsonAttribute(property) is not { } attr) {
+        if(GetJsonAttribute(property) is not { } attr)
+        {
             return null;
         }
 
-        if(attr.ConstructorArguments is not [{ IsNull: false } arg]) {
+        if(attr.ConstructorArguments is not [{ IsNull: false } arg])
+        {
             return null;
         }
 
-        if(arg.Value is not string str) {
+        if(arg.Value is not string str)
+        {
             return null;
         }
 
@@ -81,21 +93,27 @@ internal sealed partial class SettingsGenerator {
 
     }
 
-    private static AttributeData? GetJsonAttribute(IPropertySymbol property) {
+    private static AttributeData? GetJsonAttribute(IPropertySymbol property)
+    {
 
         return property.GetAttributes().FirstOrDefault(x => IsJsonAttribute(x.AttributeClass));
 
     }
 
-    private static bool IsJsonAttribute(ITypeSymbol? symbol) {
+    private static bool IsJsonAttribute(ITypeSymbol? symbol)
+    {
 
-        return symbol is {
+        return symbol is
+        {
             Name: "JsonFileAttribute",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Attributes",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Settings",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "LemonKit",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
@@ -105,26 +123,32 @@ internal sealed partial class SettingsGenerator {
 
     }
 
-    private static EnvironmentVariableInfo[] GetEnvironmentProperties(INamedTypeSymbol symbol) {
+    private static EnvironmentVariableInfo[] GetEnvironmentProperties(INamedTypeSymbol symbol)
+    {
 
         List<EnvironmentVariableInfo> result = [];
 
-        foreach(var member in symbol.GetMembers()) {
+        foreach(var member in symbol.GetMembers())
+        {
 
-            if(member is not IPropertySymbol { 
-                DeclaredAccessibility: Accessibility.Public,
-                IsStatic: false,
-                Name: not "EqualityContract" // records
-            } property) {
+            if(member is not IPropertySymbol
+                {
+                    DeclaredAccessibility: Accessibility.Public,
+                    IsStatic: false,
+                    Name: not "EqualityContract" // records
+                } property)
+            {
                 continue;
             }
 
-            if(symbol.TypeKind is not TypeKind.Interface 
-                && property.SetMethod is null) {
+            if(symbol.TypeKind is not TypeKind.Interface
+                && property.SetMethod is null)
+            {
                 continue;
             }
 
-            if(GetEnvironmentProperty(property) is not { } prop) {
+            if(GetEnvironmentProperty(property) is not { } prop)
+            {
                 continue;
             }
 
@@ -132,21 +156,25 @@ internal sealed partial class SettingsGenerator {
 
         }
 
-        return [..result];
+        return [.. result];
 
     }
 
-    private static EnvironmentVariableInfo? GetEnvironmentProperty(IPropertySymbol property) {
+    private static EnvironmentVariableInfo? GetEnvironmentProperty(IPropertySymbol property)
+    {
 
-        if(GetEnvironmentAttribute(property) is not { } attr) {
+        if(GetEnvironmentAttribute(property) is not { } attr)
+        {
             return null;
         }
 
-        if(attr.ConstructorArguments is not [{ IsNull: false } arg]) {
+        if(attr.ConstructorArguments is not [{ IsNull: false } arg])
+        {
             return null;
         }
 
-        if(arg.Value is not string str) {
+        if(arg.Value is not string str)
+        {
             return null;
         }
 
@@ -157,21 +185,27 @@ internal sealed partial class SettingsGenerator {
 
     }
 
-    private static AttributeData? GetEnvironmentAttribute(IPropertySymbol property) {
+    private static AttributeData? GetEnvironmentAttribute(IPropertySymbol property)
+    {
 
         return property.GetAttributes().FirstOrDefault(x => IsEnvironmentAttribute(x.AttributeClass));
 
     }
 
-    private static bool IsEnvironmentAttribute(ITypeSymbol? symbol) {
+    private static bool IsEnvironmentAttribute(ITypeSymbol? symbol)
+    {
 
-        return symbol is { 
+        return symbol is
+        {
             Name: "EnvironmentVariableAttribute",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Attributes",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Settings",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "LemonKit",
                         ContainingNamespace.IsGlobalNamespace: true
                     }

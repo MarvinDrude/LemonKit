@@ -10,7 +10,8 @@ namespace LemonKit.SimpleDemo.Endpoints.Pets.Basic;
     activitySourceName: "CreatePetEndpoint.Activity",
     meterName: "CreatePetEndpoint.Meter"
 )]
-public sealed partial class CreatePetEndpoint {
+public sealed partial class CreatePetEndpoint
+{
 
     /// <summary>
     /// Counter to track pet creations
@@ -20,7 +21,8 @@ public sealed partial class CreatePetEndpoint {
     /// <summary>
     /// Counters need to be defined in static constructor, to make sure that it is ran after the partial static field initializers in other partials
     /// </summary>
-    static CreatePetEndpoint() {
+    static CreatePetEndpoint()
+    {
 
         _CreationCounter = _Meter.CreateCounter<long>("Pet.Creation");
 
@@ -44,12 +46,13 @@ public sealed partial class CreatePetEndpoint {
     /// <summary>
     /// Shortcut to always use newest pet settings of main settings
     /// </summary>
-    private JsonPetsSettings _PetSettings => _MainSettings.Current.PetSettings;
+    private JsonPetsSettings PetSettings => _MainSettings.Current.PetSettings;
 
     public CreatePetEndpoint(
         ILogger<CreatePetEndpoint> logger,
         IValidate<Request> validator,
-        SettingsContainer<MainSettings> settings) {
+        SettingsContainer<MainSettings> settings)
+    {
 
         _Logger = logger;
         _Validator = validator;
@@ -65,18 +68,21 @@ public sealed partial class CreatePetEndpoint {
         [Input] Request request,
         HttpContext context,
         IPetService petService,
-        CancellationToken cancellationToken) {
+        CancellationToken cancellationToken)
+    {
 
         using var activity = StartActivity(); // providing no name will default to ClassName.MethodName
 
-        if(cancellationToken.IsCancellationRequested) { // request already aborted? early exit
+        if(cancellationToken.IsCancellationRequested)
+        { // request already aborted? early exit
             LogCancel();
             return ResponseBase
                 .CreateCancelledResponse(new Response()) // creates a 400 code response with default message
                 .ApplyToContext<Response>(context); // applies code to http protocol
         }
 
-        if(_Validator.Validate(request) is { IsValid: false } validation) { // request has invalid data
+        if(_Validator.Validate(request) is { IsValid: false } validation)
+        { // request has invalid data
             LogInvalid(request);
             return ResponseBase
                 .CreateInvalidRequest(new Response(), validation) // creates a 400 code response with validation errors (Response.ErrorCodes) as response and default message
@@ -85,15 +91,17 @@ public sealed partial class CreatePetEndpoint {
 
         await petService.Write.Create(Mapper.ToPet(request), cancellationToken);
         _CreationCounter.Add(1);
-        
-        return new Response() {
+
+        return new Response()
+        {
             Code = 200
         };
 
     }
 
     [Validate] // generates a class that implements IValidate<Request> and is registered with AddKitValidators to services
-    public sealed class Request : RequestBase {
+    public sealed class Request : RequestBase
+    {
 
         [MinLength(1)] // use validate attributes with constant values
         public required List<string> Colors { get; set; }
@@ -119,9 +127,11 @@ public sealed partial class CreatePetEndpoint {
         public static void ExtraValidate(
             ValidationResult result,
             Request input,
-            SettingsContainer<MainSettings> settings) {
+            SettingsContainer<MainSettings> settings)
+        {
 
-            if(!input.Colors.AreHexColors()) { // check if all colors provided are valid hex colors
+            if(!input.Colors.AreHexColors())
+            { // check if all colors provided are valid hex colors
                 result.AddErrorCode(nameof(input.Colors), "E_ONLY_HEX_COLROS");
             }
 
@@ -132,11 +142,14 @@ public sealed partial class CreatePetEndpoint {
     /// <summary>
     /// Map request to a new pet model for the database
     /// </summary>
-    public static class Mapper {
+    public static class Mapper
+    {
 
-        public static Pet ToPet(Request request) {
+        public static Pet ToPet(Request request)
+        {
 
-            return new Pet() {
+            return new Pet()
+            {
                 Id = Guid.NewGuid(),
                 Colors = request.Colors,
                 Height = request.Height,
@@ -150,7 +163,8 @@ public sealed partial class CreatePetEndpoint {
     /// <summary>
     /// Response that is sent as json to client
     /// </summary>
-    public sealed class Response : ResponseBase {
+    public sealed class Response : ResponseBase
+    {
 
 
 

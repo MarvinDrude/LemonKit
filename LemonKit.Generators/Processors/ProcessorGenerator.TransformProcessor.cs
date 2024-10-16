@@ -1,11 +1,13 @@
 ﻿
 namespace LemonKit.Generators.Processors;
 
-public partial class ProcessorGenerator {
+public partial class ProcessorGenerator
+{
 
     private static ProcessorInfo? TransformProcessor(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -14,7 +16,8 @@ public partial class ProcessorGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(symbol.ContainingType is not null) {
+        if(symbol.ContainingType is not null)
+        {
             return null;
         }
 
@@ -22,15 +25,18 @@ public partial class ProcessorGenerator {
             .OfType<IMethodSymbol>()
             .Where(static method => !method.IsStatic)
             .Where(static method => method.Name is "Execute")
-            .ToList() is not [var execute]) {
+            .ToList() is not [var execute])
+        {
             return null;
         }
 
-        if(execute.Parameters is { Length: 0 }) {
+        if(execute.Parameters is { Length: 0 })
+        {
             return null;
         }
 
-        if(execute.ReturnsVoid) {
+        if(execute.ReturnsVoid)
+        {
             return null;
         }
 
@@ -41,19 +47,24 @@ public partial class ProcessorGenerator {
 
         ParameterInfo? inputParameter = null;
 
-        foreach(var parameter in parameters) {
-            foreach(var attr in parameter.Attributes) {
-                if(attr.FullName is "global::LemonKit.Processors.Attributes.InputAttribute") {
+        foreach(var parameter in parameters)
+        {
+            foreach(var attr in parameter.Attributes)
+            {
+                if(attr.FullName is "global::LemonKit.Processors.Attributes.InputAttribute")
+                {
                     inputParameter = parameter;
                     break;
                 }
             }
-            if(inputParameter is { }) {
+            if(inputParameter is { })
+            {
                 break;
             }
         }
 
-        if(inputParameter is not { } input) {
+        if(inputParameter is not { } input)
+        {
             return null;
         }
 
@@ -63,7 +74,8 @@ public partial class ProcessorGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(execute.GetTaskInnerReturnType() is not { } outputSymbol) {
+        if(execute.GetTaskInnerReturnType() is not { } outputSymbol)
+        {
             return null;
         }
 
@@ -74,13 +86,16 @@ public partial class ProcessorGenerator {
         AttributeData? attrProcessor = null;
         AttributeData? attrProcedures = null;
 
-        foreach(var attribute in attributes) {
+        foreach(var attribute in attributes)
+        {
 
-            if(attribute.AttributeClass is not { } attrClass) {
+            if(attribute.AttributeClass is not { } attrClass)
+            {
                 continue;
             }
 
-            switch(attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)) {
+            switch(attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
+            {
 
                 case "global::LemonKit.Processors.Attributes.ProcessorAttribute":
                     attrProcessor = attribute;
@@ -93,7 +108,8 @@ public partial class ProcessorGenerator {
 
         }
 
-        if(attrProcessor is not { } processor) {
+        if(attrProcessor is not { } processor)
+        {
             return null;
         }
 
@@ -101,7 +117,8 @@ public partial class ProcessorGenerator {
         bool useAssemblyProcedures = processor.ConstructorArguments[0].Value is true;
         ProcedureInfo[]? procedures = null;
 
-        if(attrProcedures is not null) {
+        if(attrProcedures is not null)
+        {
             procedures = GetProcedures(attrProcedures, token);
         }
 
@@ -118,13 +135,16 @@ public partial class ProcessorGenerator {
 
     private static ProcessorApiInfo? GetApiInfo(
         ImmutableArray<AttributeData> attributes,
-        INamedTypeSymbol symbol) {
+        INamedTypeSymbol symbol)
+    {
 
-        if(GetEndpointAttribute(attributes) is not { } attribute) {
+        if(GetEndpointAttribute(attributes) is not { } attribute)
+        {
             return null;
         }
 
-        if(attribute.ConstructorArguments.FirstOrDefault().Value is not string path) {
+        if(attribute.ConstructorArguments.FirstOrDefault().Value is not string path)
+        {
             return null;
         }
 
@@ -134,21 +154,28 @@ public partial class ProcessorGenerator {
         bool isAuthorize = authorize != null;
         string policy = string.Empty;
 
-        if(authorize is not null) {
+        if(authorize is not null)
+        {
 
-            if(authorize.ConstructorArguments.Length > 0) {
+            if(authorize.ConstructorArguments.Length > 0)
+            {
 
                 policy = (string)authorize.ConstructorArguments[0].Value!;
 
-            } else if(authorize.NamedArguments.Length > 0) {
+            }
+            else if(authorize.NamedArguments.Length > 0)
+            {
 
-                foreach(var arg in authorize.NamedArguments) {
+                foreach(var arg in authorize.NamedArguments)
+                {
 
-                    if(arg.Key != "Policy") {
+                    if(arg.Key != "Policy")
+                    {
                         return null;
                     }
 
-                    if(arg.Value.Value is not string pol) {
+                    if(arg.Value.Value is not string pol)
+                    {
                         return null;
                     }
 
@@ -160,7 +187,8 @@ public partial class ProcessorGenerator {
 
         }
 
-        if(GetHttpMethod(attribute) is not { } httpMethod) {
+        if(GetHttpMethod(attribute) is not { } httpMethod)
+        {
             return null;
         }
 
@@ -176,22 +204,28 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static bool HasConfigureMethod(INamedTypeSymbol symbol) {
+    private static bool HasConfigureMethod(INamedTypeSymbol symbol)
+    {
 
         return symbol.GetMembers()
             .OfType<IMethodSymbol>()
-            .Any(method => method is {
+            .Any(method => method is
+            {
                 Name: "Configure",
                 IsStatic: false,
                 Parameters: [{ Type: { } paramType }]
             }
-            && paramType is {
+            && paramType is
+            {
                 Name: "IEndpointConventionBuilder",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Builder",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "AspNetCore",
-                        ContainingNamespace: {
+                        ContainingNamespace:
+                        {
                             Name: "Microsoft",
                             ContainingNamespace.IsGlobalNamespace: true,
                         },
@@ -201,9 +235,11 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static string? GetHttpMethod(AttributeData attribute) {
+    private static string? GetHttpMethod(AttributeData attribute)
+    {
 
-        if(attribute.ConstructorArguments is not { Length: >= 2 }) {
+        if(attribute.ConstructorArguments is not { Length: >= 2 })
+        {
             return null;
         }
 
@@ -213,27 +249,33 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static AttributeData? GetEndpointAttribute(ImmutableArray<AttributeData> attributes) {
+    private static AttributeData? GetEndpointAttribute(ImmutableArray<AttributeData> attributes)
+    {
 
         return attributes.FirstOrDefault(attr => IsEndpointAttribute(attr.AttributeClass));
 
     }
 
-    private static bool IsEndpointAttribute(ITypeSymbol? symbol) {
+    private static bool IsEndpointAttribute(ITypeSymbol? symbol)
+    {
 
         return HttpMethods.Any(method => IsEndpointAttribute(symbol, method));
 
     }
 
-    private static bool IsEndpointAttribute(ITypeSymbol? symbol, string method) {
+    private static bool IsEndpointAttribute(ITypeSymbol? symbol, string method)
+    {
 
         return symbol is { }
             && symbol.Name == $"{method}EndpointAttribute"
-            && symbol.ContainingNamespace is {
+            && symbol.ContainingNamespace is
+            {
                 Name: "Apis",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Processors",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "LemonKit",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
@@ -242,28 +284,34 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static bool IsAspNetAuthorize(ITypeSymbol? symbol) {
+    private static bool IsAspNetAuthorize(ITypeSymbol? symbol)
+    {
 
         return symbol is { Name: "AuthorizeAttribute" }
             && IsAspNetAuthorizationAttribute(symbol);
 
     }
 
-    private static bool IsAspNetAllowAnonymous(ITypeSymbol? symbol) {
+    private static bool IsAspNetAllowAnonymous(ITypeSymbol? symbol)
+    {
 
         return symbol is { Name: "AllowAnonymousAttribute" }
             && IsAspNetAuthorizationAttribute(symbol);
 
     }
 
-    private static bool IsAspNetAuthorizationAttribute(ITypeSymbol? symbol) {
+    private static bool IsAspNetAuthorizationAttribute(ITypeSymbol? symbol)
+    {
 
         return symbol is { }
-            && symbol.ContainingNamespace is {
+            && symbol.ContainingNamespace is
+            {
                 Name: "Authorization",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "AspNetCore",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "Microsoft",
                         ContainingNamespace.IsGlobalNamespace: true,
                     },

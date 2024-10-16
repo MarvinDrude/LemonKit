@@ -4,23 +4,28 @@ namespace LemonKit.Validation.Attributes;
 /// <summary>
 /// Marks a property that its value should be a valid value of the enum
 /// </summary>
-public sealed class EnumValueAttribute : ValidationAttribute {
+public sealed class EnumValueAttribute : ValidationAttribute
+{
 
     public EnumValueAttribute(
-        string errorCode = ValidationDefaultCodes.ErrorEnum) {
+        string errorCode = ValidationDefaultCodes.ErrorEnum)
+    {
 
         _ErrorCode = errorCode;
 
     }
 
     public static bool Validate<T>(T value)
-        where T : struct, Enum {
+        where T : struct, Enum
+    {
 
-        if(Enum.IsDefined(value)) {
+        if(Enum.IsDefined(value))
+        {
             return true;
         }
 
-        if(typeof(T).GetCustomAttribute<FlagsAttribute>() is not { }) {
+        if(typeof(T).GetCustomAttribute<FlagsAttribute>() is not { })
+        {
             return false;
         }
 
@@ -28,7 +33,8 @@ public sealed class EnumValueAttribute : ValidationAttribute {
 
     }
 
-    public static string TemplateError(string errorCodeTemplate) {
+    public static string TemplateError(string errorCodeTemplate)
+    {
 
         return errorCodeTemplate;
 
@@ -36,7 +42,8 @@ public sealed class EnumValueAttribute : ValidationAttribute {
 
 }
 
-file static class Enums {
+file static class Enums
+{
 
     public static bool IsValidFlags<TEnum>(this TEnum value)
         where TEnum : struct, Enum =>
@@ -49,12 +56,14 @@ file static class Enums {
 /// </summary>
 /// <typeparam name="TEnum"></typeparam>
 file abstract class Cache<TEnum>
-    where TEnum : struct, Enum {
+    where TEnum : struct, Enum
+{
 
     public static readonly Cache<TEnum> Instance = GetInstance();
 
     private static Cache<TEnum> GetInstance() =>
-        Type.GetTypeCode(typeof(TEnum)) switch {
+        Type.GetTypeCode(typeof(TEnum)) switch
+        {
 
             TypeCode.Char => new Cache<TEnum, char>(),
             TypeCode.SByte => new Cache<TEnum, sbyte>(),
@@ -78,16 +87,19 @@ file sealed class Cache<TEnum, TUnderlying> : Cache<TEnum>
         IComparable<TUnderlying>,
         IEquatable<TUnderlying>,
         IBinaryInteger<TUnderlying>,
-        IConvertible {
+        IConvertible
+{
 
     private readonly TUnderlying _AllFlags = GetAllFlags();
 
-    private static TUnderlying GetAllFlags() {
+    private static TUnderlying GetAllFlags()
+    {
 
         TUnderlying allFlags = default;
         var fields = typeof(TEnum).GetFields(BindingFlags.Public | BindingFlags.Static);
 
-        foreach(var field in fields) {
+        foreach(var field in fields)
+        {
 
             var value = (TUnderlying)field.GetValue(null)!;
             allFlags |= value;
@@ -98,7 +110,8 @@ file sealed class Cache<TEnum, TUnderlying> : Cache<TEnum>
 
     }
 
-    public override bool IsValidFlags(TEnum value) {
+    public override bool IsValidFlags(TEnum value)
+    {
 
         var underlying = (TUnderlying)(object)value;
 

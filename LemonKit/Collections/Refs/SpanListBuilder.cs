@@ -8,7 +8,8 @@ namespace LemonKit.Collections.Refs;
 /// </para>
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public ref struct SpanListBuilder<T> {
+public ref struct SpanListBuilder<T>
+{
 
     /// <summary>
     /// Initial stack allocated span used until needs grow
@@ -29,7 +30,8 @@ public ref struct SpanListBuilder<T> {
     /// Typically used with a stack allocated initial span
     /// </summary>
     /// <param name="initial">Typically stack allocated</param>
-    public SpanListBuilder(Span<T> initial) {
+    public SpanListBuilder(Span<T> initial)
+    {
 
         _Span = initial;
         _Array = null;
@@ -43,8 +45,10 @@ public ref struct SpanListBuilder<T> {
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
-    public ref T this[int index] {
-        get {
+    public ref T this[int index]
+    {
+        get
+        {
             return ref _Span[index];
         }
     }
@@ -52,9 +56,11 @@ public ref struct SpanListBuilder<T> {
     /// <summary>
     /// Current length dynamically
     /// </summary>
-    public int Length {
+    public int Length
+    {
         readonly get => _Position;
-        set {
+        set
+        {
             _Position = value;
         }
     }
@@ -64,17 +70,21 @@ public ref struct SpanListBuilder<T> {
     /// </summary>
     /// <param name="item"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Add(T item) {
+    public void Add(T item)
+    {
 
         int position = _Position;
         Span<T> span = _Span;
 
-        if(position < span.Length) {
+        if(position < span.Length)
+        {
 
             span[position] = item;
             _Position = position + 1;
 
-        } else {
+        }
+        else
+        {
 
             AddWithGrow(item);
 
@@ -87,17 +97,21 @@ public ref struct SpanListBuilder<T> {
     /// </summary>
     /// <param name="source"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Add(scoped ReadOnlySpan<T> source) {
+    public void Add(scoped ReadOnlySpan<T> source)
+    {
 
         int position = _Position;
         Span<T> span = _Span;
 
-        if(source.Length == 1 && position < span.Length) {
+        if(source.Length == 1 && position < span.Length)
+        {
 
             span[position] = source[0];
             _Position = position + 1;
 
-        } else {
+        }
+        else
+        {
 
             AddWithGrowSpan(source);
 
@@ -109,7 +123,8 @@ public ref struct SpanListBuilder<T> {
     /// As readonly span
     /// </summary>
     /// <returns></returns>
-    public readonly ReadOnlySpan<T> AsSpan() {
+    public readonly ReadOnlySpan<T> AsSpan()
+    {
 
         return _Span[.._Position];
 
@@ -119,11 +134,13 @@ public ref struct SpanListBuilder<T> {
     /// Call after use
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Dispose() {
+    public void Dispose()
+    {
 
         T[]? shouldReturn = _Array;
 
-        if(shouldReturn is not null) {
+        if(shouldReturn is not null)
+        {
 
             _Array = null;
             ArrayPool<T>.Shared.Return(shouldReturn);
@@ -133,9 +150,11 @@ public ref struct SpanListBuilder<T> {
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private void AddWithGrowSpan(scoped ReadOnlySpan<T> source) {
+    private void AddWithGrowSpan(scoped ReadOnlySpan<T> source)
+    {
 
-        if((_Position + source.Length) > _Span.Length) {
+        if((_Position + source.Length) > _Span.Length)
+        {
             Grow(_Span.Length - _Position + source.Length);
         }
 
@@ -149,7 +168,8 @@ public ref struct SpanListBuilder<T> {
     /// </summary>
     /// <param name="item"></param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private void AddWithGrow(T item) {
+    private void AddWithGrow(T item)
+    {
 
         int position = _Position;
         Grow(1);
@@ -163,14 +183,16 @@ public ref struct SpanListBuilder<T> {
     /// 
     /// </summary>
     /// <param name="addCapacity"></param>
-    private void Grow(int addCapacity) {
+    private void Grow(int addCapacity)
+    {
 
         // atleast double it
         int capacity = Math.Max(
             _Span.Length != 0 ? _Span.Length * 2 : 4,
             _Span.Length + addCapacity);
 
-        if(capacity > ArrayMaxLength) {
+        if(capacity > ArrayMaxLength)
+        {
             capacity = Math.Max(Math.Max(_Span.Length + 1, ArrayMaxLength), _Span.Length);
         }
 
@@ -180,7 +202,8 @@ public ref struct SpanListBuilder<T> {
         T[]? shouldReturn = _Array;
         _Span = _Array = array;
 
-        if(shouldReturn is not null) {
+        if(shouldReturn is not null)
+        {
             ArrayPool<T>.Shared.Return(shouldReturn);
         }
 

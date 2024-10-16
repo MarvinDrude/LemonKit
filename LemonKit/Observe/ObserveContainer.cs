@@ -4,7 +4,8 @@ namespace LemonKit.Observe;
 /// <summary>
 /// Handles automatic generated meter and acitivity source creation and holds them in order to register them at startup
 /// </summary>
-public static class ObserveContainer {
+public static class ObserveContainer
+{
 
     /// <summary>
     /// List of all acitvity sources created by this container
@@ -24,7 +25,8 @@ public static class ObserveContainer {
     /// <returns></returns>
     public static ActivitySource CreateActivitySource(
         string name,
-        string version) {
+        string version)
+    {
 
         var source = new ActivitySource(name, version);
         _ActivitySources.Add(source);
@@ -41,7 +43,8 @@ public static class ObserveContainer {
     /// <returns></returns>
     public static Meter CreateMeter(
         string name,
-        string version) {
+        string version)
+    {
 
         var meter = new Meter(name, version);
         _Meters.Add(meter);
@@ -53,9 +56,12 @@ public static class ObserveContainer {
     /// <summary>
     /// Get all names of the activity sources
     /// </summary>
-    public static IEnumerable<string> ActivitySourceNames {
-        get {
-            foreach(var aSource in _ActivitySources) {
+    public static IEnumerable<string> ActivitySourceNames
+    {
+        get
+        {
+            foreach(var aSource in _ActivitySources)
+            {
                 yield return aSource.Name;
             }
         }
@@ -64,9 +70,12 @@ public static class ObserveContainer {
     /// <summary>
     /// Get all names of the meters
     /// </summary>
-    public static IEnumerable<string> MeterNames {
-        get {
-            foreach(var meter in _Meters) {
+    public static IEnumerable<string> MeterNames
+    {
+        get
+        {
+            foreach(var meter in _Meters)
+            {
                 yield return meter.Name;
             }
         }
@@ -75,18 +84,21 @@ public static class ObserveContainer {
     /// <summary>
     /// Initialize all static fields of created meters and activity sources. (this is required before adding them to configuration)
     /// </summary>
-    public static void Initialize() {
+    public static void Initialize()
+    {
 
         if(Assembly.GetEntryAssembly() is not { } assembly ||
             assembly
                 .GetTypes()
-                .FirstOrDefault(x => x.Name == "ObserveContainerExtensions") is not { } type) {
+                .FirstOrDefault(x => x.Name == "ObserveContainerExtensions") is not { } type)
+        {
 
             return;
 
         }
 
-        if(type.GetMethod("Init", BindingFlags.Static | BindingFlags.Public) is not { } method) {
+        if(type.GetMethod("Init", BindingFlags.Static | BindingFlags.Public) is not { } method)
+        {
             return;
         }
 

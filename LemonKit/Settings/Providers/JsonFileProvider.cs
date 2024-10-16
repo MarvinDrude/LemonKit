@@ -1,13 +1,12 @@
 ﻿
-using System.Text.Json.Serialization;
-
 namespace LemonKit.Settings.Providers;
 
 /// <summary>
 /// Provider for json files to read config from that and automatically update
 /// </summary>
 public sealed class JsonFileProvider<T> : SettingsProvider
-    where T : class {
+    where T : class
+{
 
     /// <summary>
     /// Current deserialized value
@@ -52,22 +51,26 @@ public sealed class JsonFileProvider<T> : SettingsProvider
     public JsonFileProvider(
         string fileName,
         JsonSerializerContext jsonContext,
-        string ? folderPath = null,
-        bool watch = true) {
+        string? folderPath = null,
+        bool watch = true)
+    {
 
         _FileName = fileName;
         _FolderPath = folderPath ?? AppDomain.CurrentDomain.BaseDirectory;
         _Context = jsonContext;
 
         string fullPath = Path.Combine(_FolderPath, _FileName);
-        if(!File.Exists(fullPath)) {
+        if(!File.Exists(fullPath))
+        {
             throw new InvalidOperationException($"The settings json file '{fullPath}' does not exist.");
         }
         _FullName = fullPath;
 
-        if(watch) {
+        if(watch)
+        {
 
-            _Watcher = new FileSystemWatcher(_FolderPath) {
+            _Watcher = new FileSystemWatcher(_FolderPath)
+            {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime,
                 IncludeSubdirectories = false,
             };
@@ -82,26 +85,32 @@ public sealed class JsonFileProvider<T> : SettingsProvider
     }
 
     /// <inheritdoc />
-    public override async Task Reload() {
+    public override async Task Reload()
+    {
 
         await _Semaphore.WaitAsync();
 
-        try {
+        try
+        {
 
             string rawText = await File.ReadAllTextAsync(_FullName);
-            T? temp = JsonSerializer.Deserialize(rawText, typeof(T), _Context) as T 
-                ?? throw new Exception($"Json settings file '{_FullName}' deserialization ended in null. Check your format."); 
+            T? temp = JsonSerializer.Deserialize(rawText, typeof(T), _Context) as T
+                ?? throw new Exception($"Json settings file '{_FullName}' deserialization ended in null. Check your format.");
             // throwing is here ok as "control flow" because this is a fundamental part that when throwing is very exceptional
 
             _Value = temp;
             OnUpdate();
 
-        } catch(Exception error) {
+        }
+        catch(Exception error)
+        {
 
             throw new Exception($"Json settings file '{_FullName}' deserialization ended in exception: {error}"); // just catched to use the finally
             // this means saving a json file after start in a malformed state will result in a server shutdown, maybe change in future?
 
-        } finally {
+        }
+        finally
+        {
 
             _Semaphore.Release();
 
@@ -113,7 +122,8 @@ public sealed class JsonFileProvider<T> : SettingsProvider
     /// Callback when watcher noticed change
     /// </summary>
     /// <returns></returns>
-    private async Task OnFileSystemChange() {
+    private async Task OnFileSystemChange()
+    {
 
         await Reload();
 

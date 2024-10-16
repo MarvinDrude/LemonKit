@@ -2,27 +2,33 @@
 namespace LemonKit.Generators.Collections;
 
 internal sealed class ObjectPool<T>
-    where T : class {
+    where T : class
+{
 
     private readonly Element[] _Items;
     private readonly Func<T> _Factory;
     private T? FirstItem;
 
 
-    public ObjectPool(Func<T> factory, int capacity) {
+    public ObjectPool(Func<T> factory, int capacity)
+    {
 
         _Factory = factory;
         _Items = new Element[capacity];
 
     }
 
-    public void Return(T ob) {
+    public void Return(T ob)
+    {
 
-        if(FirstItem is null) {
+        if(FirstItem is null)
+        {
 
             FirstItem = ob;
 
-        } else {
+        }
+        else
+        {
 
             ReturnLoop(ob);
 
@@ -30,11 +36,13 @@ internal sealed class ObjectPool<T>
 
     }
 
-    public T Get() {
+    public T Get()
+    {
 
         T? item = FirstItem;
 
-        if(item is null || item != Interlocked.CompareExchange(ref FirstItem, null, item)) {
+        if(item is null || item != Interlocked.CompareExchange(ref FirstItem, null, item))
+        {
 
             item = GetLoop();
 
@@ -44,11 +52,14 @@ internal sealed class ObjectPool<T>
 
     }
 
-    private void ReturnLoop(T ob) {
+    private void ReturnLoop(T ob)
+    {
 
-        foreach(ref Element element in _Items.AsSpan()) {
+        foreach(ref Element element in _Items.AsSpan())
+        {
 
-            if(element.Value is not null) {
+            if(element.Value is not null)
+            {
                 continue;
             }
 
@@ -59,15 +70,19 @@ internal sealed class ObjectPool<T>
 
     }
 
-    private T GetLoop() {
+    private T GetLoop()
+    {
 
-        foreach(ref Element element in _Items.AsSpan()) {
+        foreach(ref Element element in _Items.AsSpan())
+        {
 
-            if(element.Value is not { } current) {
+            if(element.Value is not { } current)
+            {
                 continue;
             }
 
-            if(current == Interlocked.CompareExchange(ref element.Value, null, current)) {
+            if(current == Interlocked.CompareExchange(ref element.Value, null, current))
+            {
                 return current;
             }
 
@@ -77,7 +92,8 @@ internal sealed class ObjectPool<T>
 
     }
 
-    private struct Element {
+    private struct Element
+    {
 
         internal T? Value;
 

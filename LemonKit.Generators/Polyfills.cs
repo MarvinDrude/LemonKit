@@ -1,18 +1,22 @@
 ﻿
-namespace System.Runtime.CompilerServices {
+namespace System.Runtime.CompilerServices
+{
 
     public class RequiredMemberAttribute : Attribute { }
-    public class CompilerFeatureRequiredAttribute : Attribute {
+    public class CompilerFeatureRequiredAttribute : Attribute
+    {
         public CompilerFeatureRequiredAttribute(string name) { }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
-    public sealed class SetsRequiredMembersAttribute : Attribute {
+    public sealed class SetsRequiredMembersAttribute : Attribute
+    {
     }
 
 }
 
-namespace System {
+namespace System
+{
     /// <summary>Represent a type can be used to index a collection either from the start or the end.</summary>
     /// <remarks>
     /// Index is used by the C# compiler to support the new index syntax
@@ -21,7 +25,8 @@ namespace System {
     /// int lastElement = someArray[^1]; // lastElement = 5
     /// </code>
     /// </remarks>
-    internal readonly struct Index : IEquatable<Index> {
+    internal readonly struct Index : IEquatable<Index>
+    {
         private readonly int _value;
 
         /// <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
@@ -31,8 +36,10 @@ namespace System {
         /// If the Index constructed from the end, index value 1 means pointing at the last element and index value 0 means pointing at beyond last element.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Index(int value, bool fromEnd = false) {
-            if(value < 0) {
+        public Index(int value, bool fromEnd = false)
+        {
+            if(value < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
             }
 
@@ -43,7 +50,8 @@ namespace System {
         }
 
         // The following private constructors mainly created for perf reason to avoid the checks
-        private Index(int value) {
+        private Index(int value)
+        {
             _value = value;
         }
 
@@ -56,8 +64,10 @@ namespace System {
         /// <summary>Create an Index from the start at the position indicated by the value.</summary>
         /// <param name="value">The index value from the start.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Index FromStart(int value) {
-            if(value < 0) {
+        public static Index FromStart(int value)
+        {
+            if(value < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
             }
 
@@ -67,8 +77,10 @@ namespace System {
         /// <summary>Create an Index from the end at the position indicated by the value.</summary>
         /// <param name="value">The index value from the end.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Index FromEnd(int value) {
-            if(value < 0) {
+        public static Index FromEnd(int value)
+        {
+            if(value < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
             }
 
@@ -76,11 +88,16 @@ namespace System {
         }
 
         /// <summary>Returns the index value.</summary>
-        public int Value {
-            get {
-                if(_value < 0) {
+        public int Value
+        {
+            get
+            {
+                if(_value < 0)
+                {
                     return ~_value;
-                } else {
+                }
+                else
+                {
                     return _value;
                 }
             }
@@ -98,9 +115,11 @@ namespace System {
         /// then used to index a collection will get out of range exception which will be same affect as the validation.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetOffset(int length) {
+        public int GetOffset(int length)
+        {
             var offset = _value;
-            if(IsFromEnd) {
+            if(IsFromEnd)
+            {
                 // offset = length - (~value)
                 // offset = length + (~(~value) + 1)
                 // offset = length + value + 1
@@ -125,7 +144,8 @@ namespace System {
         public static implicit operator Index(int value) => FromStart(value);
 
         /// <summary>Converts the value of the current Index object to its equivalent string representation.</summary>
-        public override string ToString() {
+        public override string ToString()
+        {
             if(IsFromEnd)
                 return "^" + ((uint)Value).ToString();
 
@@ -142,7 +162,8 @@ namespace System {
     /// int[] subArray2 = someArray[1..^0]; // { 2, 3, 4, 5 }
     /// </code>
     /// </remarks>
-    internal readonly struct Range : IEquatable<Range> {
+    internal readonly struct Range : IEquatable<Range>
+    {
         /// <summary>Represent the inclusive start index of the Range.</summary>
         public Index Start { get; }
 
@@ -152,7 +173,8 @@ namespace System {
         /// <summary>Construct a Range object using the start and end indexes.</summary>
         /// <param name="start">Represent the inclusive start index of the range.</param>
         /// <param name="end">Represent the exclusive end index of the range.</param>
-        public Range(Index start, Index end) {
+        public Range(Index start, Index end)
+        {
             Start = start;
             End = end;
         }
@@ -169,12 +191,14 @@ namespace System {
         public bool Equals(Range other) => other.Start.Equals(Start) && other.End.Equals(End);
 
         /// <summary>Returns the hash code for this instance.</summary>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return Start.GetHashCode() * 31 + End.GetHashCode();
         }
 
         /// <summary>Converts the value of the current Range object to its equivalent string representation.</summary>
-        public override string ToString() {
+        public override string ToString()
+        {
             return Start + ".." + End;
         }
 
@@ -195,7 +219,8 @@ namespace System {
         /// We validate the range is inside the length scope though.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (int Offset, int Length) GetOffsetAndLength(int length) {
+        public (int Offset, int Length) GetOffsetAndLength(int length)
+        {
             int start;
             var startIndex = Start;
             if(startIndex.IsFromEnd)
@@ -210,7 +235,8 @@ namespace System {
             else
                 end = endIndex.Value;
 
-            if((uint)end > (uint)length || (uint)start > (uint)end) {
+            if((uint)end > (uint)length || (uint)start > (uint)end)
+            {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
@@ -219,29 +245,37 @@ namespace System {
     }
 }
 
-namespace System.Runtime.CompilerServices {
-    internal static class RuntimeHelpers {
+namespace System.Runtime.CompilerServices
+{
+    internal static class RuntimeHelpers
+    {
         /// <summary>
         /// Slices the specified array using the specified range.
         /// </summary>
-        public static T[] GetSubArray<T>(T[] array, Range range) {
-            if(array == null) {
+        public static T[] GetSubArray<T>(T[] array, Range range)
+        {
+            if(array == null)
+            {
                 throw new ArgumentNullException(nameof(array));
             }
 
             (int offset, int length) = range.GetOffsetAndLength(array.Length);
 
-            if(default(T) != null || typeof(T[]) == array.GetType()) {
+            if(default(T) != null || typeof(T[]) == array.GetType())
+            {
                 // We know the type of the array to be exactly T[].
 
-                if(length == 0) {
+                if(length == 0)
+                {
                     return Array.Empty<T>();
                 }
 
                 var dest = new T[length];
                 Array.Copy(array, offset, dest, 0, length);
                 return dest;
-            } else {
+            }
+            else
+            {
                 // The array is actually a U[] where U:T.
                 var dest = (T[])Array.CreateInstance(array.GetType().GetElementType(), length);
                 Array.Copy(array, offset, dest, 0, length);

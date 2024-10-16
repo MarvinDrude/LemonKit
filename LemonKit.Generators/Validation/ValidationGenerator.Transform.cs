@@ -1,11 +1,13 @@
 ﻿
 namespace LemonKit.Generators.Validation;
 
-internal sealed partial class ValidationGenerator {
+internal sealed partial class ValidationGenerator
+{
 
     private static ValidationInfo? Transform(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -16,7 +18,8 @@ internal sealed partial class ValidationGenerator {
 
         ParameterInfo[]? extraParameters = null;
 
-        if(GetExtraValidationMethod(symbol) is { } extraValidate) {
+        if(GetExtraValidationMethod(symbol) is { } extraValidate)
+        {
             extraParameters = GetExtraValidationParameters(extraValidate, symbol);
         }
 
@@ -24,7 +27,7 @@ internal sealed partial class ValidationGenerator {
         string validatorName = GetValidatorName(symbol);
 
         token.ThrowIfCancellationRequested();
-        
+
         return new ValidationInfo(
             classInfo,
             hasExtraValidateMethod,
@@ -35,12 +38,14 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private static string GetValidatorName(INamedTypeSymbol symbol) {
+    private static string GetValidatorName(INamedTypeSymbol symbol)
+    {
 
         StringBuilder sb = new();
         sb.Append(symbol.Name);
 
-        while(symbol.ContainingType is { } containing) {
+        while(symbol.ContainingType is { } containing)
+        {
 
             sb.Append(containing.OriginalDefinition.Name);
             symbol = symbol.ContainingType;
@@ -51,34 +56,40 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private static ValidationPropertyInfo[] GetProperties(INamedTypeSymbol symbol, CancellationToken token) {
+    private static ValidationPropertyInfo[] GetProperties(INamedTypeSymbol symbol, CancellationToken token)
+    {
 
         var result = new List<ValidationPropertyInfo>();
         token.ThrowIfCancellationRequested();
 
-        foreach(var member in symbol.GetMembers()) {
+        foreach(var member in symbol.GetMembers())
+        {
 
-            if(member is not IPropertySymbol {
-                DeclaredAccessibility: Accessibility.Public,
-                IsStatic: false,
-                Name: not "EqualityContract",
-            } property) {
+            if(member is not IPropertySymbol
+                {
+                    DeclaredAccessibility: Accessibility.Public,
+                    IsStatic: false,
+                    Name: not "EqualityContract",
+                } property)
+            {
                 continue;
             }
 
-            if(symbol.TypeKind is not TypeKind.Interface 
-                && property.SetMethod is null) {
+            if(symbol.TypeKind is not TypeKind.Interface
+                && property.SetMethod is null)
+            {
                 continue;
             }
 
             token.ThrowIfCancellationRequested();
 
             if(GetPropertyValidation(
-                property.Name, 
+                property.Name,
                 property,
-                property.Type, 
+                property.Type,
                 property.NullableAnnotation,
-                token) is not { } target) {
+                token) is not { } target)
+            {
 
                 continue;
 
@@ -91,12 +102,13 @@ internal sealed partial class ValidationGenerator {
         }
 
         token.ThrowIfCancellationRequested();
-        return [..result];
+        return [.. result];
 
     }
 
     private static ValidationPropertyInfo? GetPropertyValidation(
-        string name, IPropertySymbol property, ITypeSymbol type, NullableAnnotation nullable, CancellationToken token) {
+        string name, IPropertySymbol property, ITypeSymbol type, NullableAnnotation nullable, CancellationToken token)
+    {
 
         var attributes = property.GetAttributes();
         var isReferenceType = type.IsReferenceType;
@@ -110,9 +122,11 @@ internal sealed partial class ValidationGenerator {
 
         List<ValidatePropertyInfo> validations = [];
 
-        foreach(var attribute in attributes) {
+        foreach(var attribute in attributes)
+        {
 
-            if(GetValidationFromAttribute(type, baseType, attribute) is not { } attrValidation) {
+            if(GetValidationFromAttribute(type, baseType, attribute) is not { } attrValidation)
+            {
                 continue;
             }
 
@@ -121,7 +135,8 @@ internal sealed partial class ValidationGenerator {
 
         }
 
-        if(validations is { Count: 0 }) {
+        if(validations is { Count: 0 })
+        {
             return null;
         }
 
@@ -134,36 +149,43 @@ internal sealed partial class ValidationGenerator {
             validations.Count > 0,
             isReferenceType,
             baseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            [..validations]);
+            [.. validations]);
 
     }
 
     private static ValidatePropertyInfo? GetValidationFromAttribute(
-        ITypeSymbol type, ITypeSymbol baseType, AttributeData attribute) {
+        ITypeSymbol type, ITypeSymbol baseType, AttributeData attribute)
+    {
 
-        if(attribute.AttributeClass is not { } attrClass) {
+        if(attribute.AttributeClass is not { } attrClass)
+        {
             return null;
         }
 
-        if(!attrClass.ImplementsValidationAttribute()) {
+        if(!attrClass.ImplementsValidationAttribute())
+        {
             return null;
         }
 
         if(attrClass.GetMembers()
             .OfType<IMethodSymbol>()
-            .Where(static method => method is {
+            .Where(static method => method is
+            {
                 DeclaredAccessibility: Accessibility.Public,
                 IsStatic: true,
                 Name: "Validate",
             })
-            .FirstOrDefault() is not {
+            .FirstOrDefault() is not
+            {
                 Parameters: [{ Type: { } targetParamType }, ..]
-            } validateMethod) {
+            } validateMethod)
+        {
             return null;
         }
 
         if(attribute.ConstructorArguments is not [.., { } errorCodeOb]
-            || errorCodeOb.Value is not string errorCode) {
+            || errorCodeOb.Value is not string errorCode)
+        {
             return null;
         }
 
@@ -172,24 +194,33 @@ internal sealed partial class ValidationGenerator {
         string[]? servicePath = null;
         List<ConstructorArgInfo> args = [];
 
-        if(attribute.ConstructorArguments is [{
-            Type: INamedTypeSymbol {
-                Name: "Type",
-                ContainingNamespace: {
-                    Name: "System",
-                    ContainingNamespace.IsGlobalNamespace: true
+        if(attribute.ConstructorArguments is [
+            {
+                Type: INamedTypeSymbol
+                {
+                    Name: "Type",
+                    ContainingNamespace:
+                    {
+                        Name: "System",
+                        ContainingNamespace.IsGlobalNamespace: true
+                    }
                 }
-            } } serviceArg, {
-                Type: IArrayTypeSymbol {
+            } serviceArg,
+            {
+                Type: IArrayTypeSymbol
+                {
                     ElementType.SpecialType: SpecialType.System_String
                 }
-            } servicePathArg, ..]) {
+            } servicePathArg, ..])
+        {
 
-            if(serviceArg.Value is not INamedTypeSymbol symbol) {
+            if(serviceArg.Value is not INamedTypeSymbol symbol)
+            {
                 return null;
             }
 
-            if(symbol.OriginalDefinition is not { } definition) {
+            if(symbol.OriginalDefinition is not { } definition)
+            {
                 return null;
             }
 
@@ -197,9 +228,11 @@ internal sealed partial class ValidationGenerator {
             serviceTypeFullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             List<string> serviceAccessPath = [];
 
-            foreach(var pathValue in servicePathArg.Values) {
+            foreach(var pathValue in servicePathArg.Values)
+            {
 
-                if(pathValue.Value is not string path) {
+                if(pathValue.Value is not string path)
+                {
                     return null;
                 }
 
@@ -207,15 +240,19 @@ internal sealed partial class ValidationGenerator {
 
             }
 
-            servicePath = [..serviceAccessPath];
+            servicePath = [.. serviceAccessPath];
 
-        } else {
+        }
+        else
+        {
 
             var arguments = attribute.ConstructorArguments;
 
-            foreach(var argument in arguments) {
+            foreach(var argument in arguments)
+            {
 
-                if(GetArgValue(argument) is not { } constArg) {
+                if(GetArgValue(argument) is not { } constArg)
+                {
                     return null;
                 }
 
@@ -226,7 +263,8 @@ internal sealed partial class ValidationGenerator {
         }
 
         List<ValidateParameterInfo> parameterInfos = [];
-        foreach(var parameter in validateMethod.Parameters) {
+        foreach(var parameter in validateMethod.Parameters)
+        {
 
             parameterInfos.Add(new ValidateParameterInfo(
                 parameter.Name,
@@ -240,25 +278,28 @@ internal sealed partial class ValidationGenerator {
             isService,
             serviceTypeFullName,
             servicePath,
-            [..parameterInfos],
-            [..args],
+            [.. parameterInfos],
+            [.. args],
             errorCode,
             ClassInfoBuilder.GetInfo(attrClass));
 
     }
 
-    private static ConstructorArgInfo? GetArgValue(TypedConstant constant) {
+    private static ConstructorArgInfo? GetArgValue(TypedConstant constant)
+    {
 
         return new ConstructorArgInfo(
             constant.GetAsString());
 
     }
 
-    private static IMethodSymbol? GetExtraValidationMethod(INamedTypeSymbol symbol) {
+    private static IMethodSymbol? GetExtraValidationMethod(INamedTypeSymbol symbol)
+    {
 
         return symbol.GetMembers()
             .OfType<IMethodSymbol>()
-            .FirstOrDefault(static method => method is {
+            .FirstOrDefault(static method => method is
+            {
                 Name: "ExtraValidate",
                 IsStatic: true,
                 ReturnsVoid: true,
@@ -267,21 +308,26 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private static ParameterInfo[]? GetExtraValidationParameters(IMethodSymbol symbol, INamedTypeSymbol classSymbol) {
+    private static ParameterInfo[]? GetExtraValidationParameters(IMethodSymbol symbol, INamedTypeSymbol classSymbol)
+    {
 
         List<ParameterInfo> result = [];
         bool foundResult = false;
         bool foundInput = false;
 
-        for(int e = 0; e < symbol.Parameters.Length; e++) {
+        for(int e = 0; e < symbol.Parameters.Length; e++)
+        {
 
             var parameter = symbol.Parameters[e];
 
-            if(parameter.Type is INamedTypeSymbol checkSymbol) {
-                if(checkSymbol.IsValidationResult()) {
+            if(parameter.Type is INamedTypeSymbol checkSymbol)
+            {
+                if(checkSymbol.IsValidationResult())
+                {
                     foundResult = true;
                 }
-                if(SymbolEqualityComparer.Default.Equals(checkSymbol, classSymbol)) {
+                if(SymbolEqualityComparer.Default.Equals(checkSymbol, classSymbol))
+                {
                     foundInput = true;
                 }
             }
@@ -294,7 +340,7 @@ internal sealed partial class ValidationGenerator {
 
         }
 
-        return (foundResult && foundInput) ? [..result] : null;
+        return (foundResult && foundInput) ? [.. result] : null;
 
     }
 

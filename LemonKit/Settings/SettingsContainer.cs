@@ -3,22 +3,29 @@
 namespace LemonKit.Settings;
 
 public sealed class SettingsContainer<TOptions> : ISettingsContainer
-    where TOptions : class, ISettings {
+    where TOptions : class, ISettings
+{
 
-    public EnvironmentSettingsProvider? EnvironmentProvider {
-        get {
+    public EnvironmentSettingsProvider? EnvironmentProvider
+    {
+        get
+        {
             return _EnvironmentProvider;
         }
-        internal set {
+        internal set
+        {
             _EnvironmentProvider = value;
         }
     }
 
-    public Dictionary<string, ISettingsProvider> FileProviders {
-        get {
+    public Dictionary<string, ISettingsProvider> FileProviders
+    {
+        get
+        {
             return _FileProviders;
         }
-        internal set {
+        internal set
+        {
             _FileProviders = value;
         }
     }
@@ -30,7 +37,8 @@ public sealed class SettingsContainer<TOptions> : ISettingsContainer
 
     private TOptions _Current = default!;
 
-    public SettingsContainer() {
+    public SettingsContainer()
+    {
 
     }
 
@@ -38,13 +46,15 @@ public sealed class SettingsContainer<TOptions> : ISettingsContainer
     /// Atomic creation and assignment of new version after a provider was updated
     /// </summary>
     /// <param name="provider"></param>
-    public void OnUpdate(ISettingsProvider provider) {
+    public void OnUpdate(ISettingsProvider provider)
+    {
 
         Interlocked.Exchange(ref _Current, (TOptions)TOptions.Create(this));
 
     }
 
-    internal async Task Init() {
+    internal async Task Init()
+    {
 
         await Reload(); // will be called in startup builder -> shouldn't lead to problems
         _Current = (TOptions)TOptions.Create(this);
@@ -55,15 +65,18 @@ public sealed class SettingsContainer<TOptions> : ISettingsContainer
     /// Reload all providers
     /// </summary>
     /// <returns></returns>
-    private async Task Reload() {
+    private async Task Reload()
+    {
 
         List<Task> tasks = [];
 
-        if(_EnvironmentProvider is not null) {
+        if(_EnvironmentProvider is not null)
+        {
             tasks.Add(_EnvironmentProvider.Reload());
         }
 
-        foreach(var (_, fileProvider) in _FileProviders) {
+        foreach(var (_, fileProvider) in _FileProviders)
+        {
             tasks.Add(fileProvider.Reload());
         }
 

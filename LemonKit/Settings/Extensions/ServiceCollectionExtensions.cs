@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Settings.Extensions;
 
-public static class ServiceCollectionExtensions {
+public static class ServiceCollectionExtensions
+{
 
     /// <summary>
     /// Add a settings container for a specific settings class
@@ -9,7 +10,8 @@ public static class ServiceCollectionExtensions {
     /// <typeparam name="T"></typeparam>
     /// <param name="configure"></param>
     public static void AddSettingsContainer<T>(this IServiceCollection services, Action<SettingsBuilder<T>> configure)
-        where T : class, ISettings {
+        where T : class, ISettings
+    {
 
         var builder = new SettingsBuilder<T>();
         configure.Invoke(builder);

@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Generators.Collections;
 
-internal struct ArrayBuilder<T> : IDisposable {
+internal struct ArrayBuilder<T> : IDisposable
+{
 
     private static readonly ObjectPool<ArrayWriter> _WriterPool = new(static () => new ArrayWriter(), 64);
 
@@ -13,43 +14,53 @@ internal struct ArrayBuilder<T> : IDisposable {
 
     private ArrayWriter Writer { get; set; }
 
-    public ArrayBuilder() {
+    public ArrayBuilder()
+    {
 
         Writer = _WriterPool.Get();
 
     }
 
-    public readonly Span<T> Advance(int size) {
+    public readonly Span<T> Advance(int size)
+    {
         return Writer.Advance(size);
     }
 
-    public readonly void Add(T item) {
+    public readonly void Add(T item)
+    {
         Writer.Add(item);
     }
 
-    public readonly void AddRange(ReadOnlySpan<T> items) {
+    public readonly void AddRange(ReadOnlySpan<T> items)
+    {
         Writer.AddRange(items);
     }
 
-    public readonly void Insert(int index, T item) {
+    public readonly void Insert(int index, T item)
+    {
         Writer.Insert(index, item);
     }
 
-    public readonly T[] ToArray() {
+    public readonly T[] ToArray()
+    {
         return Writer.Span.ToArray();
     }
 
-    public override readonly string ToString() {
+    public override readonly string ToString()
+    {
         return Writer.Span.ToString();
     }
 
-    public readonly void Clear() {
+    public readonly void Clear()
+    {
         Writer.Clear();
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
 
-        if(_Disposed) {
+        if(_Disposed)
+        {
             return;
         }
 
@@ -60,20 +71,23 @@ internal struct ArrayBuilder<T> : IDisposable {
 
     }
 
-    private sealed class ArrayWriter {
+    private sealed class ArrayWriter
+    {
 
         public int Count => Index;
 
         public T this[int index] => Span[Index];
 
-        public ReadOnlySpan<T> Span {
+        public ReadOnlySpan<T> Span
+        {
             get => new(Contents, 0, Index);
         }
 
         private T[] Contents;
         private int Index;
 
-        public ArrayWriter() {
+        public ArrayWriter()
+        {
 
             uint size = (uint)(typeof(T) == typeof(char) ?
                 1024 : 16);
@@ -82,14 +96,16 @@ internal struct ArrayBuilder<T> : IDisposable {
 
         }
 
-        public void Add(T value) {
+        public void Add(T value)
+        {
 
             EnsureCapacity(1);
             Contents[Index++] = value;
 
         }
 
-        public Span<T> Advance(int size) {
+        public Span<T> Advance(int size)
+        {
 
             EnsureCapacity(size);
             Span<T> span = Contents.AsSpan(Index, size);
@@ -100,15 +116,18 @@ internal struct ArrayBuilder<T> : IDisposable {
 
         }
 
-        public void Insert(int index, T item) {
+        public void Insert(int index, T item)
+        {
 
-            if(index < 0 || index > Index) {
+            if(index < 0 || index > Index)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             EnsureCapacity(1);
 
-            if(Index < index) {
+            if(Index < index)
+            {
                 Array.Copy(Contents, index, Contents, index + 1, Index - index);
             }
 
@@ -117,7 +136,8 @@ internal struct ArrayBuilder<T> : IDisposable {
 
         }
 
-        public void AddRange(ReadOnlySpan<T> items) {
+        public void AddRange(ReadOnlySpan<T> items)
+        {
 
             EnsureCapacity(items.Length);
             items.CopyTo(Contents.AsSpan(Index));
@@ -126,22 +146,26 @@ internal struct ArrayBuilder<T> : IDisposable {
 
         }
 
-        public void Clear() {
+        public void Clear()
+        {
 
             Contents.AsSpan(0, Index).Clear();
             Index = 0;
 
         }
 
-        private void EnsureCapacity(int capacity) {
+        private void EnsureCapacity(int capacity)
+        {
 
-            if(capacity > Contents.Length - Index) {
+            if(capacity > Contents.Length - Index)
+            {
                 ResizeContents(capacity);
             }
 
         }
 
-        private void ResizeContents(int capacity) {
+        private void ResizeContents(int capacity)
+        {
 
             int minCapacity = Index + capacity;
             int newCapacity = Math.Max(minCapacity, Contents.Length * 2);

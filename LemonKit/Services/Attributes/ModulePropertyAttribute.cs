@@ -8,7 +8,8 @@ namespace LemonKit.Services.Attributes;
 /// </para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class ModulePropertyAttribute : Attribute {
+public sealed class ModulePropertyAttribute : Attribute
+{
 
     private Type _Type;
 
@@ -17,7 +18,8 @@ public sealed class ModulePropertyAttribute : Attribute {
     /// </summary>
     /// <param name="moduleImplementationType">Implementation Type (must be inside the same project and have the module attribute)</param>
     public ModulePropertyAttribute(
-        Type moduleImplementationType) {
+        Type moduleImplementationType)
+    {
 
         _Type = moduleImplementationType;
 

@@ -1,14 +1,17 @@
 ﻿
 namespace LemonKit.Generators.Processors;
 
-public partial class ProcessorGenerator {
+public partial class ProcessorGenerator
+{
 
     private static void RenderProcedure(
         SourceProductionContext context,
-        ProcedureClassInfo? procedureInfo) {
+        ProcedureClassInfo? procedureInfo)
+    {
 
         var token = context.CancellationToken;
-        if(procedureInfo is not { } procedure) {
+        if(procedureInfo is not { } procedure)
+        {
             return;
         }
 
@@ -23,7 +26,8 @@ public partial class ProcessorGenerator {
         cw.WriteLine($"using LemonKit.Processors;");
         cw.WriteLine($"using Microsoft.Extensions.DependencyInjection;");
 
-        if(procedure.ClassInfo.NameSpace is { } nameSpace) {
+        if(procedure.ClassInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace};");
@@ -44,17 +48,21 @@ public partial class ProcessorGenerator {
         cw.WriteLine();
         List<string> parameterNames = [];
 
-        foreach(var parameter in procedure.Parameters) {
+        foreach(var parameter in procedure.Parameters)
+        {
 
-            if(parameter.Type is "global::System.IServiceProvider") {
+            if(parameter.Type is "global::System.IServiceProvider")
+            {
                 parameterNames.Add("serviceProvider");
                 continue;
             }
-            if(parameter.Type is "global::System.Threading.CancellationToken") {
+            if(parameter.Type is "global::System.Threading.CancellationToken")
+            {
                 parameterNames.Add("cancellationToken");
                 continue;
             }
-            if(parameter.Type == procedure.InputType.Name) {
+            if(parameter.Type == procedure.InputType.Name)
+            {
                 parameterNames.Add("request");
                 continue;
             }
@@ -83,7 +91,8 @@ public partial class ProcessorGenerator {
     private static void RenderExtensions(
         SourceProductionContext context,
         ImmutableArray<ProcessorInfo?> processors,
-        ImmutableArray<EquatableArray<ProcedureInfo>?> procedures) {
+        ImmutableArray<EquatableArray<ProcedureInfo>?> procedures)
+    {
 
         var token = context.CancellationToken;
 
@@ -112,15 +121,18 @@ public partial class ProcessorGenerator {
         cw.WriteLine();
 
         List<ProcessorInfo> apis = [];
-        foreach(var processorInfo in processors) {
+        foreach(var processorInfo in processors)
+        {
 
-            if(processorInfo is not { } processor) {
+            if(processorInfo is not { } processor)
+            {
                 continue;
             }
 
             cw.WriteLine($"collection.AddSingleton<{processor.ClassInfo.FullTypeName}>();");
 
-            if(processor.ApiInfo is not null) {
+            if(processor.ApiInfo is not null)
+            {
                 apis.Add(processor);
             }
 
@@ -140,9 +152,11 @@ public partial class ProcessorGenerator {
 
         cw.WriteLine($"var sb = new StringBuilder();");
 
-        foreach(var processorInfo in processors) {
+        foreach(var processorInfo in processors)
+        {
 
-            if(processorInfo is not { } processor) {
+            if(processorInfo is not { } processor)
+            {
                 continue;
             }
 
@@ -166,9 +180,12 @@ public partial class ProcessorGenerator {
         token.ThrowIfCancellationRequested();
         context.AddSource($"{"LemonKit.Extensions"}.{"IServiceCollectionExtensions"}.g.cs", cw.ToString());
 
-        if(apis is { Count: > 0 }) {
+        if(apis is { Count: > 0 })
+        {
             RenderApiExtensions(context, apis, token);
-        } else {
+        }
+        else
+        {
             context.AddSource($"{"LemonKit.Extensions"}.{"WebApplicationExtensions"}.g.cs", string.Empty);
         }
 
@@ -177,7 +194,8 @@ public partial class ProcessorGenerator {
     private static void RenderApiExtensions(
         SourceProductionContext context,
         List<ProcessorInfo> processors,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         using var cw = new CodeWriter();
 
@@ -202,9 +220,11 @@ public partial class ProcessorGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        foreach(var processor in processors) {
+        foreach(var processor in processors)
+        {
 
-            if(processor.ApiInfo is not { }) {
+            if(processor.ApiInfo is not { })
+            {
                 continue;
             }
 

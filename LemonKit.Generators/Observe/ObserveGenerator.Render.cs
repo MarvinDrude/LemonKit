@@ -1,16 +1,19 @@
 ﻿
 namespace LemonKit.Generators.Observe;
 
-internal sealed partial class ObserveGenerator {
+internal sealed partial class ObserveGenerator
+{
 
     private static void Render(
         SourceProductionContext context,
-        ObserveInfo? observeInfo) {
+        ObserveInfo? observeInfo)
+    {
 
         var token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
 
-        if(observeInfo is not { } observe) {
+        if(observeInfo is not { } observe)
+        {
             return;
         }
 
@@ -26,7 +29,8 @@ internal sealed partial class ObserveGenerator {
         cw.WriteLine($"using System.Diagnostics;");
         cw.WriteLine($"using System.Diagnostics.Metrics;");
 
-        if(observe.ClassInfo.NameSpace is { } nameSpace) {
+        if(observe.ClassInfo.NameSpace is { } nameSpace)
+        {
 
             cw.WriteLine();
             cw.WriteLine($"namespace {nameSpace};");
@@ -83,7 +87,8 @@ internal sealed partial class ObserveGenerator {
     private static void RenderContainer(
         SourceProductionContext context,
         ImmutableArray<ObserveInfo?> observeInfos,
-        string assemblyName) {
+        string assemblyName)
+    {
 
         var token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
@@ -108,9 +113,11 @@ internal sealed partial class ObserveGenerator {
         cw.UpIndent();
         cw.WriteLine();
 
-        foreach(var observeInfo in observeInfos) {
+        foreach(var observeInfo in observeInfos)
+        {
 
-            if(observeInfo is not { } observe) {
+            if(observeInfo is not { } observe)
+            {
                 continue;
             }
 

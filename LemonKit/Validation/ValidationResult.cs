@@ -4,7 +4,8 @@ namespace LemonKit.Validation;
 /// <summary>
 /// Represents the result of a validation request
 /// </summary>
-public sealed class ValidationResult {
+public sealed class ValidationResult
+{
 
     /// <summary>
     /// Dictionary of all error codes by property name
@@ -33,9 +34,11 @@ public sealed class ValidationResult {
     /// <param name="errorCode"></param>
     public void AddErrorCode(
         string propertyName,
-        string errorCode) {
+        string errorCode)
+    {
 
-        if(!_ErrorCodes.TryGetValue(propertyName, out var codes)) {
+        if(!_ErrorCodes.TryGetValue(propertyName, out var codes))
+        {
             codes = _ErrorCodes[propertyName] = [];
         }
 
@@ -49,7 +52,8 @@ public sealed class ValidationResult {
     /// <param name="propertyName"></param>
     public void SetErrorCodes(
         string propertyName,
-        ValidationErrorCodes errorCodes) {
+        ValidationErrorCodes errorCodes)
+    {
 
         _ErrorCodes[propertyName] = errorCodes;
 
@@ -60,7 +64,8 @@ public sealed class ValidationResult {
 /// <summary>
 /// List of all error codes for specific property
 /// </summary>
-public sealed class ValidationErrorCodes : HashSet<string> {
+public sealed class ValidationErrorCodes : HashSet<string>
+{
 
 }
 

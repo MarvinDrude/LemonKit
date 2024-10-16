@@ -1,9 +1,11 @@
 ﻿
 namespace LemonKit.Generators.Processors;
 
-public partial class ProcessorGenerator {
+public partial class ProcessorGenerator
+{
 
-    private readonly record struct ProcedureInfo {
+    private readonly record struct ProcedureInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -21,7 +23,8 @@ public partial class ProcessorGenerator {
             string typeNoGenerics,
             string? inputType,
             string? outputType,
-            ParameterInfo[] constructorParams) {
+            ParameterInfo[] constructorParams)
+        {
 
             ClassInfo = classInfo;
 
@@ -37,7 +40,8 @@ public partial class ProcessorGenerator {
 
     }
 
-    private readonly record struct ProcessorInfo {
+    private readonly record struct ProcessorInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -58,7 +62,8 @@ public partial class ProcessorGenerator {
             bool useAssemblyProcedures,
             ProcedureInfo[]? procedures,
             ParameterInfo[] parameters,
-            ProcessorApiInfo? apiInfo) {
+            ProcessorApiInfo? apiInfo)
+        {
 
             ClassInfo = classInfo;
 
@@ -76,7 +81,8 @@ public partial class ProcessorGenerator {
 
     }
 
-    private readonly record struct ProcessorApiInfo {
+    private readonly record struct ProcessorApiInfo
+    {
 
         public readonly string HttpMethod;
         public readonly string Path;
@@ -92,7 +98,8 @@ public partial class ProcessorGenerator {
             bool allowAnonymous,
             bool authorize,
             string? authPolicy,
-            bool hasConfigure) {
+            bool hasConfigure)
+        {
 
             HttpMethod = httpMethod;
             Path = path;
@@ -106,7 +113,8 @@ public partial class ProcessorGenerator {
 
     }
 
-    private readonly record struct ProcedureClassInfo {
+    private readonly record struct ProcedureClassInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -119,7 +127,8 @@ public partial class ProcessorGenerator {
             ClassInfo classInfo,
             RTypeInfo inputType,
             RTypeInfo outputType,
-            ParameterInfo[] parameters) {
+            ParameterInfo[] parameters)
+        {
 
             ClassInfo = classInfo;
 

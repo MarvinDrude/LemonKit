@@ -5,7 +5,8 @@ namespace LemonKit.Observe.Attributes;
 /// Used to mark a partial class that should get activity and optionally 
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class ObserveAttribute : Attribute {
+public sealed class ObserveAttribute : Attribute
+{
 
     private string _ActivitySourceName;
     private string? _MeterName;
@@ -20,7 +21,8 @@ public sealed class ObserveAttribute : Attribute {
     public ObserveAttribute(
         string activitySourceName,
         string? meterName = null,
-        string? version = null) {
+        string? version = null)
+    {
 
         _ActivitySourceName = activitySourceName;
         _MeterName = meterName;

@@ -6,7 +6,8 @@ namespace LemonKit.Validation.Attributes;
 /// <summary>
 /// Marks a property that the value should not contain any of the provided values
 /// </summary>
-public sealed class NotContainsAttribute : ValidationAttribute {
+public sealed class NotContainsAttribute : ValidationAttribute
+{
 
     [SuppressMessage("IDE", "IDE0052", Justification = "Used by code generators")]
     private readonly object[]? _Elements;
@@ -17,7 +18,8 @@ public sealed class NotContainsAttribute : ValidationAttribute {
     /// <param name="errorCode"></param>
     public NotContainsAttribute(
         object[] elements,
-        string errorCode = ValidationDefaultCodes.ErrorNotContains) {
+        string errorCode = ValidationDefaultCodes.ErrorNotContains)
+    {
 
         _ErrorCode = errorCode;
         _Elements = elements;
@@ -33,7 +35,8 @@ public sealed class NotContainsAttribute : ValidationAttribute {
     public NotContainsAttribute(
         Type serviceType,
         string[] accessPath,
-        string errorCode = ValidationDefaultCodes.ErrorNotContains) {
+        string errorCode = ValidationDefaultCodes.ErrorNotContains)
+    {
 
         _Type = serviceType;
         _AccessPath = accessPath;
@@ -43,17 +46,21 @@ public sealed class NotContainsAttribute : ValidationAttribute {
     }
 
     public static bool Validate<T>(T target, object[] elements)
-        where T : ICollection {
+        where T : ICollection
+    {
 
         HashSet<object> elementSet = new(elements);
 
-        if(target.Count < elementSet.Count) {
+        if(target.Count < elementSet.Count)
+        {
             return false;
         }
 
-        foreach(var item in target) {
+        foreach(var item in target)
+        {
 
-            if(elementSet.Contains(item)) {
+            if(elementSet.Contains(item))
+            {
                 return false;
             }
 
@@ -63,7 +70,8 @@ public sealed class NotContainsAttribute : ValidationAttribute {
 
     }
 
-    public static string TemplateError<T>(string errorCodeTemplate, T[] elements) {
+    public static string TemplateError<T>(string errorCodeTemplate, T[] elements)
+    {
 
         return errorCodeTemplate
             .Replace("{ToString}", string.Join(",", elements.Select(x => x?.ToString())));

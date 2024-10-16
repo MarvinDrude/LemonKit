@@ -5,14 +5,16 @@ namespace LemonKit.Settings.Builders;
 /// Used to build a settings container for services
 /// </summary>
 public sealed class SettingsBuilder<T>
-    where T : class, ISettings {
+    where T : class, ISettings
+{
 
     private EnvironmentSettingsProvider? _EnvironmentProvider;
     private SettingsContainer<T> _Container;
 
     private Dictionary<string, ISettingsProvider> _FileProviders;
 
-    public SettingsBuilder() {
+    public SettingsBuilder()
+    {
 
         _Container = new SettingsContainer<T>();
         _FileProviders = [];
@@ -22,9 +24,11 @@ public sealed class SettingsBuilder<T>
     /// <summary>
     /// Adds environment variables, keep in mind they only refresh after restart
     /// </summary>
-    public SettingsBuilder<T> AddEnvironmentVariables() {
+    public SettingsBuilder<T> AddEnvironmentVariables()
+    {
 
-        _EnvironmentProvider = new EnvironmentSettingsProvider() {
+        _EnvironmentProvider = new EnvironmentSettingsProvider()
+        {
             _SettingsContainer = _Container
         };
         return this;
@@ -39,13 +43,15 @@ public sealed class SettingsBuilder<T>
     /// <param name="watch"></param>
     /// <returns></returns>
     public SettingsBuilder<T> AddJsonFile<E>(
-        string fileName, 
-        JsonSerializerContext jsonContext, 
-        string? folderPath = null, 
+        string fileName,
+        JsonSerializerContext jsonContext,
+        string? folderPath = null,
         bool watch = true)
-        where E : class {
+        where E : class
+    {
 
-        _FileProviders[fileName] = new JsonFileProvider<E>(fileName, jsonContext, folderPath, watch) { 
+        _FileProviders[fileName] = new JsonFileProvider<E>(fileName, jsonContext, folderPath, watch)
+        {
             _SettingsContainer = _Container
         };
         return this;
@@ -56,7 +62,8 @@ public sealed class SettingsBuilder<T>
     /// Sets the actual providers of the container
     /// </summary>
     /// <returns></returns>
-    internal SettingsContainer<T> Build() {
+    internal SettingsContainer<T> Build()
+    {
 
         _Container.EnvironmentProvider = _EnvironmentProvider;
         _Container.FileProviders = _FileProviders;

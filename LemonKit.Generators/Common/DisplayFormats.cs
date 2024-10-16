@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Generators.Common;
 
-internal static class DisplayFormats {
+internal static class DisplayFormats
+{
 
     public static readonly SymbolDisplayFormat NonGenericFullFormat = new(
         typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,

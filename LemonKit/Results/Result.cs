@@ -5,7 +5,8 @@
 /// </summary>
 /// <typeparam name="TSuccess">Type of the success state</typeparam>
 /// <typeparam name="TError">Type of the error state</typeparam>
-public sealed class Result<TSuccess, TError> : IEquatable<Result<TSuccess, TError>> {
+public sealed class Result<TSuccess, TError> : IEquatable<Result<TSuccess, TError>>
+{
 
     [MemberNotNullWhen(false, nameof(_Value), nameof(Value))]
     [MemberNotNullWhen(true, nameof(_Error), nameof(Error))]
@@ -23,14 +24,16 @@ public sealed class Result<TSuccess, TError> : IEquatable<Result<TSuccess, TErro
 
     private readonly ResultType _Type;
 
-    public Result(TSuccess value) {
+    public Result(TSuccess value)
+    {
 
         _Type = ResultType.Success;
         _Value = value;
 
     }
 
-    public Result(TError error) {
+    public Result(TError error)
+    {
 
         _Type = ResultType.Error;
         _Error = error;
@@ -47,7 +50,8 @@ public sealed class Result<TSuccess, TError> : IEquatable<Result<TSuccess, TErro
     public override bool Equals(object? obj) => obj is Result<TSuccess, TError> res && Equals(res);
     public override string ToString() => (IsError ? _Error.ToString() : _Value.ToString()) ?? "(null)";
 
-    public bool Equals(Result<TSuccess, TError>? other) {
+    public bool Equals(Result<TSuccess, TError>? other)
+    {
 
         return (
             other is { } check && (
@@ -58,14 +62,16 @@ public sealed class Result<TSuccess, TError> : IEquatable<Result<TSuccess, TErro
 
     }
 
-    public void Deconstruct(out bool success, out TSuccess? value) {
+    public void Deconstruct(out bool success, out TSuccess? value)
+    {
 
         success = IsSuccess;
         value = _Value;
 
     }
 
-    public void Deconstruct(out bool success, out TSuccess? value, out TError? error) {
+    public void Deconstruct(out bool success, out TSuccess? value, out TError? error)
+    {
 
         success = IsSuccess;
         value = _Value;
@@ -73,7 +79,8 @@ public sealed class Result<TSuccess, TError> : IEquatable<Result<TSuccess, TErro
 
     }
 
-    private enum ResultType : byte {
+    private enum ResultType : byte
+    {
 
         Success = 1,
         Error = 2

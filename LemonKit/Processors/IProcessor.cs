@@ -6,7 +6,8 @@ namespace LemonKit.Processors;
 /// </summary>
 /// <typeparam name="TInput"></typeparam>
 /// <typeparam name="TOutput"></typeparam>
-public interface IProcessor<TInput, TOutput> {
+public interface IProcessor<TInput, TOutput>
+{
 
     /// <summary>
     /// Will process inputs and will return a task of type output. Does include procedures that might run.

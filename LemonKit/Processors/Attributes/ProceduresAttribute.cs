@@ -11,11 +11,13 @@ namespace LemonKit.Processors.Attributes;
 /// </para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class)]
-public sealed class ProceduresAttribute : Attribute {
+public sealed class ProceduresAttribute : Attribute
+{
 
     public Type[] Types { get; }
 
-    public ProceduresAttribute(params Type[] types) {
+    public ProceduresAttribute(params Type[] types)
+    {
 
         Types = types;
 

@@ -1,17 +1,23 @@
 ﻿
 namespace LemonKit.Generators.Extensions;
 
-internal static class ITypeSymbolExtensions {
+internal static class ITypeSymbolExtensions
+{
 
-    public static bool IsTaskOneGeneric(this ITypeSymbol symbol) {
+    public static bool IsTaskOneGeneric(this ITypeSymbol symbol)
+    {
 
-        return symbol is INamedTypeSymbol {
+        return symbol is INamedTypeSymbol
+        {
             MetadataName: "Task`1",
-            ContainingNamespace: { 
+            ContainingNamespace:
+            {
                 Name: "Tasks",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Threading",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "System",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
@@ -21,13 +27,17 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static bool IsProcedureWithTwoGenerics(this ITypeSymbol symbol) {
+    public static bool IsProcedureWithTwoGenerics(this ITypeSymbol symbol)
+    {
 
-        return symbol is {
+        return symbol is
+        {
             MetadataName: "Procedure`2",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Processors",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "LemonKit",
                     ContainingNamespace.IsGlobalNamespace: true
                 }
@@ -36,20 +46,25 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static bool IsProcedure(this INamedTypeSymbol symbol) {
+    public static bool IsProcedure(this INamedTypeSymbol symbol)
+    {
 
-        return symbol.IsProcedureWithTwoGenerics() || 
+        return symbol.IsProcedureWithTwoGenerics() ||
             (symbol.BaseType is not null && symbol.BaseType.OriginalDefinition.IsProcedure());
 
     }
 
-    public static bool IsCancellationToken(this ITypeSymbol symbol) {
+    public static bool IsCancellationToken(this ITypeSymbol symbol)
+    {
 
-        return symbol is INamedTypeSymbol {
+        return symbol is INamedTypeSymbol
+        {
             Name: "CancellationToken",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Threading",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "System",
                     ContainingNamespace.IsGlobalNamespace: true
                 }
@@ -58,7 +73,8 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static RTypeInfo GetRTypeInfo(this ITypeSymbol symbol) {
+    public static RTypeInfo GetRTypeInfo(this ITypeSymbol symbol)
+    {
 
         var fullTypeName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         var baseTypes = new List<string>();
@@ -67,31 +83,37 @@ internal static class ITypeSymbolExtensions {
 
         return new RTypeInfo(
             fullTypeName,
-            [..baseTypes]);
+            [.. baseTypes]);
 
     }
 
-    private static void AddBaseTypes(ITypeSymbol symbol, List<string> bases) {
+    private static void AddBaseTypes(ITypeSymbol symbol, List<string> bases)
+    {
 
         if(symbol.SpecialType is SpecialType.System_Collections_IEnumerable
-            or SpecialType.System_Object) {
+            or SpecialType.System_Object)
+        {
             return;
         }
 
         bases.Add(symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
-        if(symbol.BaseType is not null) {
+        if(symbol.BaseType is not null)
+        {
             AddBaseTypes(symbol.BaseType, bases);
         }
 
-        foreach(var interFace in symbol.Interfaces) {
+        foreach(var interFace in symbol.Interfaces)
+        {
             AddBaseTypes(interFace, bases);
         }
 
     }
 
-    public static IEnumerable<ISymbol> GetMembersWithBase(this ITypeSymbol symbol) {
+    public static IEnumerable<ISymbol> GetMembersWithBase(this ITypeSymbol symbol)
+    {
 
-        if(symbol is { TypeKind: TypeKind.Interface }) {
+        if(symbol is { TypeKind: TypeKind.Interface })
+        {
 
             return symbol.AllInterfaces
                 .SelectMany(x => x.GetMembers())
@@ -105,11 +127,13 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static IEnumerable<ITypeSymbol> GetBaseTypesWithSelf(this ITypeSymbol symbol) {
+    public static IEnumerable<ITypeSymbol> GetBaseTypesWithSelf(this ITypeSymbol symbol)
+    {
 
         ITypeSymbol? current = symbol;
 
-        while(current is not null) {
+        while(current is not null)
+        {
 
             yield return current;
             current = current.BaseType;
@@ -118,22 +142,28 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static bool ImplementsValidationAttribute(this INamedTypeSymbol symbol) {
+    public static bool ImplementsValidationAttribute(this INamedTypeSymbol symbol)
+    {
 
-        return symbol.IsValidationAttribute() 
+        return symbol.IsValidationAttribute()
             || (symbol.BaseType is not null && ImplementsValidationAttribute(symbol.BaseType.OriginalDefinition));
 
     }
 
-    public static bool IsValidationAttribute(this INamedTypeSymbol symbol) {
+    public static bool IsValidationAttribute(this INamedTypeSymbol symbol)
+    {
 
-        return symbol is INamedTypeSymbol {
+        return symbol is INamedTypeSymbol
+        {
             Name: "ValidationAttribute",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Attributes",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Validation",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "LemonKit",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
@@ -143,13 +173,17 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static bool IsValidationResult(this INamedTypeSymbol symbol) {
+    public static bool IsValidationResult(this INamedTypeSymbol symbol)
+    {
 
-        return symbol is INamedTypeSymbol {
+        return symbol is INamedTypeSymbol
+        {
             Name: "ValidationResult",
-            ContainingNamespace: {
-            Name: "Validation",
-                ContainingNamespace: {
+            ContainingNamespace:
+            {
+                Name: "Validation",
+                ContainingNamespace:
+                {
                     Name: "LemonKit",
                     ContainingNamespace.IsGlobalNamespace: true
                 }
@@ -158,7 +192,8 @@ internal static class ITypeSymbolExtensions {
 
     }
 
-    public static bool IsNullableType(this ITypeSymbol symbol) {
+    public static bool IsNullableType(this ITypeSymbol symbol)
+    {
 
         return symbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
 

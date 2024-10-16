@@ -4,7 +4,8 @@ namespace LemonKit.Processors.Apis;
 /// <summary>
 /// Base for all JSON responses
 /// </summary>
-public class ResponseBase {
+public class ResponseBase
+{
 
     /// <summary>
     /// Indicates the state of the reponse
@@ -28,7 +29,8 @@ public class ResponseBase {
     /// <param name="errorCodes"></param>
     /// <returns></returns>
     public T SetErrorCodes<T>(Dictionary<string, string[]> errorCodes)
-        where T : ResponseBase {
+        where T : ResponseBase
+    {
 
         ErrorCodes = errorCodes;
         return (T)this;
@@ -42,7 +44,8 @@ public class ResponseBase {
     /// <param name="context"></param>
     /// <returns></returns>
     public T ApplyToContext<T>(HttpContext context)
-        where T : ResponseBase {
+        where T : ResponseBase
+    {
 
         context.Response.StatusCode = Code;
         return (T)this;
@@ -54,7 +57,8 @@ public class ResponseBase {
     /// </summary>
     /// <returns></returns>
     public static T CreateCancelledResponse<T>(T instance)
-        where T : ResponseBase {
+        where T : ResponseBase
+    {
 
         instance.Code = 400;
         instance.ErrorMessage = "[ABORT] Request was cancelled.";
@@ -68,7 +72,8 @@ public class ResponseBase {
     /// </summary>
     /// <returns></returns>
     public static T CreateInvalidRequest<T>(T instance, Dictionary<string, string[]>? errorCodes = null)
-        where T : ResponseBase {
+        where T : ResponseBase
+    {
 
         instance.Code = 400;
         instance.ErrorMessage = "[INVALID] Request data is not valid.";
@@ -84,7 +89,8 @@ public class ResponseBase {
     /// <param name="result"></param>
     /// <returns></returns>
     public static T CreateInvalidRequest<T>(T instance, ValidationResult result)
-        where T : ResponseBase {
+        where T : ResponseBase
+    {
 
         return CreateInvalidRequest<T>(instance, result.MaterializedErrorCodes);
 

@@ -1,9 +1,11 @@
 ﻿
 namespace LemonKit.Generators.Observe;
 
-internal sealed partial class ObserveGenerator {
+internal sealed partial class ObserveGenerator
+{
 
-    internal readonly record struct ObserveInfo {
+    internal readonly record struct ObserveInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -15,7 +17,8 @@ internal sealed partial class ObserveGenerator {
             ClassInfo classInfo,
             string activitySourceName,
             string? meterName,
-            string version) {
+            string version)
+        {
 
             ClassInfo = classInfo;
 

@@ -1,16 +1,15 @@
 ﻿
+using LemonKit.Extensions;
 using LemonKit.Processors;
+using LemonKit.Processors.Apis;
 using LemonKit.Processors.Attributes;
+using LemonKit.Validation;
+using LemonKit.Validation.Attributes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Test;
-using LemonKit.Extensions;
-using LemonKit.Processors.Apis;
-using LemonKit.Validation.Attributes;
-using LemonKit.Validation;
-using LemonKit.Results;
 
 [assembly: Procedures(
     typeof(LanguageProcedure<,>)
@@ -55,10 +54,12 @@ Console.WriteLine(app.Services.DisplayPipelines());
 app.Run();
 
 
-namespace Test {
+namespace Test
+{
 
     [Validate]
-    public sealed class TestValidation {
+    public sealed class TestValidation
+    {
 
         [Contains(["a", "b"])]
         [Contains(
@@ -142,15 +143,17 @@ namespace Test {
         public static void ExtraValidate(
             ValidationResult result,
             TestValidation input,
-            IServiceProvider provider) {
+            IServiceProvider provider)
+        {
 
-            
+
 
         }
 
     }
 
-    public sealed class TestValidationHelper {
+    public sealed class TestValidationHelper
+    {
 
         public object[] Contains { get; set; } = ["c", "d"];
 
@@ -174,7 +177,8 @@ namespace Test {
 
     }
 
-    public enum TestValidationEnum {
+    public enum TestValidationEnum
+    {
 
         A = 1,
         B = 2
@@ -184,22 +188,25 @@ namespace Test {
     [Procedure()]
     public sealed partial class LanguageProcedure<TInput, TOutput>
         : Procedure<TInput, TOutput>
-        where TInput : HttpContext {
+        where TInput : HttpContext
+    {
 
         private readonly ILogger<LanguageProcedure<TInput, TOutput>> _Logger;
 
         public LanguageProcedure(
-            ILogger<LanguageProcedure<TInput, TOutput>> logger) {
+            ILogger<LanguageProcedure<TInput, TOutput>> logger)
+        {
 
             _Logger = logger;
 
         }
 
         public async Task<TOutput> Execute(
-            [Input] TInput request, 
+            [Input] TInput request,
             CurrentLanguage currentLanuage,
             IServiceProvider serviceProvider,
-            CancellationToken cancellationToken) {
+            CancellationToken cancellationToken)
+        {
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -215,12 +222,14 @@ namespace Test {
     [Procedure()]
     public sealed partial class LanguageTwoProcedure<TInput, TOutput>
         : Procedure<TInput, TOutput>
-        where TInput : HttpContext {
+        where TInput : HttpContext
+    {
 
         private readonly ILogger<LanguageTwoProcedure<TInput, TOutput>> _Logger;
 
         public LanguageTwoProcedure(
-            ILogger<LanguageTwoProcedure<TInput, TOutput>> logger) {
+            ILogger<LanguageTwoProcedure<TInput, TOutput>> logger)
+        {
 
             _Logger = logger;
 
@@ -230,7 +239,8 @@ namespace Test {
             [Input] TInput request,
             CurrentLanguage currentLanuage,
             IServiceProvider serviceProvider,
-            CancellationToken cancellationToken) {
+            CancellationToken cancellationToken)
+        {
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -247,14 +257,16 @@ namespace Test {
     [Processor()]
     [GetEndpoint("/testa")]
     [Procedures(
-        typeof(LanguageTwoProcedure<,>)    
+        typeof(LanguageTwoProcedure<,>)
     )]
-    public sealed partial class SignInProcessor {
+    public sealed partial class SignInProcessor
+    {
 
         private readonly ILogger<SignInProcessor> _Logger;
 
         public SignInProcessor(
-            ILogger<SignInProcessor> logger) {
+            ILogger<SignInProcessor> logger)
+        {
 
             _Logger = logger;
 
@@ -263,7 +275,8 @@ namespace Test {
         public async Task<Response> Execute(
             [Input] HttpContext request,
             CurrentLanguage currentLanuage,
-            CancellationToken cancellationToken) {
+            CancellationToken cancellationToken)
+        {
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -280,13 +293,15 @@ namespace Test {
                 .WithDisplayName("CreateCard")
                 .WithDescription("Creates a new card with given properties");
 
-        public sealed class Request {
+        public sealed class Request
+        {
 
 
 
         }
 
-        public sealed class Response : ResponseBase {
+        public sealed class Response : ResponseBase
+        {
 
 
 
@@ -297,14 +312,16 @@ namespace Test {
 
     }
 
-    public sealed class CurrentLanguage {
+    public sealed class CurrentLanguage
+    {
 
         public required string Code { get; set; }
 
     }
 
 
-    public class Module {
+    public class Module
+    {
 
     }
 

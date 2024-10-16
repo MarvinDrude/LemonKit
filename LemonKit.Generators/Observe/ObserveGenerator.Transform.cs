@@ -1,11 +1,13 @@
 ﻿
 namespace LemonKit.Generators.Observe;
 
-internal sealed partial class ObserveGenerator {
+internal sealed partial class ObserveGenerator
+{
 
     private static ObserveInfo? Transform(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -14,17 +16,20 @@ internal sealed partial class ObserveGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(GetObserveAttribute(symbol.GetAttributes()) is not { } attribute) {
+        if(GetObserveAttribute(symbol.GetAttributes()) is not { } attribute)
+        {
             return null;
         }
 
-        if(attribute.ConstructorArguments is not { Length: 3 } args) {
+        if(attribute.ConstructorArguments is not { Length: 3 } args)
+        {
             return null;
         }
 
         token.ThrowIfCancellationRequested();
 
-        if(args is not [{ IsNull: false, Value: not null } aSourceConstant, { } meterNameConstant, { } versionConstant]) {
+        if(args is not [{ IsNull: false, Value: not null } aSourceConstant, { } meterNameConstant, { } versionConstant])
+        {
             return null;
         }
 
@@ -32,13 +37,17 @@ internal sealed partial class ObserveGenerator {
         string? meterName = null;
         string? version = null;
 
-        if(meterNameConstant is { IsNull: false, Value: { } val }) {
+        if(meterNameConstant is { IsNull: false, Value: { } val })
+        {
             meterName = val.ToString();
         }
 
-        if(versionConstant is { IsNull: false, Value: { } valVersion }) {
+        if(versionConstant is { IsNull: false, Value: { } valVersion })
+        {
             version = valVersion.ToString();
-        } else {
+        }
+        else
+        {
             version = "1.0.0";
         }
 
@@ -50,22 +59,28 @@ internal sealed partial class ObserveGenerator {
 
     }
 
-    private static AttributeData? GetObserveAttribute(ImmutableArray<AttributeData> attributes) {
+    private static AttributeData? GetObserveAttribute(ImmutableArray<AttributeData> attributes)
+    {
 
         return attributes.FirstOrDefault(x => IsObserveAttribute(x.AttributeClass));
 
     }
 
-    private static bool IsObserveAttribute(ITypeSymbol? symbol) {
+    private static bool IsObserveAttribute(ITypeSymbol? symbol)
+    {
 
-        return symbol is { 
+        return symbol is
+        {
             Name: "ObserveAttribute",
-            ContainingNamespace: {
+            ContainingNamespace:
+            {
                 Name: "Attributes",
-                ContainingNamespace: {
+                ContainingNamespace:
+                {
                     Name: "Observe",
-                    ContainingNamespace: { 
-                        Name: "LemonKit", 
+                    ContainingNamespace:
+                    {
+                        Name: "LemonKit",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
                 }

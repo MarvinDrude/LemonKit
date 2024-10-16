@@ -1,15 +1,17 @@
 ﻿namespace LemonKit.Generators.Observe;
 
 [Generator]
-internal sealed partial class ObserveGenerator : IIncrementalGenerator {
+internal sealed partial class ObserveGenerator : IIncrementalGenerator
+{
 
-    public void Initialize(IncrementalGeneratorInitializationContext context) {
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
 
-//#if DEBUG
-//        if(!Debugger.IsAttached) {
-//            Debugger.Launch();
-//        }
-//#endif
+        //#if DEBUG
+        //        if(!Debugger.IsAttached) {
+        //            Debugger.Launch();
+        //        }
+        //#endif
 
         var assemblyName = context.CompilationProvider
             .Select(static (c, _) => c.AssemblyName!

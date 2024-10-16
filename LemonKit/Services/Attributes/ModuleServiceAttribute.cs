@@ -5,7 +5,8 @@ namespace LemonKit.Services.Attributes;
 /// Marks a class that should generated module properties on demand
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class ModuleServiceAttribute : Attribute {
+public sealed class ModuleServiceAttribute : Attribute
+{
 
 
 

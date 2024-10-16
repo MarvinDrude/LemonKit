@@ -4,7 +4,8 @@ namespace LemonKit.Validation.Attributes;
 /// <summary>
 /// Marks a property that the value needs to be less than or equal to the given value
 /// </summary>
-public sealed class LessThanOrEqualAttribute : ValidationAttribute {
+public sealed class LessThanOrEqualAttribute : ValidationAttribute
+{
 
     [SuppressMessage("IDE", "IDE0052", Justification = "Used by code generators")]
     private readonly object? _Comparison;
@@ -16,7 +17,8 @@ public sealed class LessThanOrEqualAttribute : ValidationAttribute {
     /// <param name="errorCode"></param>
     public LessThanOrEqualAttribute(
         object compare,
-        string errorCode = ValidationDefaultCodes.ErrorLessThanOrEqual) {
+        string errorCode = ValidationDefaultCodes.ErrorLessThanOrEqual)
+    {
 
         _Comparison = compare;
         _ErrorCode = errorCode;
@@ -32,7 +34,8 @@ public sealed class LessThanOrEqualAttribute : ValidationAttribute {
     public LessThanOrEqualAttribute(
         Type serviceType,
         string[] accessPath,
-        string errorCode = ValidationDefaultCodes.ErrorLessThanOrEqual) {
+        string errorCode = ValidationDefaultCodes.ErrorLessThanOrEqual)
+    {
 
         _Type = serviceType;
         _AccessPath = accessPath;
@@ -41,13 +44,15 @@ public sealed class LessThanOrEqualAttribute : ValidationAttribute {
 
     }
 
-    public static bool Validate<T>(T target, T comparison) {
+    public static bool Validate<T>(T target, T comparison)
+    {
 
         return Comparer<T>.Default.Compare(target, comparison) <= 0;
 
     }
 
-    public static string TemplateError<T>(string errorCodeTemplate, T compare) {
+    public static string TemplateError<T>(string errorCodeTemplate, T compare)
+    {
 
         return errorCodeTemplate
             .Replace("{Number}", compare + string.Empty);

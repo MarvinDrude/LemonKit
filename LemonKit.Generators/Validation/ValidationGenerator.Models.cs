@@ -1,9 +1,11 @@
 ﻿
 namespace LemonKit.Generators.Validation;
 
-internal sealed partial class ValidationGenerator {
+internal sealed partial class ValidationGenerator
+{
 
-    private readonly record struct ValidationInfo {
+    private readonly record struct ValidationInfo
+    {
 
         public readonly ClassInfo ClassInfo;
 
@@ -21,7 +23,8 @@ internal sealed partial class ValidationGenerator {
             bool isReferenceType,
             string validatorName,
             ParameterInfo[]? extraParameters,
-            ValidationPropertyInfo[] properties) {
+            ValidationPropertyInfo[] properties)
+        {
 
             ClassInfo = classInfo;
 
@@ -37,7 +40,8 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private readonly record struct ValidationPropertyInfo {
+    private readonly record struct ValidationPropertyInfo
+    {
 
         public readonly string PropertyName;
         public readonly string TypeFullName;
@@ -56,7 +60,8 @@ internal sealed partial class ValidationGenerator {
             bool isValidation,
             bool isReferenceType,
             string validationTypeFullName,
-            ValidatePropertyInfo[] validations) {
+            ValidatePropertyInfo[] validations)
+        {
 
             PropertyName = propertyName;
             TypeFullName = typeFullName;
@@ -72,7 +77,8 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private readonly record struct ValidatePropertyInfo {
+    private readonly record struct ValidatePropertyInfo
+    {
 
         public readonly bool IsGenericMethod;
         public readonly bool IsNullable;
@@ -96,7 +102,8 @@ internal sealed partial class ValidationGenerator {
             ValidateParameterInfo[] parameters,
             ConstructorArgInfo[] constructorArgs,
             string errorCode,
-            ClassInfo classInfo) {
+            ClassInfo classInfo)
+        {
 
             ClassInfo = classInfo;
 
@@ -116,14 +123,16 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private readonly record struct ValidateParameterInfo {
+    private readonly record struct ValidateParameterInfo
+    {
 
         public readonly string Name;
         public readonly string FullTypeName;
 
         public ValidateParameterInfo(
             string name,
-            string fullTypeName) {
+            string fullTypeName)
+        {
 
             Name = name;
             FullTypeName = fullTypeName;
@@ -132,12 +141,14 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private readonly record struct ConstructorArgInfo {
+    private readonly record struct ConstructorArgInfo
+    {
 
         public readonly string Value;
 
         public ConstructorArgInfo(
-            string value) {
+            string value)
+        {
 
             Value = value;
 
@@ -145,7 +156,8 @@ internal sealed partial class ValidationGenerator {
 
     }
 
-    private sealed class ServiceRegistration {
+    private sealed class ServiceRegistration
+    {
 
         public required string InstanceName { get; set; }
 

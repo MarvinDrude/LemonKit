@@ -1,15 +1,18 @@
 ﻿
 namespace LemonKit.Generators.Processors;
 
-public partial class ProcessorGenerator {
+public partial class ProcessorGenerator
+{
 
     private static EquatableArray<ProcedureInfo>? TransformProcedures(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
-        if(context.Attributes is not [var attribute, ..]) {
+        if(context.Attributes is not [var attribute, ..])
+        {
             return [];
         }
 
@@ -17,35 +20,44 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static ProcedureInfo[] GetProcedures(AttributeData attribute, CancellationToken token) {
+    private static ProcedureInfo[] GetProcedures(AttributeData attribute, CancellationToken token)
+    {
 
         if(attribute.ConstructorArguments is not [var arg] ||
-            arg.Type is not IArrayTypeSymbol {
-                ElementType: {
+            arg.Type is not IArrayTypeSymbol
+            {
+                ElementType:
+                {
                     Name: "Type",
-                    ContainingNamespace: {
+                    ContainingNamespace:
+                    {
                         Name: "System",
                         ContainingNamespace.IsGlobalNamespace: true
                     }
                 }
-            }) {
+            })
+        {
             return [];
         }
 
         token.ThrowIfCancellationRequested();
         List<ProcedureInfo> infos = [];
 
-        foreach(var constant in arg.Values) {
+        foreach(var constant in arg.Values)
+        {
 
-            if(constant.Value is not INamedTypeSymbol { IsUnboundGenericType: true } symbol) {
+            if(constant.Value is not INamedTypeSymbol { IsUnboundGenericType: true } symbol)
+            {
                 continue;
             }
 
-            if(symbol.OriginalDefinition is not { TypeParameters.Length: 2, IsAbstract: false } definition) {
+            if(symbol.OriginalDefinition is not { TypeParameters.Length: 2, IsAbstract: false } definition)
+            {
                 continue;
             }
 
-            if(!definition.IsProcedure()) {
+            if(!definition.IsProcedure())
+            {
                 continue;
             }
 
@@ -58,11 +70,13 @@ public partial class ProcessorGenerator {
 
             var classInfo = ClassInfoBuilder.GetInfo(definition);
 
-            if(GetContraints(definition) is not (true, var inputType, var outputType)) {
+            if(GetContraints(definition) is not (true, var inputType, var outputType))
+            {
                 continue;
             }
 
-            if(definition.Constructors is not [var constructor]) {
+            if(definition.Constructors is not [var constructor])
+            {
                 continue;
             }
 
@@ -76,19 +90,22 @@ public partial class ProcessorGenerator {
 
         }
 
-        return [..infos];
+        return [.. infos];
 
     }
 
-    private static (bool IsValid, string? InputType, string? OutputType) GetContraints(INamedTypeSymbol symbol) {
+    private static (bool IsValid, string? InputType, string? OutputType) GetContraints(INamedTypeSymbol symbol)
+    {
 
         var definition = symbol.OriginalDefinition;
 
-        if(GetConstraint(definition.TypeParameters[0]) is not (true, var inputType)) {
+        if(GetConstraint(definition.TypeParameters[0]) is not (true, var inputType))
+        {
             return default;
         }
 
-        if(GetConstraint(definition.TypeParameters[1]) is not (true, var outputType)) {
+        if(GetConstraint(definition.TypeParameters[1]) is not (true, var outputType))
+        {
             return default;
         }
 
@@ -96,13 +113,16 @@ public partial class ProcessorGenerator {
 
     }
 
-    private static (bool IsValid, string? Constraint) GetConstraint(ITypeParameterSymbol parameter) {
+    private static (bool IsValid, string? Constraint) GetConstraint(ITypeParameterSymbol parameter)
+    {
 
-        if(parameter.ConstraintTypes is []) {
+        if(parameter.ConstraintTypes is [])
+        {
             return (true, default);
         }
 
-        if(parameter.ConstraintTypes is not [var target]) { // only allow one constraint for now
+        if(parameter.ConstraintTypes is not [var target])
+        { // only allow one constraint for now
             return (false, default);
         }
 
@@ -113,7 +133,8 @@ public partial class ProcessorGenerator {
 
     private static ProcedureClassInfo? TransformProcedure(
         GeneratorAttributeSyntaxContext context,
-        CancellationToken token) {
+        CancellationToken token)
+    {
 
         token.ThrowIfCancellationRequested();
 
@@ -122,7 +143,8 @@ public partial class ProcessorGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(symbol.ContainingType is not null) {
+        if(symbol.ContainingType is not null)
+        {
             return null;
         }
 
@@ -130,15 +152,18 @@ public partial class ProcessorGenerator {
             .OfType<IMethodSymbol>()
             .Where(static method => !method.IsStatic)
             .Where(static method => method.Name is "Execute")
-            .ToList() is not [var execute]) {
+            .ToList() is not [var execute])
+        {
             return null;
         }
 
-        if(execute.Parameters is { Length: 0 }) {
+        if(execute.Parameters is { Length: 0 })
+        {
             return null;
         }
 
-        if(execute.ReturnsVoid) {
+        if(execute.ReturnsVoid)
+        {
             return null;
         }
 
@@ -149,19 +174,24 @@ public partial class ProcessorGenerator {
 
         ParameterInfo? inputParameter = null;
 
-        foreach(var parameter in parameters) {
-            foreach(var attr in parameter.Attributes) {
-                if(attr.FullName is "global::LemonKit.Processors.Attributes.InputAttribute") {
+        foreach(var parameter in parameters)
+        {
+            foreach(var attr in parameter.Attributes)
+            {
+                if(attr.FullName is "global::LemonKit.Processors.Attributes.InputAttribute")
+                {
                     inputParameter = parameter;
                     break;
                 }
             }
-            if(inputParameter is { }) {
+            if(inputParameter is { })
+            {
                 break;
             }
         }
 
-        if(inputParameter is not { } input) {
+        if(inputParameter is not { } input)
+        {
             return null;
         }
 
@@ -171,7 +201,8 @@ public partial class ProcessorGenerator {
 
         token.ThrowIfCancellationRequested();
 
-        if(execute.GetTaskInnerReturnType() is not { } outputSymbol) {
+        if(execute.GetTaskInnerReturnType() is not { } outputSymbol)
+        {
             return null;
         }
 
@@ -180,13 +211,16 @@ public partial class ProcessorGenerator {
 
         AttributeData? attrProcedure = null;
 
-        foreach(var attribute in symbol.GetAttributes()) {
+        foreach(var attribute in symbol.GetAttributes())
+        {
 
-            if(attribute.AttributeClass is not { } attrClass) {
+            if(attribute.AttributeClass is not { } attrClass)
+            {
                 continue;
             }
 
-            switch(attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)) {
+            switch(attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
+            {
 
                 case "global::LemonKit.Processors.Attributes.ProcedureAttribute":
                     attrProcedure = attribute;
@@ -196,7 +230,8 @@ public partial class ProcessorGenerator {
 
         }
 
-        if(attrProcedure is not { } processor) {
+        if(attrProcedure is not { } processor)
+        {
             return null;
         }
 

@@ -13,7 +13,8 @@
 )]
 
 [JsonSerializable(typeof(JsonPetsSettings))]
-internal partial class JsonSettingsContext : JsonSerializerContext {
+internal partial class JsonSettingsContext : JsonSerializerContext
+{
 
 }
 

@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LemonKit.Experiment", "Lemo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C4B19C75-8F15-4751-8902-37668AD71A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LemonKit.SimpleDemo", "LemonKit.SimpleDemo\LemonKit.SimpleDemo.csproj", "{637F76DA-94CF-429B-8C93-985BD014E1A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LemonKit.SimpleDemo", "LemonKit.SimpleDemo\LemonKit.SimpleDemo.csproj", "{637F76DA-94CF-429B-8C93-985BD014E1A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96EFDD62-E1D2-4AD5-A7C6-C5B09FAC41FD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

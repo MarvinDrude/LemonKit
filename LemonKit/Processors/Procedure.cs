@@ -4,7 +4,8 @@ namespace LemonKit.Processors;
 /// <summary>
 /// Procedures can be used to run same logic in front of multiple processors that share the same requirements.
 /// </summary>
-public abstract class Procedure<TInput, TOutput> {
+public abstract class Procedure<TInput, TOutput>
+{
 
     /// <summary>
     /// Next procedure to call next in line
@@ -18,15 +19,16 @@ public abstract class Procedure<TInput, TOutput> {
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public abstract Task<TOutput> Process(
-        TInput request, 
-        IServiceProvider serviceProvider, 
+        TInput request,
+        IServiceProvider serviceProvider,
         CancellationToken cancellationToken);
 
     /// <summary>
     /// Set the next procedure after this procedure
     /// </summary>
     /// <param name="next"></param>
-    public void SetNextFunc(Func<TInput, IServiceProvider, CancellationToken, Task<TOutput>> next) {
+    public void SetNextFunc(Func<TInput, IServiceProvider, CancellationToken, Task<TOutput>> next)
+    {
 
         _Next = next;
 
@@ -38,9 +40,11 @@ public abstract class Procedure<TInput, TOutput> {
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    protected Task<TOutput> Next(TInput request, IServiceProvider serviceProvider, CancellationToken cancellationToken) {
+    protected Task<TOutput> Next(TInput request, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+    {
 
-        if(_Next is null) {
+        if(_Next is null)
+        {
             throw new InvalidOperationException("Next procedure must be set before next call.");
         }
 

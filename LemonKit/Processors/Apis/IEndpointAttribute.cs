@@ -4,7 +4,8 @@ namespace LemonKit.Processors.Apis;
 /// <summary>
 /// Basic information to register the endpoint to
 /// </summary>
-public interface IEndpointAttribute {
+public interface IEndpointAttribute
+{
 
     /// <summary>
     /// The HTTP method the handler should be registered to

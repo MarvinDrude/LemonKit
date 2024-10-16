@@ -4,7 +4,8 @@ namespace LemonKit.Validation.Attributes;
 /// <summary>
 /// Marks a property that the value should equal a given value
 /// </summary>
-public sealed class EqualAttribute : ValidationAttribute {
+public sealed class EqualAttribute : ValidationAttribute
+{
 
     [SuppressMessage("IDE", "IDE0052", Justification = "Used by code generators")]
     private readonly object? _Comparison;
@@ -16,7 +17,8 @@ public sealed class EqualAttribute : ValidationAttribute {
     /// <param name="errorCode"></param>
     public EqualAttribute(
         object compare,
-        string errorCode = ValidationDefaultCodes.ErrorEqual) {
+        string errorCode = ValidationDefaultCodes.ErrorEqual)
+    {
 
         _Comparison = compare;
         _ErrorCode = errorCode;
@@ -32,7 +34,8 @@ public sealed class EqualAttribute : ValidationAttribute {
     public EqualAttribute(
         Type serviceType,
         string[] accessPath,
-        string errorCode = ValidationDefaultCodes.ErrorEqual) {
+        string errorCode = ValidationDefaultCodes.ErrorEqual)
+    {
 
         _Type = serviceType;
         _AccessPath = accessPath;
@@ -41,13 +44,15 @@ public sealed class EqualAttribute : ValidationAttribute {
 
     }
 
-    public static bool Validate<T>(T target, T comparison) {
+    public static bool Validate<T>(T target, T comparison)
+    {
 
         return EqualityComparer<T>.Default.Equals(target, comparison);
 
     }
 
-    public static string TemplateError<T>(string errorCodeTemplate, T compare) {
+    public static string TemplateError<T>(string errorCodeTemplate, T compare)
+    {
 
         return errorCodeTemplate
             .Replace("{ToString}", compare + string.Empty);

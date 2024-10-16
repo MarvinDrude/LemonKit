@@ -7,22 +7,26 @@ namespace LemonKit.Validation.Attributes;
 /// <see langword="null"/> will count as empty, for strings it uses <see cref="string.IsNullOrWhiteSpace(string?)"/>
 /// </para>
 /// </summary>
-public sealed class NotEmptyAttribute : ValidationAttribute {
+public sealed class NotEmptyAttribute : ValidationAttribute
+{
 
     public NotEmptyAttribute(
-        string errorCode = ValidationDefaultCodes.ErrorNotEmpty) {
+        string errorCode = ValidationDefaultCodes.ErrorNotEmpty)
+    {
 
         _ErrorCode = errorCode;
 
     }
 
-    public static bool Validate<T>(T? target) {
+    public static bool Validate<T>(T? target)
+    {
 
         return !EmptyAttribute.Validate(target);
 
     }
 
-    public static string TemplateError(string errorCodeTemplate) {
+    public static string TemplateError(string errorCodeTemplate)
+    {
 
         return errorCodeTemplate;
 

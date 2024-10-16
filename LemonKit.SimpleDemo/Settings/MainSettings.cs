@@ -1,7 +1,8 @@
 ﻿namespace LemonKit.SimpleDemo.Settings;
 
 [Settings]
-public sealed partial class MainSettings : ISettings {
+public sealed partial class MainSettings : ISettings
+{
 
     [EnvironmentVariable("ASPNETCORE_ENVIRONMENT")]
     public required string AspNetEnvironment { get; set; }
@@ -14,7 +15,8 @@ public sealed partial class MainSettings : ISettings {
 
 }
 
-public sealed class JsonPetsSettings {
+public sealed class JsonPetsSettings
+{
 
     public required int MaxPetsInDatabase { get; set; }
 

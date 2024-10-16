@@ -1,7 +1,8 @@
 ﻿
 namespace LemonKit.Settings;
 
-public interface ISettingsContainer {
+public interface ISettingsContainer
+{
 
     public Dictionary<string, ISettingsProvider> FileProviders { get; }
 

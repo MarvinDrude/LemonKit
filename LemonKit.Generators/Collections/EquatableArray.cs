@@ -5,7 +5,8 @@ using System.ComponentModel;
 namespace LemonKit.Generators.Collections;
 
 internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnumerable<T>
-    where T : IEquatable<T> {
+    where T : IEquatable<T>
+{
     public static readonly EquatableArray<T> Empty = new([]);
 
     /// <summary>
@@ -13,8 +14,10 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// </summary>
     private readonly T[]? _array;
 
-    public T? this[int index] {
-        get {
+    public T? this[int index]
+    {
+        get
+        {
             return _array is null ? default : _array[index];
         }
     }
@@ -23,29 +26,35 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// Creates a new <see cref="EquatableArray{T}"/> instance.
     /// </summary>
     /// <param name="array">The input <see cref="ImmutableArray"/> to wrap.</param>
-    public EquatableArray(T[] array) {
+    public EquatableArray(T[] array)
+    {
         _array = array;
     }
 
     /// <sinheritdoc/>
-    public bool Equals(EquatableArray<T> array) {
+    public bool Equals(EquatableArray<T> array)
+    {
         return AsSpan().SequenceEqual(array.AsSpan());
     }
 
     /// <sinheritdoc/>
-    public override bool Equals(object? obj) {
+    public override bool Equals(object? obj)
+    {
         return obj is EquatableArray<T> array && Equals(this, array);
     }
 
     /// <sinheritdoc/>
-    public override int GetHashCode() {
-        if(_array is not T[] array) {
+    public override int GetHashCode()
+    {
+        if(_array is not T[] array)
+        {
             return 0;
         }
 
         HashCode hashCode = default;
 
-        foreach(T item in array) {
+        foreach(T item in array)
+        {
             hashCode.Add(item);
         }
 
@@ -56,7 +65,8 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// Returns a <see cref="ReadOnlySpan{T}"/> wrapping the current items.
     /// </summary>
     /// <returns>A <see cref="ReadOnlySpan{T}"/> wrapping the current items.</returns>
-    public ReadOnlySpan<T> AsSpan() {
+    public ReadOnlySpan<T> AsSpan()
+    {
         return _array.AsSpan();
     }
 
@@ -66,12 +76,14 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     public T[]? GetArray() => _array;
 
     /// <sinheritdoc/>
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() {
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
         return ((IEnumerable<T>)(_array ?? [])).GetEnumerator();
     }
 
     /// <sinheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator() {
+    IEnumerator IEnumerable.GetEnumerator()
+    {
         return ((IEnumerable<T>)(_array ?? [])).GetEnumerator();
     }
 
@@ -83,7 +95,8 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// <param name="left">The first <see cref="EquatableArray{T}"/> value.</param>
     /// <param name="right">The second <see cref="EquatableArray{T}"/> value.</param>
     /// <returns>Whether <paramref name="left"/> and <paramref name="right"/> are equal.</returns>
-    public static bool operator ==(EquatableArray<T> left, EquatableArray<T> right) {
+    public static bool operator ==(EquatableArray<T> left, EquatableArray<T> right)
+    {
         return left.Equals(right);
     }
 
@@ -93,12 +106,14 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// <param name="left">The first <see cref="EquatableArray{T}"/> value.</param>
     /// <param name="right">The second <see cref="EquatableArray{T}"/> value.</param>
     /// <returns>Whether <paramref name="left"/> and <paramref name="right"/> are not equal.</returns>
-    public static bool operator !=(EquatableArray<T> left, EquatableArray<T> right) {
+    public static bool operator !=(EquatableArray<T> left, EquatableArray<T> right)
+    {
         return !left.Equals(right);
     }
 }
 
-internal struct HashCode {
+internal struct HashCode
+{
     private static readonly uint s_seed = GenerateGlobalSeed();
 
     private const uint Prime1 = 2654435761U;
@@ -111,13 +126,15 @@ internal struct HashCode {
     private uint _queue1, _queue2, _queue3;
     private uint _length;
 
-    private static uint GenerateGlobalSeed() {
+    private static uint GenerateGlobalSeed()
+    {
         var buffer = new byte[sizeof(uint)];
         new Random().NextBytes(buffer);
         return BitConverter.ToUInt32(buffer, 0);
     }
 
-    public static int Combine<T1>(T1 value1) {
+    public static int Combine<T1>(T1 value1)
+    {
         // Provide a way of diffusing bits from something with a limited
         // input hash space. For example, many enums only have a few
         // possible hashes, only using the bottom few bits of the code. Some
@@ -136,7 +153,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2>(T1 value1, T2 value2) {
+    public static int Combine<T1, T2>(T1 value1, T2 value2)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
 
@@ -150,7 +168,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3) {
+    public static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
         uint hc3 = (uint)(value3?.GetHashCode() ?? 0);
@@ -166,7 +185,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2, T3, T4>(T1 value1, T2 value2, T3 value3, T4 value4) {
+    public static int Combine<T1, T2, T3, T4>(T1 value1, T2 value2, T3 value3, T4 value4)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
         uint hc3 = (uint)(value3?.GetHashCode() ?? 0);
@@ -186,7 +206,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2, T3, T4, T5>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5) {
+    public static int Combine<T1, T2, T3, T4, T5>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
         uint hc3 = (uint)(value3?.GetHashCode() ?? 0);
@@ -209,7 +230,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2, T3, T4, T5, T6>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6) {
+    public static int Combine<T1, T2, T3, T4, T5, T6>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
         uint hc3 = (uint)(value3?.GetHashCode() ?? 0);
@@ -234,7 +256,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2, T3, T4, T5, T6, T7>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7) {
+    public static int Combine<T1, T2, T3, T4, T5, T6, T7>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
         uint hc3 = (uint)(value3?.GetHashCode() ?? 0);
@@ -261,7 +284,8 @@ internal struct HashCode {
         return (int)hash;
     }
 
-    public static int Combine<T1, T2, T3, T4, T5, T6, T7, T8>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7, T8 value8) {
+    public static int Combine<T1, T2, T3, T4, T5, T6, T7, T8>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7, T8 value8)
+    {
         uint hc1 = (uint)(value1?.GetHashCode() ?? 0);
         uint hc2 = (uint)(value2?.GetHashCode() ?? 0);
         uint hc3 = (uint)(value3?.GetHashCode() ?? 0);
@@ -291,7 +315,8 @@ internal struct HashCode {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Initialize(out uint v1, out uint v2, out uint v3, out uint v4) {
+    private static void Initialize(out uint v1, out uint v2, out uint v3, out uint v4)
+    {
         v1 = s_seed + Prime1 + Prime2;
         v2 = s_seed + Prime2;
         v3 = s_seed;
@@ -299,26 +324,31 @@ internal struct HashCode {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint Round(uint hash, uint input) {
+    private static uint Round(uint hash, uint input)
+    {
         return RotateLeft(hash + input * Prime2, 13) * Prime1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint QueueRound(uint hash, uint queuedValue) {
+    private static uint QueueRound(uint hash, uint queuedValue)
+    {
         return RotateLeft(hash + queuedValue * Prime3, 17) * Prime4;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint MixState(uint v1, uint v2, uint v3, uint v4) {
+    private static uint MixState(uint v1, uint v2, uint v3, uint v4)
+    {
         return RotateLeft(v1, 1) + RotateLeft(v2, 7) + RotateLeft(v3, 12) + RotateLeft(v4, 18);
     }
 
-    private static uint MixEmptyState() {
+    private static uint MixEmptyState()
+    {
         return s_seed + Prime5;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint MixFinal(uint hash) {
+    private static uint MixFinal(uint hash)
+    {
         hash ^= hash >> 15;
         hash *= Prime2;
         hash ^= hash >> 13;
@@ -327,15 +357,18 @@ internal struct HashCode {
         return hash;
     }
 
-    public void Add<T>(T value) {
+    public void Add<T>(T value)
+    {
         Add(value?.GetHashCode() ?? 0);
     }
 
-    public void Add<T>(T value, IEqualityComparer<T>? comparer) {
+    public void Add<T>(T value, IEqualityComparer<T>? comparer)
+    {
         Add(value is null ? 0 : (comparer?.GetHashCode(value) ?? value.GetHashCode()));
     }
 
-    private void Add(int value) {
+    private void Add(int value)
+    {
         // The original xxHash works as follows:
         // 0. Initialize immediately. We can't do this in a struct (no
         //    default ctor).
@@ -384,7 +417,8 @@ internal struct HashCode {
         }
     }
 
-    public int ToHashCode() {
+    public int ToHashCode()
+    {
         // Storing the value of _length locally shaves of quite a few bytes
         // in the resulting machine code.
         uint length = _length;
@@ -409,9 +443,11 @@ internal struct HashCode {
         // Switch can't be inlined right now, so use as few branches as
         // possible by manually excluding impossible scenarios (position > 1
         // is always false if position is not > 0).
-        if(position > 0) {
+        if(position > 0)
+        {
             hash = QueueRound(hash, _queue1);
-            if(position > 1) {
+            if(position > 1)
+            {
                 hash = QueueRound(hash, _queue2);
                 if(position > 2)
                     hash = QueueRound(hash, _queue3);

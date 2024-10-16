@@ -17,6 +17,7 @@ namespace LemonKit.SimpleDemo.Models;
 
 [JsonSerializable(typeof(CreatePetEndpoint.Request))]
 [JsonSerializable(typeof(CreatePetEndpoint.Response))]
-internal partial class JsonMainContext : JsonSerializerContext {
+internal partial class JsonMainContext : JsonSerializerContext
+{
 
 }

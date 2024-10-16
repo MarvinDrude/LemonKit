@@ -5,7 +5,8 @@ namespace LemonKit.Services.Attributes;
 /// Mark a class that is used as module implementation
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class ModuleAttribute : Attribute {
+public sealed class ModuleAttribute : Attribute
+{
 
 
 

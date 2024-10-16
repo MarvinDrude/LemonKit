@@ -7,7 +7,8 @@ namespace LemonKit.Validation.Attributes;
 /// Marks a <see cref="string"/> or <see cref="ICollection"/> property to have a max length.
 /// If nullable, it will return false for <see cref="null"/> 
 /// </summary>
-public sealed class MaxLengthAttribute : ValidationAttribute {
+public sealed class MaxLengthAttribute : ValidationAttribute
+{
 
     [SuppressMessage("IDE", "IDE0052", Justification = "Used by code generators")]
     private readonly int _MaxLength;
@@ -19,7 +20,8 @@ public sealed class MaxLengthAttribute : ValidationAttribute {
     /// <param name="errorCode">Custom error code</param>
     public MaxLengthAttribute(
         int maxLength,
-        string errorCode = ValidationDefaultCodes.ErrorMaxLength) {
+        string errorCode = ValidationDefaultCodes.ErrorMaxLength)
+    {
 
         _MaxLength = maxLength;
         _ErrorCode = errorCode;
@@ -34,7 +36,8 @@ public sealed class MaxLengthAttribute : ValidationAttribute {
     public MaxLengthAttribute(
         Type serviceType,
         string[] accessPath,
-        string errorCode = ValidationDefaultCodes.ErrorMaxLength) {
+        string errorCode = ValidationDefaultCodes.ErrorMaxLength)
+    {
 
         _Type = serviceType;
         _AccessPath = accessPath;
@@ -43,9 +46,11 @@ public sealed class MaxLengthAttribute : ValidationAttribute {
 
     }
 
-    public static bool Validate<T>(T? target, int maxLength) {
+    public static bool Validate<T>(T? target, int maxLength)
+    {
 
-        return target is { } && target switch {
+        return target is { } && target switch
+        {
 
             string str => str.Length <= maxLength,
             ICollection coll => coll.Count <= maxLength,
@@ -55,7 +60,8 @@ public sealed class MaxLengthAttribute : ValidationAttribute {
 
     }
 
-    public static string TemplateError(string errorCodeTemplate, int maxLength) {
+    public static string TemplateError(string errorCodeTemplate, int maxLength)
+    {
 
         return errorCodeTemplate
             .Replace("{MaxLength}", maxLength.ToString());

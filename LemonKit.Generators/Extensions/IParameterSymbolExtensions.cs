@@ -1,13 +1,16 @@
 ﻿
 namespace LemonKit.Generators.Extensions;
 
-internal static class IParameterSymbolExtensions {
+internal static class IParameterSymbolExtensions
+{
 
-    public static ParameterInfo[] GetParameterInfos(this ImmutableArray<IParameterSymbol> parameters) {
+    public static ParameterInfo[] GetParameterInfos(this ImmutableArray<IParameterSymbol> parameters)
+    {
 
         ParameterInfo[] result = new ParameterInfo[parameters.Length];
 
-        for(int e = 0; e < parameters.Length; e++) {
+        for(int e = 0; e < parameters.Length; e++)
+        {
 
             IParameterSymbol symbol = parameters[e];
             string fullTypeName = symbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
@@ -22,18 +25,22 @@ internal static class IParameterSymbolExtensions {
 
     }
 
-    private static ParaAttributeInfo[] GetAttributes(ImmutableArray<AttributeData> attrs) {
+    private static ParaAttributeInfo[] GetAttributes(ImmutableArray<AttributeData> attrs)
+    {
 
-        if(attrs.Length == 0) {
+        if(attrs.Length == 0)
+        {
             return [];
         }
 
         ParaAttributeInfo[] result = new ParaAttributeInfo[attrs.Length];
 
-        for(int e = 0; e < attrs.Length; e++) {
+        for(int e = 0; e < attrs.Length; e++)
+        {
 
             AttributeData attr = attrs[e];
-            if(attr.AttributeClass is null) {
+            if(attr.AttributeClass is null)
+            {
                 return [];
             }
 
