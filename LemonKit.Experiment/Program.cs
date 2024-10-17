@@ -267,9 +267,7 @@ namespace Test
         public SignInProcessor(
             ILogger<SignInProcessor> logger)
         {
-
             _Logger = logger;
-
         }
 
         public async Task<Response> Execute(

@@ -21,10 +21,8 @@ builder.Services.AddScoped<IPetService, PetService>();
 
 builder.Services.AddDbContext<MainDbContext>((serviceProvider, dbBuilder) =>
 {
-
     var settings = serviceProvider.GetRequiredService<SettingsContainer<MainSettings>>();
     dbBuilder.UseNpgsql(settings.Current.DatabaseConnectionString);
-
 });
 
 builder.AddOpenTelemetrySample();

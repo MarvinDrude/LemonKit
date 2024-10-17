@@ -53,11 +53,9 @@ public sealed partial class CreatePetEndpoint
         IValidate<Request> validator,
         SettingsContainer<MainSettings> settings)
     {
-
         _Logger = logger;
         _Validator = validator;
         _MainSettings = settings;
-
     }
 
     /// <summary>
