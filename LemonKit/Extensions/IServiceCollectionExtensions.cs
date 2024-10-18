@@ -109,10 +109,10 @@ public static class IServiceCollectionExtensions
         return services;
     }
 
-    public static void AddSerilogObservability(
+    public static LoggerConfiguration AddSerilogObservability(
+        this LoggerConfiguration config,
         string serviceName,
         IServiceProvider provider,
-        LoggerConfiguration config,
         Action<BatchedOpenTelemetrySinkOptions> onOptions)
     {
         config.WriteTo.OpenTelemetry(options =>
@@ -126,5 +126,7 @@ public static class IServiceCollectionExtensions
 
             onOptions.Invoke(options);
         });
+
+        return config;
     }
 }

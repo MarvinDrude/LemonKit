@@ -1,4 +1,6 @@
 ﻿
+using LemonKit.MainDemo.Endpoints.Pets;
+
 namespace LemonKit.MainDemo.Json;
 
 [JsonSourceGenerationOptions(
@@ -12,6 +14,9 @@ namespace LemonKit.MainDemo.Json;
     UnmappedMemberHandling = System.Text.Json.Serialization.JsonUnmappedMemberHandling.Skip,
     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
 )]
-internal partial class JsonMainContext
+
+[JsonSerializable(typeof(CreatePetEndpoint.Request))]
+internal partial class JsonMainContext : JsonSerializerContext
 {
+
 }

@@ -21,3 +21,8 @@ global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Text;
 global using System.Threading.Tasks;
+
+global using LemonKit.MainDemo.Json;
+global using LemonKit.MainDemo.Settings;
+global using LemonKit.MainDemo.Validation;
+global using LemonKit.MainDemo.Database.Models;
