@@ -6,7 +6,12 @@ public sealed class Pet
 
     public required string Name { get; set; }
 
-    public required List<string> Colors { get; set; }
+    public required string Color { get; set; }
 
     public required float Height { get; set; }
+
+    public sealed class Sql
+    {
+        public const string TableName = "pet";
+    }
 }

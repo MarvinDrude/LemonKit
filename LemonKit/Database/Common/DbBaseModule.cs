@@ -12,7 +12,7 @@ public sealed class DbBaseModule
     }
 
     public async Task<Result<TResult, Exception>> Execute<TResult>(
-        Func<IDbConnection, IDbTransaction?, Task<TResult>> executeFunc)
+        Func<IDbConnection, IDbTransaction?, CancellationToken, Task<TResult>> executeFunc)
     {
         var context = DbQueryContext.Current;
 
@@ -20,13 +20,15 @@ public sealed class DbBaseModule
         IDbTransaction? transaction = context.Transaction;
 
         bool connectionNeeded = connection is null;
-        connection ??= await _ConnectionFactory.Create();
+        connection ??= await _ConnectionFactory.Create(
+            cancellationToken: context.CancellationToken);
 
         try
         {
             return await executeFunc.Invoke(
                 connection, 
-                transaction);
+                transaction,
+                context.CancellationToken);
         }
         catch(Exception error)
         {

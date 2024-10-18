@@ -13,14 +13,14 @@ public sealed class MsConnectionFactory<TConnectionStringProvider>
         _ConnectionStringProvider = connectionStringProvider;
     }
 
-    public async Task<IDbConnection> Create()
+    public async Task<IDbConnection> Create(CancellationToken cancellationToken)
     {
         string connectionString = _ConnectionStringProvider.IsAsync
             ? await _ConnectionStringProvider.GetConnectionStringAsync()
             : _ConnectionStringProvider.GetConnectionString();
 
         var connection = new SqlConnection(connectionString);
-        await connection.OpenAsync();
+        await connection.OpenAsync(cancellationToken: cancellationToken);
 
         return connection;
     }

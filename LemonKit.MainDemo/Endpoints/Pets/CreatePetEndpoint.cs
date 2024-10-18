@@ -59,6 +59,7 @@ public sealed partial class CreatePetEndpoint
 
         Pet toCreate = Mapper.ToPet(request);
 
+
         _CreationCounter.Add(1);
 
         return new Response()
@@ -73,7 +74,7 @@ public sealed partial class CreatePetEndpoint
     {
 
         [MinLength(1)] // use validate attributes with constant values
-        public required List<string> Colors { get; set; }
+        public required string Color { get; set; }
 
         [MinLength( // use validate attributes with values based on services available in IServiceProvider
             typeof(SettingsContainer<MainSettings>),
@@ -98,9 +99,9 @@ public sealed partial class CreatePetEndpoint
             Request input,
             SettingsContainer<MainSettings> settings)
         {
-            if(!input.Colors.AreHexColors())
+            if(!input.Color.IsHexColor())
             {
-                result.AddErrorCode(nameof(input.Colors), "E_ONLY_HEX_COLROS");
+                result.AddErrorCode(nameof(input.Color), "E_ONLY_HEX_COLORS");
             }
         }
 
@@ -115,7 +116,7 @@ public sealed partial class CreatePetEndpoint
             return new Pet()
             {
                 Id = Guid.NewGuid(),
-                Colors = request.Colors,
+                Color = request.Color,
                 Height = request.Height,
                 Name = request.Name
             };

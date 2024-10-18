@@ -10,5 +10,5 @@ public interface IDbConnectionFactory<TConnectionStringProvider, TConnectionStri
 
 public interface IDbBaseConnectionFactory
 {
-    public Task<IDbConnection> Create();
+    public Task<IDbConnection> Create(CancellationToken cancellationToken);
 }

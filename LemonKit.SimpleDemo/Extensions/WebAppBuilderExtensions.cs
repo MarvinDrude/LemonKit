@@ -11,7 +11,7 @@ public static class WebAppBuilderExtensions
     public static WebApplicationBuilder AddOpenTelemetrySample(this WebApplicationBuilder builder)
     {
 
-        Observe.LemonKitSimpleDemo.ObserveContainerExtensions.Init();
+        ObserveContainerExtensions.Init();
         // u need to make sure that every referenced project that has observe in use gets called here too
 
         var services = builder.Services;
