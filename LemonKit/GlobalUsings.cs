@@ -8,6 +8,7 @@ global using LemonKit.Results;
 global using LemonKit.Performance;
 global using LemonKit.Observe;
 global using LemonKit.Cache;
+global using LemonKit.Startup;
 
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.DependencyInjection;

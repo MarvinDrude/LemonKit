@@ -28,4 +28,6 @@ public sealed partial class PetReadModule : IPetReadModule
 
         _Module = new DbBaseModule(dbFactory);
     }
+
+    public async Task<>
 }

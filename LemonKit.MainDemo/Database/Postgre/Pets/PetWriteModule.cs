@@ -48,7 +48,7 @@ public sealed partial class PetWriteModule : IPetWriteModule
                 VALUES
                 (@{nameof(Pet.Id)}, @{nameof(Pet.Name)}, @{nameof(Pet.Color)}, @{nameof(Pet.Height)});
 
-            ", transaction: trans, cancellationToken: token);
+            ", toCreate, transaction: trans, cancellationToken: token);
 
             return await conn.QuerySingleOrDefaultAsync<Guid?>(command);
         }
@@ -89,7 +89,7 @@ public sealed partial class PetWriteModule : IPetWriteModule
                 WHERE
                     Id = @{nameof(Pet.Id)}
 
-            ", transaction: trans, cancellationToken: token);
+            ", toUpdate, transaction: trans, cancellationToken: token);
 
             return await conn.ExecuteAsync(command);
         }

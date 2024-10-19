@@ -14,6 +14,7 @@ global using LemonKit.Settings.Providers;
 global using LemonKit.Database.Factories;
 global using LemonKit.Database.Common;
 global using LemonKit.Common.Models;
+global using LemonKit.Startup;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using System;
@@ -33,6 +34,7 @@ global using LemonKit.MainDemo.Json;
 global using LemonKit.MainDemo.Settings;
 global using LemonKit.MainDemo.Validation;
 global using LemonKit.MainDemo.Database.Models;
+global using LemonKit.MainDemo.Startup;
 
 global using LemonKit.MainDemo.Database.Interfaces.Pets;
 global using LemonKit.MainDemo.Database.Postgre.Pets;
