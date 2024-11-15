@@ -3,7 +3,8 @@ namespace LemonKit.MainDemo.Startup;
 
 [StartupModule(
     prePriority: 1,
-    postPriority: 1
+    postPriority: 1,
+    extensionName: "OnStartup"
 )]
 public sealed class DbSeederModule
     : IStartupModule<WebApplicationBuilder, WebApplication>

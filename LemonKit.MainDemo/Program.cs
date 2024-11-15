@@ -20,7 +20,7 @@ builder.Services.AddCoreObservability(
     enableDefaultLocalOtlp: true,
     observerInizialize: () =>
     {
-        ObserveContainerExtensions.Init();
+        LemonKit.Observe.LemonKitMainDemo.ObserveContainerExtensions.Init();
     });
 builder.Services.AddSerilog((provider, config) =>
 {
